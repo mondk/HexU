@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -12,7 +13,8 @@ import javax.swing.JPanel;
 public class Panel extends JPanel{
 	
 	private GameState gs;
-	
+	private Image image;
+	private Graphics graphics;
 	public Panel(GameState gs) {
 		this.gs=gs;
 		this.setFocusable(true);
@@ -45,17 +47,21 @@ public class Panel extends JPanel{
 	
 	@Override
 	public void paintComponent(Graphics g) {
-		for(Hexagon h:gs.grid) {
-		   g.setColor(h.color);
-       	   g.fillPolygon(h.getHexagon());
-       	   g.setColor(Color.BLUE);
-       	   g.drawPolygon(h.getHexagon());
-       	  
-		}
+		image = createImage(getWidth(),getHeight());
+		graphics = image.getGraphics();
+		draw(graphics);
+		g.drawImage(image,0,0,this);
+		
 	}
 	
 	public void draw(Graphics g) {
-		
+		for(Hexagon h:gs.grid) {
+			   g.setColor(h.color);
+	       	   g.fillPolygon(h.getHexagon());
+	       	   g.setColor(Color.BLUE);
+	       	   g.drawPolygon(h.getHexagon());
+	       	  
+			}
 	}
 	
 	

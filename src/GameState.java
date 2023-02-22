@@ -16,5 +16,5 @@ public class GameState {
 	double shift = 2*raidus*0.8660254;
 	
 	//Start point for grid
-	Point startPoint = new Point(200,200);
+	Point startPoint = new Point(100,100);
 }

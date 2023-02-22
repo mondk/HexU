@@ -1,8 +1,12 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
+
+
 
 
 public class Panel extends JPanel{
@@ -13,6 +17,7 @@ public class Panel extends JPanel{
 		this.gs=gs;
 		this.setFocusable(true);
 		this.setPreferredSize(gs.SCREEN_SIZE);
+		
 		//create grid
 		int id=1;
 		for(int i =0;i<gs.numberOfHexagons;i++) {
@@ -21,6 +26,18 @@ public class Panel extends JPanel{
 				id++;
 			}
 		}
+		
+		this.addMouseListener(new MouseAdapter(){
+	         public void mouseClicked(MouseEvent e) {
+	        	 for(Hexagon h: gs.grid) {
+	 				if(h.getHexagon().contains(e.getPoint())) {
+	 					h.color=Color.cyan;
+	 					System.out.println("Clicked on hexagon: "+h.id);
+	 					repaint();
+	 				}
+	 			}
+	          }                
+	       });
 		
 	}
 

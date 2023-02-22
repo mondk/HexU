@@ -9,6 +9,8 @@ public class GameState {
 	
 	//game grid
 	ArrayList<Hexagon> grid = new ArrayList<>();
+	
+	//Hexagon constants
 	int numberOfHexagons =9;
 	double raidus=20;
 	double shift = 2*raidus*0.8660254;

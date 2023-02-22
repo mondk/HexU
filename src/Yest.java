@@ -8,6 +8,9 @@ public class Yest {
 		// TODO Auto-generated method stub
 		//Initalize panel and gamestate
 		GameState gs = new GameState();
+		
+		
+		
 		Panel panel = new Panel(gs);
 
 		//Initalize frame

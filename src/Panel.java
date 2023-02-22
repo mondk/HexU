@@ -19,17 +19,15 @@ public class Panel extends JPanel{
 		this.gs=gs;
 		this.setFocusable(true);
 		this.setPreferredSize(gs.SCREEN_SIZE);
+		createGrid();
 		
-		//create grid
-		int id=1;
-		for(int i =0;i<gs.numberOfHexagons;i++) {
-			for(int j =0;j<gs.numberOfHexagons;j++) {
-				gs.grid.add( new Hexagon(new Point((int) (gs.startPoint.x+gs.shift*j+i*gs.shift*Math.cos(60*(Math.PI/180))),(int) (gs.startPoint.y+i*gs.shift*Math.sin(60*(Math.PI/180)))),gs.raidus,id));
-				id++;
-			}
-		}
 		
 		this.addMouseListener(new MouseAdapter(){
+			
+			public void mouseEntered(MouseEvent e) {
+				
+			}
+			
 	         public void mouseClicked(MouseEvent e) {
 	        	 for(Hexagon h: gs.grid) {
 	 				if(h.getHexagon().contains(e.getPoint())) {
@@ -43,7 +41,16 @@ public class Panel extends JPanel{
 		
 	}
 
-	
+	public void createGrid() {
+		//create grid
+				int id=1;
+				for(int i =0;i<gs.numberOfHexagons;i++) {
+					for(int j =0;j<gs.numberOfHexagons;j++) {
+						gs.grid.add( new Hexagon(new Point((int) (gs.startPoint.x+gs.shift*j+i*gs.shift*Math.cos(60*(Math.PI/180))),(int) (gs.startPoint.y+i*gs.shift*Math.sin(60*(Math.PI/180)))),gs.raidus,id));
+						id++;
+					}
+				}
+	}
 	
 	@Override
 	public void paintComponent(Graphics g) {

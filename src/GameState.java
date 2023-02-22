@@ -11,8 +11,8 @@ public class GameState {
 	ArrayList<Hexagon> grid = new ArrayList<>();
 	
 	//Hexagon constants
-	int numberOfHexagons =20;
-	double raidus=10;
+	int numberOfHexagons =3;
+	double raidus=70;
 	double shift = 2*raidus*0.8660254;
 	
 	//Start point for grid

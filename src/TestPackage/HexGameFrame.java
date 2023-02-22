@@ -34,12 +34,12 @@ public class HexGameFrame {
 		double shift = 2*radius*0.8660254;
 		
 		//create grid
-		for(int i =0;i<n;i++) {
-			for(int j =0;j<n;j++) {
-				grid.add( new Hexagon(new Point((int) (200+shift*j+i*shift*Math.cos(60*(Math.PI/180))),(int) (200+i*shift*Math.sin(60*(Math.PI/180)))),radius,id));
-				id++;
-			}
-		}
+				for(int i =0;i<n;i++) {
+					for(int j =0;j<n;j++) {
+						grid.add( new Hexagon(new Point((int) (200+shift*j+i*shift*Math.cos(60*(Math.PI/180))),(int) (200+i*shift*Math.sin(60*(Math.PI/180)))),radius,id));
+						id++;
+					}
+				}
 		JPanel panel = new JPanel() {
 			
 		

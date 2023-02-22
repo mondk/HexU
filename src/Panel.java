@@ -24,13 +24,11 @@ public class Panel extends JPanel{
 		
 		this.addMouseListener(new MouseAdapter(){
 			
-			public void mouseEntered(MouseEvent e) {
-				
-			}
+			
 			
 	         public void mouseClicked(MouseEvent e) {
 	        	 for(Hexagon h: gs.grid) {
-	 				if(h.getHexagon().contains(e.getPoint())) {
+	 				if(h.getPolygon().contains(e.getPoint())) {
 	 					h.color=Color.cyan;
 	 					System.out.println("Clicked on hexagon: "+h.id);
 	 					repaint();
@@ -64,9 +62,9 @@ public class Panel extends JPanel{
 	public void draw(Graphics g) {
 		for(Hexagon h:gs.grid) {
 			   g.setColor(h.color);
-	       	   g.fillPolygon(h.getHexagon());
+	       	   g.fillPolygon(h.getPolygon());
 	       	   g.setColor(Color.BLUE);
-	       	   g.drawPolygon(h.getHexagon());
+	       	   g.drawPolygon(h.getPolygon());
 	       	  
 			}
 	}

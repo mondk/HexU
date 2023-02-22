@@ -35,7 +35,7 @@ public class Hexagon extends JPanel{
             return polygon;
         }
 		
-		public Polygon getHexagon(){
+		public Polygon getPolygon(){
 			return this.hexagon;
 		}
 		

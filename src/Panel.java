@@ -6,6 +6,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
+import javax.swing.JTextPane;
 
 
 
@@ -14,14 +15,17 @@ public class Panel extends JPanel{
 	
 	private GameState gs;
 	private Image image;
-	private Graphics graphics;
+	private Graphics graphics;//TextFrame for player turn
+	JTextPane paneT = new JTextPane();
+	
+	
 	public Panel(GameState gs) {
 		this.gs=gs;
 		this.setFocusable(true);
 		this.setPreferredSize(gs.SCREEN_SIZE);
 		createGrid();
-		
-		
+		paneT.setText("Player 1");
+		this.add(paneT);
 		this.addMouseListener(new MouseAdapter(){
 			
 			
@@ -29,8 +33,22 @@ public class Panel extends JPanel{
 	         public void mouseClicked(MouseEvent e) {
 	        	 for(Hexagon h: gs.grid) {
 	 				if(h.getPolygon().contains(e.getPoint())) {
-	 					h.color=Color.cyan;
-	 					System.out.println("Clicked on hexagon: "+h.id);
+	 					
+	 					switch(gs.whosTurn) {
+	 					case Player1:
+	 						h.color=Color.PINK;
+	 						gs.nextTurn();
+	 						System.out.println("Player 1 clicked on hexagon: "+h.id);
+	 						paneT.setText("Player 2");
+	 						break;
+	 					case Player2:
+	 						h.color=Color.GREEN;
+	 						gs.nextTurn();
+	 						System.out.println("Player 2 clicked on hexagon: "+h.id);
+	 						paneT.setText("Player 1");
+	 						break;
+	 					}
+	 					
 	 					repaint();
 	 				}
 	 			}

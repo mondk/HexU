@@ -1,6 +1,7 @@
 import java.awt.Color;
 
 import javax.swing.JFrame;
+import javax.swing.JTextPane;
 
 public class Yest {
 
@@ -12,6 +13,8 @@ public class Yest {
 		
 		
 		Panel panel = new Panel(gs);
+		
+		
 
 		//Initalize frame
 		JFrame frame = new JFrame();
@@ -20,6 +23,7 @@ public class Yest {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setBackground(Color.black);
 		frame.add(panel);
+	
 		frame.setVisible(true);
 		frame.pack();
 		

@@ -21,7 +21,7 @@ public class Yest {
 		frame.setTitle("Hex");
 		frame.setResizable(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setBackground(Color.black);
+		frame.setBackground(Color.decode("#244b73"));
 		frame.add(panel);
 	
 		frame.setVisible(true);

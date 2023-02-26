@@ -5,18 +5,20 @@ import java.util.ArrayList;
 public class GameState {
 	
 	//Size of game screen
-	Dimension SCREEN_SIZE = new Dimension(600,600);
+	Dimension SCREEN_SIZE = new Dimension(600,400);
 	
 	//game grid
 	ArrayList<Hexagon> grid = new ArrayList<>();
 	
 	//Hexagon constants
-	int numberOfHexagons =3;
-	double raidus=70;
+	int numberOfHexagons =4;
+	
+	
+	double raidus=(0.5773502717*(600-150))/(numberOfHexagons+1);
 	double shift = 2*raidus*0.8660254;
 	
 	//Start point for grid
-	Point startPoint = new Point(100,100);
+	Point startPoint = new Point(50,50);
 	
 	
 	//Playerstate

@@ -84,7 +84,7 @@ public class GameState {
 			int a = i*numberOfHexagons+numberOfHexagons-1;
 			startP2.add(grid.get(s));
 			winP2.add(grid.get(a));
-		}		
+		}
 	}
 	
 	public void createAdjacenyMatrix() {

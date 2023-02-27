@@ -12,6 +12,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
+import javax.swing.ImageIcon;
 
 
 
@@ -20,10 +21,11 @@ public class Panel extends JPanel implements Runnable{
 	
 	private GameState gs;
 	private Image image;
-	private Graphics graphics;//TextFrame for player turn
+	private Graphics graphics;							//TextFrame for player turn
 	JTextPane paneT = new JTextPane();
 	JTextPane winPane = new JTextPane();
 	int dialogbutton;
+	ImageIcon reMatchIcon = new ImageIcon("res/rematch.png");  //  <a target="_blank" href="https://icons8.com/icon/PT3001yzoXgN/match">Match</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 	
 	public Panel(GameState gs) {
 		this.gs=gs;
@@ -49,7 +51,7 @@ public class Panel extends JPanel implements Runnable{
 	 						System.out.println("Player 1 clicked on hexagon: "+h.id);
 	 						if (winingState(gs.startP1, gs.colorP1, gs.winP1)) {
 	 							repaint();
-	 							JOptionPane.showConfirmDialog(null, "HURRAY! PLayer 1 was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton);
+	 							JOptionPane.showConfirmDialog(null, "HURRAY! PLayer 1 was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 	 		 					if (dialogbutton == JOptionPane.YES_OPTION) {
 	 		 						gs.resetGame();
 	 		 						paneT.setText("Player 1");
@@ -67,7 +69,7 @@ public class Panel extends JPanel implements Runnable{
 	 						System.out.println("Player 2 clicked on hexagon: "+h.id);
 	 						if (winingState(gs.startP2, gs.colorP2, gs.winP2)) {
 	 							repaint();
-	 							JOptionPane.showConfirmDialog(null, "HURRAY! PLayer 2 was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton);
+	 							JOptionPane.showConfirmDialog(null, "HURRAY! PLayer 2 was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 	 							if (dialogbutton == JOptionPane.YES_OPTION) {
 	 		 						gs.resetGame();
 	 		 						paneT.setText("Player 1");
@@ -124,7 +126,7 @@ public class Panel extends JPanel implements Runnable{
 
 	public void createGrid() {
 		//create grid
-				int id=1;
+				int id=0;
 				for(int i =0;i<gs.numberOfHexagons;i++) {
 					for(int j =0;j<gs.numberOfHexagons;j++) {
 						gs.grid.add( new Hexagon(new Point((int) (gs.startPoint.x+gs.shift*j+i*gs.shift*Math.cos(60*(Math.PI/180))),(int) (gs.startPoint.y+i*gs.shift*Math.sin(60*(Math.PI/180)))),gs.raidus,id));
@@ -165,9 +167,9 @@ public class Panel extends JPanel implements Runnable{
 			queue.add(v.id);
 			
 			
+			
 			while (queue.size()!=0) {
 				int inter = queue.poll();
-				
 				Iterator<Integer> i = gs.adj.get(inter).listIterator();
 				while(i.hasNext()) {
 					int n = i.next();

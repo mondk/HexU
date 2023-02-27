@@ -5,7 +5,11 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 
@@ -18,7 +22,8 @@ public class Panel extends JPanel implements Runnable{
 	private Image image;
 	private Graphics graphics;//TextFrame for player turn
 	JTextPane paneT = new JTextPane();
-	
+	JTextPane winPane = new JTextPane();
+	int dialogbutton;
 	
 	public Panel(GameState gs) {
 		this.gs=gs;
@@ -26,6 +31,7 @@ public class Panel extends JPanel implements Runnable{
 		this.setPreferredSize(gs.SCREEN_SIZE);
 		createGrid();
 		paneT.setText("Player 1");
+		paneT.setBackground(gs.colorP1);
 		this.add(paneT);
 		this.addMouseListener(new MouseAdapter(){
 
@@ -35,23 +41,46 @@ public class Panel extends JPanel implements Runnable{
 	        	 for(Hexagon h: gs.grid) {
 	 				if(h.getPolygon().contains(e.getPoint())&&!h.clicked) {
 	 					
-	 					
+	 					h.clicked=true;
 	 					switch(gs.whosTurn) {
 	 					case Player1:
-	 						h.color=Color.decode("#d032f0");
-	 						
+	 						h.color=gs.colorP1;
 	 						gs.nextTurn();
 	 						System.out.println("Player 1 clicked on hexagon: "+h.id);
+	 						if (winingState(gs.startP1, gs.colorP1, gs.winP1)) {
+	 							repaint();
+	 							JOptionPane.showConfirmDialog(null, "HURRAY! PLayer 1 was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton);
+	 		 					if (dialogbutton == JOptionPane.YES_OPTION) {
+	 		 						gs.resetGame();
+	 		 						paneT.setText("Player 1");
+	 		 						break;
+	 		 					}else {
+	 		 						remove(dialogbutton);
+	 		 					}
+	 						}
 	 						paneT.setText("Player 2");
+	 						paneT.setBackground(gs.colorP2);
 	 						break;
 	 					case Player2:
-	 						h.color=Color.decode("#247324");
+	 						h.color=gs.colorP2;
 	 						gs.nextTurn();
 	 						System.out.println("Player 2 clicked on hexagon: "+h.id);
+	 						if (winingState(gs.startP2, gs.colorP2, gs.winP2)) {
+	 							repaint();
+	 							JOptionPane.showConfirmDialog(null, "HURRAY! PLayer 2 was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton);
+	 							if (dialogbutton == JOptionPane.YES_OPTION) {
+	 		 						gs.resetGame();
+	 		 						paneT.setText("Player 1");
+	 		 						break;
+	 		 					}else {
+	 		 						remove(dialogbutton);
+	 		 					}
+	 						}
 	 						paneT.setText("Player 1");
+	 						paneT.setBackground(gs.colorP1);
 	 						break;
 	 					}
-	 					h.clicked=true;
+	 					
 	 					repaint();
 	 				}
 	 			}
@@ -102,6 +131,8 @@ public class Panel extends JPanel implements Runnable{
 						id++;
 					}
 				}
+				gs.fillWinStateArrays();
+				gs.createAdjacenyMatrix();
 	}
 	
 	@Override
@@ -121,6 +152,41 @@ public class Panel extends JPanel implements Runnable{
 	       	   g.drawPolygon(h.getPolygon());
 	       	  
 			}
+	}
+	
+	public boolean winingState(List<Hexagon> s, Color p, List<Hexagon> win) {
+		for(Hexagon v : s) {
+			if (v.color != p) {
+				continue;
+			}
+			boolean visited[] = new boolean[gs.numberOfHexagons*gs.numberOfHexagons];
+			LinkedList<Integer> queue = new LinkedList<Integer>();
+			visited[v.id] = true;
+			queue.add(v.id);
+			
+			
+			while (queue.size()!=0) {
+				int inter = queue.poll();
+				
+				Iterator<Integer> i = gs.adj.get(inter).listIterator();
+				while(i.hasNext()) {
+					int n = i.next();
+					if(visited[n] == false && gs.grid.get(n).color == p) {
+						visited[n] = true;
+						queue.add(n);
+						if (win.contains(gs.grid.get(n))) {
+							return true;
+						}
+					}
+				}
+				
+				
+				
+			}
+		}
+		
+		
+		return false;
 	}
 	
 	

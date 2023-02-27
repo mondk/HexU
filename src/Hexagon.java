@@ -41,6 +41,12 @@ public class Hexagon extends JPanel{
 		public Polygon getPolygon(){
 			return this.hexagon;
 		}
+		public Color getColor() {
+			return this.color;
+		}
 		
+		public String toString() {
+			return Integer.toString(this.id);
+		}
 		
 	}

@@ -1,5 +1,7 @@
 import java.awt.Color;
+import java.awt.Image;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JTextPane;
 
@@ -23,7 +25,7 @@ public class Yest {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setBackground(Color.decode("#244b73"));
 		frame.add(panel);
-	
+		frame.setIconImage(new ImageIcon("res/Yellow-Hexagon-Background-PNG-Image.png").getImage());
 		frame.setVisible(true);
 		frame.pack();
 		

@@ -76,6 +76,7 @@ public class Panel extends JPanel implements Runnable{
 	 		 						break;
 	 		 					}else {
 	 		 						remove(dialogbutton);
+	 		 						
 	 		 					}
 	 						}
 	 						paneT.setText("Player 1");

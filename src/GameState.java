@@ -14,7 +14,7 @@ public class GameState {
 	ArrayList<Hexagon> grid = new ArrayList<>();
 	
 	//Hexagon constants
-	int numberOfHexagons =4;
+	int numberOfHexagons =6;
 	
 	
 	double raidus=(0.5773502717*(600-150))/(numberOfHexagons+1);

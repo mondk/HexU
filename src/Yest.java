@@ -16,15 +16,20 @@ public class Yest {
 
 		gs.cards.add(menu, "MENU");
 
+
+
 		//Initalize frame
 		JFrame frame = new JFrame();
 		frame.setTitle("Hex");
 		frame.setResizable(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setBackground(Color.black);
+		frame.add(panel);
+
 		frame.add(gs.cards);
 		frame.setVisible(true);
 		frame.pack();
+		
 		
 	}
 	

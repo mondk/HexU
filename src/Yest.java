@@ -1,6 +1,6 @@
-import java.awt.Color;
+import java.awt.*;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 
 public class Yest {
 
@@ -12,6 +12,9 @@ public class Yest {
 		
 		
 		Panel panel = new Panel(gs);
+		Menu menu = new Menu(gs);
+
+		gs.cards.add(menu, "MENU");
 
 		//Initalize frame
 		JFrame frame = new JFrame();
@@ -19,10 +22,9 @@ public class Yest {
 		frame.setResizable(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setBackground(Color.black);
-		frame.add(panel);
+		frame.add(gs.cards);
 		frame.setVisible(true);
 		frame.pack();
-		
 		
 	}
 	

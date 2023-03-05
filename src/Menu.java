@@ -25,6 +25,7 @@ public class Menu extends JPanel {
         startComputerGameButton.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                gs.singlePlayer = true;
                 gs.numberOfHexagons = 7;
                 gs.player1Name = player1.getText();
                 gs.player2Name = "Computer";
@@ -38,6 +39,7 @@ public class Menu extends JPanel {
         startMultiplayerButton.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                gs.singlePlayer = false;
                 gs.player1Name = player1.getText();
                 gs.player2Name = player2.getText();
                 Panel panel = new Panel(gs);

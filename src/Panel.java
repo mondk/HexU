@@ -32,12 +32,12 @@ public class Panel extends JPanel implements Runnable{
 		this.setFocusable(true);
 		this.setPreferredSize(gs.SCREEN_SIZE);
 		createGrid();
-		paneT.setText("Player 1");
+		paneT.setText(gs.player1Name);
 		paneT.setBackground(gs.colorP1);
 		this.add(paneT);
 		this.addMouseListener(new MouseAdapter(){
 
-			    
+
 			
 	         public void mouseClicked(MouseEvent e) {
 	        	 for(Hexagon h: gs.grid) {
@@ -48,38 +48,38 @@ public class Panel extends JPanel implements Runnable{
 	 					case Player1:
 	 						h.color=gs.colorP1;
 	 						gs.nextTurn();
-	 						System.out.println("Player 1 clicked on hexagon: "+h.id);
+	 						System.out.println(gs.player1Name + " clicked on hexagon: "+h.id);
 	 						if (winingState(gs.startP1, gs.colorP1, gs.winP1)) {
 	 							repaint();
-	 							JOptionPane.showConfirmDialog(null, "HURRAY! PLayer 1 was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
+	 							JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.player1Name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 	 		 					if (dialogbutton == JOptionPane.YES_OPTION) {
 	 		 						gs.resetGame();
-	 		 						paneT.setText("Player 1");
+	 		 						paneT.setText(gs.player1Name);
 	 		 						break;
 	 		 					}else {
 	 		 						remove(dialogbutton);
 	 		 					}
 	 						}
-	 						paneT.setText("Player 2");
 	 						paneT.setBackground(gs.colorP2);
+	 						paneT.setText(gs.player2Name);
 	 						break;
 	 					case Player2:
 	 						h.color=gs.colorP2;
 	 						gs.nextTurn();
-	 						System.out.println("Player 2 clicked on hexagon: "+h.id);
+	 						System.out.println(gs.player2Name + " clicked on hexagon: "+h.id);
 	 						if (winingState(gs.startP2, gs.colorP2, gs.winP2)) {
 	 							repaint();
-	 							JOptionPane.showConfirmDialog(null, "HURRAY! PLayer 2 was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
+	 							JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.player2Name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 	 							if (dialogbutton == JOptionPane.YES_OPTION) {
 	 		 						gs.resetGame();
-	 		 						paneT.setText("Player 1");
+	 		 						paneT.setText(gs.player1Name);
 	 		 						break;
 	 		 					}else {
 	 		 						remove(dialogbutton);
-	 		 						
+
 	 		 					}
 	 						}
-	 						paneT.setText("Player 1");
+	 						paneT.setText(gs.player1Name);
 	 						paneT.setBackground(gs.colorP1);
 	 						break;
 	 					}
@@ -106,7 +106,7 @@ public class Panel extends JPanel implements Runnable{
 				checkMouseHover();
 				repaint();
 				delta--;
-				
+
 			}
 		}
 	}
@@ -166,9 +166,9 @@ public class Panel extends JPanel implements Runnable{
 			LinkedList<Integer> queue = new LinkedList<Integer>();
 			visited[v.id] = true;
 			queue.add(v.id);
-			
-			
-			
+
+
+
 			while (queue.size()!=0) {
 				int inter = queue.poll();
 				Iterator<Integer> i = gs.adj.get(inter).listIterator();
@@ -182,16 +182,16 @@ public class Panel extends JPanel implements Runnable{
 						}
 					}
 				}
-				
-				
-				
+
+
+
 			}
 		}
-		
-		
+
+
 		return false;
 	}
-	
-	
+
+
 
 }

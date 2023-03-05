@@ -9,17 +9,20 @@ import javax.swing.JPanel;
 
 public class Hexagon extends JPanel{
 		
-		Color color = Color.red;
+		Color color = Color.gray;
 		Point center;
 		double radius;
+		boolean clicked;
 		Polygon hexagon;
 		int id;
 		public Hexagon (Point center, double radius, int id){
 			this.center=center;
 			this.radius=radius;
 			this.hexagon=createHexagon(60);
+			this.clicked=false;
 			this.id=id;
 			this.setFocusable(true);
+		
 		}
 		
 		//returns a polygon which is a hexagon
@@ -38,6 +41,12 @@ public class Hexagon extends JPanel{
 		public Polygon getPolygon(){
 			return this.hexagon;
 		}
+		public Color getColor() {
+			return this.color;
+		}
 		
+		public String toString() {
+			return Integer.toString(this.id);
+		}
 		
 	}

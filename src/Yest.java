@@ -1,9 +1,15 @@
 import java.awt.Color;
-import java.awt.Image;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JTextPane;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.nio.file.Path;
+
 
 public class Yest {
 
@@ -15,14 +21,25 @@ public class Yest {
 		
 		
 		Panel panel = new Panel(gs);
-		
+	
 		
 
 		//Initalize frame
 		JFrame frame = new JFrame();
 		frame.setTitle("Hex");
 		frame.setResizable(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.addWindowListener(new WindowAdapter(){
+			@Override
+			public void windowClosing(WindowEvent windowEvent){
+				try{
+					FileWriter saveWriter = new FileWriter("saves.txt");
+					saveWriter.close();
+				} catch(IOException IOe){
+					System.out.println(IOe);
+				}
+				System.exit(0);
+			}
+		});
 		frame.setBackground(Color.decode("#244b73"));
 		frame.add(panel);
 		frame.setIconImage(new ImageIcon("res/Yellow-Hexagon-Background-PNG-Image.png").getImage());

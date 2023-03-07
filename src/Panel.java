@@ -3,6 +3,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Iterator;
@@ -13,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 
 
 
@@ -24,6 +27,8 @@ public class Panel extends JPanel implements Runnable{
 	private Graphics graphics;							//TextFrame for player turn
 	JTextPane paneT = new JTextPane();
 	JTextPane winPane = new JTextPane();
+	JButton undo = new JButton("Undo");
+
 	int dialogbutton;
 	ImageIcon reMatchIcon = new ImageIcon("res/rematch.png");  //  <a target="_blank" href="https://icons8.com/icon/PT3001yzoXgN/match">Match</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 	
@@ -34,16 +39,30 @@ public class Panel extends JPanel implements Runnable{
 		createGrid();
 		paneT.setText("Player 1");
 		paneT.setBackground(gs.colorP1);
+		undo.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				try{
+				int inter = gs.q.pollLast();
+				gs.grid.get(inter).color = Color.gray;
+				gs.grid.get(inter).clicked = false;
+				repaint();
+				} catch (Exception null_error){
+					System.out.println(null_error);
+				}
+			}
+		});
 		this.add(paneT);
+		this.add(undo);
 		this.addMouseListener(new MouseAdapter(){
-
-			    
-			
 	         public void mouseClicked(MouseEvent e) {
 	        	 for(Hexagon h: gs.grid) {
 	 				if(h.getPolygon().contains(e.getPoint())&&!h.clicked) {
 	 					
 	 					h.clicked=true;
+
+						gs.q.add(h.id);
+
 	 					switch(gs.whosTurn) {
 	 					case Player1:
 	 						h.color=gs.colorP1;
@@ -112,9 +131,8 @@ public class Panel extends JPanel implements Runnable{
 	}
 
 	private void checkMouseHover() {
-		// TODO Auto-generated method stub
 		Point mouse = MouseInfo.getPointerInfo().getLocation();
-		mouse.setLocation(mouse.x-10, mouse.y-32);
+		mouse.setLocation(mouse.x, mouse.y);
 		for(Hexagon h: gs.grid) {
 			if(h.getPolygon().contains(mouse)&&!h.clicked) {
 				h.color=Color.red;

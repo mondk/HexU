@@ -8,10 +8,6 @@ import java.awt.event.WindowEvent;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import java.awt.*;
-
-import javax.swing.*;
-
 public class Yest {
 
 	public static void main(String[] args) {
@@ -32,6 +28,7 @@ public class Yest {
 			public void windowClosing(WindowEvent windowEvent){
 				try{
 					FileWriter saveWriter = new FileWriter("saves.txt");
+					saveWriter.write(gs.q.toString());
 					saveWriter.close();
 				} catch(IOException IOe){
 					System.out.println(IOe);

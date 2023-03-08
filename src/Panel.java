@@ -38,11 +38,13 @@ public class Panel extends JPanel implements Runnable{
 		this.setFocusable(true);
 		this.setPreferredSize(gs.SCREEN_SIZE);
 		createGrid();
-		paneT.setText(gs.player1Name);
-		paneT.setBackground(gs.colorP1);
+		System.out.println(gs.grid.toString());
+		paneT.setText(gs.paneTurnString);
+		paneT.setBackground(gs.paneTColor);
 		undo.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
+				System.out.println(gs.q.toString());
 
 				try{
 					int inter = gs.q.pollLast();
@@ -61,9 +63,9 @@ public class Panel extends JPanel implements Runnable{
 		this.add(undo);
 		this.addMouseListener(new MouseAdapter(){
 	         public void mouseClicked(MouseEvent e) {
-	        	 for(Hexagon h: gs.grid) {
+	        	for(Hexagon h : gs.grid) {
 	 				if(h.getPolygon().contains(e.getPoint())&&!h.clicked) {
-	 					h.clicked=true;
+	 					gs.grid.get(h.id).clicked=true;
 
 						gs.q.add(h.id);
 
@@ -78,13 +80,14 @@ public class Panel extends JPanel implements Runnable{
 	 		 					if (dialogbutton == JOptionPane.YES_OPTION) {
 	 		 						gs.resetGame();
 	 		 						paneT.setText(gs.player1Name);
+									paneT.setBackground(gs.colorP1);
 	 		 						break;
 	 		 					}else {
 	 		 						remove(dialogbutton);
 	 		 					}
 	 						}
-	 						paneT.setBackground(gs.colorP2);
-	 						paneT.setText(gs.player2Name);
+	 						paneT.setBackground(gs.paneTColor);
+	 						paneT.setText(gs.paneTurnString);
 	 						break;
 	 					case Player2:
 	 						h.color=gs.colorP2;
@@ -96,14 +99,15 @@ public class Panel extends JPanel implements Runnable{
 	 							if (dialogbutton == JOptionPane.YES_OPTION) {
 	 		 						gs.resetGame();
 	 		 						paneT.setText(gs.player1Name);
+									paneT.setBackground(gs.colorP1);
 	 		 						break;
 	 		 					}else {
 	 		 						remove(dialogbutton);
 
 	 		 					}
 	 						}
-	 						paneT.setText(gs.player1Name);
-	 						paneT.setBackground(gs.colorP1);
+	 						paneT.setBackground(gs.paneTColor);
+	 						paneT.setText(gs.paneTurnString);
 	 						break;
 	 					}
 	 					
@@ -148,16 +152,17 @@ public class Panel extends JPanel implements Runnable{
 	}
 
 	public void createGrid() {
-		//create grid
-				int id=0;
-				for(int i =0;i<gs.numberOfHexagons;i++) {
-					for(int j =0;j<gs.numberOfHexagons;j++) {
-						gs.grid.add( new Hexagon(new Point((int) (gs.startPoint.x+gs.shift*j+i*gs.shift*Math.cos(60*(Math.PI/180))),(int) (gs.startPoint.y+i*gs.shift*Math.sin(60*(Math.PI/180)))),gs.raidus,id));
-						id++;
-					}
-				}
-				gs.fillWinStateArrays();
-				gs.createAdjacenyMatrix();
+		if (!gs.grid.isEmpty())
+			return;
+		int id=0;
+		for(int i =0;i<gs.numberOfHexagons;i++) {
+			for(int j =0;j<gs.numberOfHexagons;j++) {
+				gs.grid.add( new Hexagon(new Point((int) (gs.startPoint.x+gs.shift*j+i*gs.shift*Math.cos(60*(Math.PI/180))),(int) (gs.startPoint.y+i*gs.shift*Math.sin(60*(Math.PI/180)))),gs.raidus,id));
+				id++;
+			}
+		}
+		gs.fillWinStateArrays();
+		gs.createAdjacenyMatrix();
 	}
 	
 	@Override

@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 public class Menu extends JPanel {
 
     Menu(GameState gs) {
+        this.setPreferredSize(gs.SCREEN_SIZE);
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         JButton startComputerGameButton = new JButton("Start Game against computer");
         JButton startMultiplayerButton = new JButton("Start Multiplayer Game");
@@ -42,6 +43,7 @@ public class Menu extends JPanel {
                 gs.singlePlayer = false;
                 gs.player1Name = player1.getText();
                 gs.player2Name = player2.getText();
+                gs.paneTurnString = gs.player1Name;
                 Panel panel = new Panel(gs);
                 gs.cards.add(panel, "PANEL");
                 CardLayout cl = (CardLayout)gs.cards.getLayout();

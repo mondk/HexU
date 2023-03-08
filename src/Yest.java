@@ -8,6 +8,9 @@ import java.awt.event.WindowEvent;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import java.awt.*;
+
+import javax.swing.*;
 
 public class Yest {
 
@@ -15,6 +18,10 @@ public class Yest {
 		GameState gs = new GameState();
 	
 		Panel panel = new Panel(gs);
+		Menu menu = new Menu(gs);
+
+		gs.cards.add(menu, "MENU");
+
 
 		//Initalize frame
 		JFrame frame = new JFrame();
@@ -35,6 +42,8 @@ public class Yest {
 		frame.setBackground(Color.decode("#244b73"));
 		frame.add(panel);
 		frame.setIconImage(new ImageIcon("res/Yellow-Hexagon-Background-PNG-Image.png").getImage());
+
+		frame.add(gs.cards);
 		frame.setVisible(true);
 		frame.pack();
 		

@@ -63,7 +63,6 @@ public class Panel extends JPanel implements Runnable{
 	         public void mouseClicked(MouseEvent e) {
 	        	 for(Hexagon h: gs.grid) {
 	 				if(h.getPolygon().contains(e.getPoint())&&!h.clicked) {
-	 					System.out.println(h.center);
 	 					h.clicked=true;
 
 						gs.q.add(h.id);

@@ -63,7 +63,7 @@ public class Panel extends JPanel implements Runnable{
 	         public void mouseClicked(MouseEvent e) {
 	        	 for(Hexagon h: gs.grid) {
 	 				if(h.getPolygon().contains(e.getPoint())&&!h.clicked) {
-	 					
+	 					System.out.println(h.center);
 	 					h.clicked=true;
 
 						gs.q.add(h.id);
@@ -72,10 +72,10 @@ public class Panel extends JPanel implements Runnable{
 	 					case Player1:
 	 						h.color=gs.colorP1;
 	 						gs.nextTurn();
-	 						System.out.println("Player 1 clicked on hexagon: "+h.id);
+	 						//System.out.println("Player 1 clicked on hexagon: "+h.id);
 	 						if (winingState(gs.startP1, gs.colorP1, gs.winP1)) {
 	 							repaint();
-	 							JOptionPane.showConfirmDialog(null, "HURRAY! PLayer 1 was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
+	 							JOptionPane.showConfirmDialog(null, "HURRAY! Player 1 was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 	 		 					if (dialogbutton == JOptionPane.YES_OPTION) {
 	 		 						gs.resetGame();
 	 		 						paneT.setText(gs.paneTurnString);
@@ -91,10 +91,10 @@ public class Panel extends JPanel implements Runnable{
 	 					case Player2:
 	 						h.color=gs.colorP2;
 	 						gs.nextTurn();
-	 						System.out.println("Player 2 clicked on hexagon: "+h.id);
+	 						//System.out.println("Player 2 clicked on hexagon: "+h.id);
 	 						if (winingState(gs.startP2, gs.colorP2, gs.winP2)) {
 	 							repaint();
-	 							JOptionPane.showConfirmDialog(null, "HURRAY! PLayer 2 was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
+	 							JOptionPane.showConfirmDialog(null, "HURRAY! Player 2 was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 	 							if (dialogbutton == JOptionPane.YES_OPTION) {
 	 		 						gs.resetGame();
 	 		 						paneT.setText(gs.paneTurnString);

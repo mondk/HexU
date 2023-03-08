@@ -27,7 +27,7 @@ public class GameState {
 	String player2Name = "Player 2";
 
 	//Start point for grid
-	Point startPoint = new Point(50,50);
+	Point startPoint = new Point(50,75);
 	
 	
 

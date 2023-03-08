@@ -53,15 +53,15 @@ public class GameState {
 	}
 
 	//Lists containing start arrays for players
-		List<Hexagon> startP1 = new ArrayList<>();
-		List<Hexagon> startP2 = new ArrayList<>();
-		List<Hexagon> startAI = new ArrayList<>();
-		List<Hexagon> winP1 = new ArrayList<>();
-		List<Hexagon> winP2 = new ArrayList<>();
-		List<Hexagon> winAI = new ArrayList<>();
+	List<Hexagon> startP1 = new ArrayList<>();
+	List<Hexagon> startP2 = new ArrayList<>();
+	List<Hexagon> startAI = new ArrayList<>();
+	List<Hexagon> winP1 = new ArrayList<>();
+	List<Hexagon> winP2 = new ArrayList<>();
+	List<Hexagon> winAI = new ArrayList<>();
 
-		// Adjaceny matrix for the BFS
-		LinkedList<LinkedList<Integer>> adj = new LinkedList<>();
+	// Adjaceny matrix for the BFS
+	ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
 
 	// Linked list containing moves made
 	LinkedList<Integer> q = new LinkedList<>();
@@ -109,7 +109,7 @@ public class GameState {
 	public void createAdjacenyMatrix() {
 		for (int i = 0; i<numberOfHexagons; i++) {
 			for (int j = 0; j<numberOfHexagons;j++) {
-				adj.add(new LinkedList<Integer>());
+				adj.add(new ArrayList<Integer>());
 				int hex = i*numberOfHexagons+j;
 
 				if (i==0 && j==0) {												//First hexagon

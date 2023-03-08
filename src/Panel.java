@@ -14,6 +14,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
@@ -42,13 +43,17 @@ public class Panel extends JPanel implements Runnable{
 		undo.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
+
 				try{
-				int inter = gs.q.pollLast();
-				gs.grid.get(inter).color = Color.gray;
-				gs.grid.get(inter).clicked = false;
-				repaint();
+					int inter = gs.q.pollLast();
+					gs.grid.get(inter).color = Color.gray;
+					gs.grid.get(inter).clicked = false;
+					gs.nextTurn();
+					paneT.setText(gs.paneTurnString);
+					paneT.setBackground(gs.paneTColor);
+					repaint();
 				} catch (Exception null_error){
-					System.out.println(null_error);
+					System.out.println("There are no more moves to undo:\n\t"+null_error);
 				}
 			}
 		});
@@ -73,14 +78,15 @@ public class Panel extends JPanel implements Runnable{
 	 							JOptionPane.showConfirmDialog(null, "HURRAY! PLayer 1 was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 	 		 					if (dialogbutton == JOptionPane.YES_OPTION) {
 	 		 						gs.resetGame();
-	 		 						paneT.setText("Player 1");
+	 		 						paneT.setText(gs.paneTurnString);
+									paneT.setBackground(gs.paneTColor);
 	 		 						break;
 	 		 					}else {
 	 		 						remove(dialogbutton);
 	 		 					}
 	 						}
-	 						paneT.setText("Player 2");
-	 						paneT.setBackground(gs.colorP2);
+	 						paneT.setText(gs.paneTurnString);
+							paneT.setBackground(gs.paneTColor);
 	 						break;
 	 					case Player2:
 	 						h.color=gs.colorP2;
@@ -91,15 +97,16 @@ public class Panel extends JPanel implements Runnable{
 	 							JOptionPane.showConfirmDialog(null, "HURRAY! PLayer 2 was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 	 							if (dialogbutton == JOptionPane.YES_OPTION) {
 	 		 						gs.resetGame();
-	 		 						paneT.setText("Player 1");
+	 		 						paneT.setText(gs.paneTurnString);
+									paneT.setBackground(gs.paneTColor);
 	 		 						break;
 	 		 					}else {
 	 		 						remove(dialogbutton);
 	 		 						
 	 		 					}
 	 						}
-	 						paneT.setText("Player 1");
-	 						paneT.setBackground(gs.colorP1);
+	 						paneT.setText(gs.paneTurnString);
+	 						paneT.setBackground(gs.paneTColor);
 	 						break;
 	 					}
 	 					

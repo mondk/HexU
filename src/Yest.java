@@ -7,22 +7,14 @@ import java.awt.event.WindowEvent;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.nio.file.Path;
 
 
 public class Yest {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		//Initalize panel and gamestate
 		GameState gs = new GameState();
-		
-		
-		
-		Panel panel = new Panel(gs);
 	
-		
+		Panel panel = new Panel(gs);
 
 		//Initalize frame
 		JFrame frame = new JFrame();

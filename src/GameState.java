@@ -32,6 +32,9 @@ public class GameState {
 	
 	//Show which player turn it is
 	Turn whosTurn = Turn.Player1;
+	String paneTurnString = "Player 1";
+	Color paneTColor = colorP1;
+
 	
 	
 	public enum Turn{
@@ -61,18 +64,26 @@ public class GameState {
 		if(singlePlayer) {
 			if(whosTurn.equals(Turn.Player1)) {
 				whosTurn = Turn.AI;
+				paneTurnString = "AI";
+				paneTColor = colorP2;
 			}
 			else {
 				whosTurn = Turn.Player1;
+				paneTurnString = "Player 1";
+				paneTColor = colorP1;
 			}
 		}
 		//Multiplayer
 		else {
 			if(whosTurn.equals(Turn.Player1)) {
 				whosTurn = Turn.Player2;
+				paneTurnString = "Player 2";
+				paneTColor = colorP2;
 			}
 			else {
 				whosTurn = Turn.Player1;
+				paneTurnString = "Player 1";
+				paneTColor = colorP1;
 			}
 		}
 	}
@@ -150,6 +161,8 @@ public class GameState {
 	
 	public void resetGame() {
 		whosTurn = Turn.Player1;
+		paneTColor = colorP1;
+		paneTurnString = "Player 1";
 		q.clear();
 		for (Hexagon h : grid) {
 			h.color = Color.gray;

@@ -132,7 +132,7 @@ public class Panel extends JPanel implements Runnable{
 
 	private void checkMouseHover() {
 		Point mouse = MouseInfo.getPointerInfo().getLocation();
-		mouse.setLocation(mouse.x, mouse.y);
+		mouse.setLocation(mouse.x-5, mouse.y-20);
 		for(Hexagon h: gs.grid) {
 			if(h.getPolygon().contains(mouse)&&!h.clicked) {
 				h.color=Color.red;

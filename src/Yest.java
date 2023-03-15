@@ -43,7 +43,7 @@ public class Yest {
 		frame.add(gs.cards);
 		frame.setVisible(true);
 		frame.pack();
-		
+		panel.start=true;
 		
 	}
 	

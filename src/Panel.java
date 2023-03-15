@@ -8,10 +8,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
@@ -56,6 +52,7 @@ public class Panel extends JPanel implements Runnable{
 				int i = ai.nextMove();
 				gs.grid.get(i).clicked=true;
 				gs.grid.get(i).color=gs.paneTColor;
+				gs.q.add(i);
 				paneT.setText(gs.paneTurnString);
 				paneT.setBackground(gs.paneTColor);
 				gs.nextTurn();
@@ -65,8 +62,6 @@ public class Panel extends JPanel implements Runnable{
 		undo.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
-				System.out.println(gs.q.toString());
-
 				try{
 					int inter = gs.q.pollLast();
 					gs.grid.get(inter).color = Color.gray;
@@ -98,7 +93,7 @@ public class Panel extends JPanel implements Runnable{
 	 						h.color=gs.colorP1;
 	 						gs.nextTurn();
 	 						System.out.println(gs.player1Name + " clicked on hexagon: "+h.id);
-	 						if (winingState(gs.startP1, gs.colorP1, gs.winP1)) {
+	 						if (gs.winingState(gs.startP1, gs.colorP1, gs.winP1, gs.p1Cluster)) {
 	 							repaint();
 	 							JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.player1Name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 	 		 					if (dialogbutton == JOptionPane.YES_OPTION) {
@@ -117,7 +112,7 @@ public class Panel extends JPanel implements Runnable{
 	 						h.color=gs.colorP2;
 	 						gs.nextTurn();
 	 						System.out.println(gs.player2Name + " clicked on hexagon: "+h.id);
-	 						if (winingState(gs.startP2, gs.colorP2, gs.winP2)) {
+	 						if (gs.winingState(gs.startP2, gs.colorP2, gs.winP2, gs.p2Cluster)) {
 	 							repaint();
 	 							JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.player2Name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 	 							if (dialogbutton == JOptionPane.YES_OPTION) {
@@ -187,10 +182,18 @@ public class Panel extends JPanel implements Runnable{
 		int id=0;
 		for(int i =0;i<gs.numberOfHexagons;i++) {
 			for(int j =0;j<gs.numberOfHexagons;j++) {
-				gs.grid.add( new Hexagon(new Point((int) (gs.startPoint.x+gs.shift*j+i*gs.shift*Math.cos(60*(Math.PI/180))),(int) (gs.startPoint.y+i*gs.shift*Math.sin(60*(Math.PI/180)))),gs.raidus,id));
+				gs.grid.add( new Hexagon(new Point((int) (gs.startPoint.x+gs.shift*j+i*gs.shift*Math.cos(60*(Math.PI/180))),(int) (gs.startPoint.y+i*gs.shift*Math.sin(60*(Math.PI/180)))),gs.radius,id));
 				id++;
 			}
 		}
+		int[] x= {gs.grid.get(0).center.x-(int) (gs.radius*2), gs.grid.get(gs.numberOfHexagons-1).center.x+(int) (gs.radius*1.3), gs.grid.get(4).center.x};
+		int[] y= {gs.grid.get(0).center.y-(int) (gs.radius*1.5), gs.grid.get(gs.numberOfHexagons-1).center.y-(int) (gs.radius*1.5),gs.grid.get(4).center.y};
+		gs.border.add(new Triangle(gs.colorP1, x , y));
+		// gs.border.add(new Triangle());
+		// gs.border.add(new Triangle());
+		// gs.border.add(new Triangle());
+
+		
 		gs.fillWinStateArrays();
 		gs.createAdjacenyMatrix();
 	}
@@ -205,49 +208,22 @@ public class Panel extends JPanel implements Runnable{
 	}
 	
 	public void draw(Graphics g) {
+		for (Triangle t : gs.border){
+			g.setColor(gs.colorP1);
+			g.fillPolygon(t.getPolygon());
+		}
 		for(Hexagon h:gs.grid) {
 			   g.setColor(h.color);
 	       	   g.fillPolygon(h.getPolygon());
 	       	   g.setColor(Color.BLUE);
 	       	   g.drawPolygon(h.getPolygon());
-	       	  
 			}
+
+		
+
 	}
 	
-	public boolean winingState(List<Hexagon> s, Color p, List<Hexagon> win) {
-		for(Hexagon v : s) {
-			if (v.color != p) {
-				continue;
-			}
-			boolean visited[] = new boolean[gs.numberOfHexagons*gs.numberOfHexagons];
-			LinkedList<Integer> queue = new LinkedList<Integer>();
-			visited[v.id] = true;
-			queue.add(v.id);
-
-
-
-			while (queue.size()!=0) {
-				int inter = queue.poll();
-				Iterator<Integer> i = gs.adj.get(inter).listIterator();
-				while(i.hasNext()) {
-					int n = i.next();
-					if(visited[n] == false && gs.grid.get(n).color == p) {
-						visited[n] = true;
-						queue.add(n);
-						if (win.contains(gs.grid.get(n))) {
-							return true;
-						}
-					}
-				}
-
-
-
-			}
-		}
-
-
-		return false;
-	}
+	
 
 
 

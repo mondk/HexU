@@ -4,8 +4,10 @@ import java.awt.Point;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Iterator;
 
 public class GameState {
 	
@@ -14,20 +16,22 @@ public class GameState {
 	
 	//game grid
 	ArrayList<Hexagon> grid = new ArrayList<>();
+	ArrayList<Triangle> border = new ArrayList<>();
 	
 	//Hexagon constants
 	int numberOfHexagons =7;
 
 
-	double raidus=(0.5773502717*(600-150))/(numberOfHexagons+1);
-	double shift = 2*raidus*0.8660254;
+	double radius=(0.5773502717*(600-150))/(numberOfHexagons+1);
+	double shift = 2*radius*0.8660254;
+	int xOffSet= 100- (int) (radius*2);
 
 	// Player names
 	String player1Name = "Player 1";
 	String player2Name = "Player 2";
 
 	//Start point for grid
-	Point startPoint = new Point(50,75);
+	Point startPoint = new Point((int) radius+50,(int) radius+50);
 	
 
 	// JPanel, which includes the different screens
@@ -61,6 +65,10 @@ public class GameState {
 
 	// Adjaceny matrix for the BFS
 	ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
+
+	// List for clusters 
+	ArrayList<ArrayList<Hexagon>> p1Cluster = new ArrayList<>();
+	ArrayList<ArrayList<Hexagon>> p2Cluster = new ArrayList<>();
 
 	// Linked list containing moves made
 	LinkedList<Integer> q = new LinkedList<>();
@@ -165,6 +173,53 @@ public class GameState {
 		}
 	}
 
+	public boolean winingState(List<Hexagon> s, Color p, List<Hexagon> win, ArrayList<ArrayList<Hexagon>> pCluster) {
+		// Array der holder alle hexagon der er en del af en cluster
+		ArrayList<Integer> seen = new ArrayList<>();
+		// Rydder listen med alle cluser for dne givne spiller
+		pCluster.clear();
+		//Loop over hele griddet, for at finde alle clusters
+		for(Hexagon v : grid) {
+			ArrayList<Hexagon> cluster = new ArrayList<>();
+
+			// Tjekker om den givne hexagon er den givne spillers farve 
+			// eller om den allerede er en del af en cluster, i så fald skip!
+			if (v.color != p || seen.contains(v.id)) {
+				continue;
+			}
+			
+			// Standard BFS ting...
+			boolean visited[] = new boolean[numberOfHexagons*numberOfHexagons];
+			LinkedList<Integer> queue = new LinkedList<Integer>();
+			visited[v.id] = true;
+			queue.add(v.id);
+			// Tilføjer hexagon til cluster
+			cluster.add(v);
+
+			while (queue.size()!=0) {
+				int inter = queue.poll();
+				Iterator<Integer> i = adj.get(inter).listIterator();
+				while(i.hasNext()) {
+					int n = i.next();
+					if(visited[n] == false && grid.get(n).color == p) {
+						visited[n] = true;
+						queue.add(n);
+						seen.add(n);
+						cluster.add(grid.get(n));
+						// Ser om den funde cluster ud fra v, indeholde en hexagon fra start og slut enden
+						// af den givne spillers plade
+						if (!Collections.disjoint(cluster, s) && !Collections.disjoint(cluster,win)){
+							return true;
+						}
+					}
+				}
+			}
+			pCluster.add(cluster);
+		}
+		System.out.println(pCluster.toString());
+		return false;
+	}
+
 	public void resetGame() {
 		whosTurn = Turn.Player1;
 		paneTColor = colorP1;
@@ -176,3 +231,4 @@ public class GameState {
 		}
 	}
 }
+

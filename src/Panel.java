@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.MouseInfo;
@@ -29,7 +30,7 @@ public class Panel extends JPanel implements Runnable{
 	JTextPane paneT = new JTextPane();
 	JTextPane winPane = new JTextPane();
 	JButton undo = new JButton("Undo");
-
+	boolean start =false;
 	int dialogbutton;
 	ImageIcon reMatchIcon = new ImageIcon("res/rematch.png");  //  <a target="_blank" href="https://icons8.com/icon/PT3001yzoXgN/match">Match</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 	
@@ -128,8 +129,8 @@ public class Panel extends JPanel implements Runnable{
 			long now = System.nanoTime();
 			delta += (now -lastTime)/ns;
 			lastTime = now;
-			if(delta >=1) {
-				checkMouseHover();
+			if(delta >=1&&start) {
+				checkMouseHover(MouseInfo.getPointerInfo().getLocation());
 				repaint();
 				delta--;
 				
@@ -137,9 +138,15 @@ public class Panel extends JPanel implements Runnable{
 		}
 	}
 
-	private void checkMouseHover() {
-		Point mouse = MouseInfo.getPointerInfo().getLocation();
-		mouse.setLocation(mouse.x-5, mouse.y-20);
+	public static Point componentToScreen(Component component, Point point) {
+        Point locationOnScreen = component.getLocationOnScreen();
+        return new Point( point.x-locationOnScreen.x ,  point.y-locationOnScreen.y);
+    }
+
+	private void checkMouseHover(Point mouse) {
+		
+		//mouse.setLocation(mouse.x-5, mouse.y-20);
+		mouse.setLocation(componentToScreen(this,mouse));
 		for(Hexagon h: gs.grid) {
 			if(h.getPolygon().contains(mouse)&&!h.clicked) {
 				h.color=Color.red;

@@ -37,7 +37,7 @@ public class Yest {
 		frame.setIconImage(new ImageIcon("res/Yellow-Hexagon-Background-PNG-Image.png").getImage());
 		frame.setVisible(true);
 		frame.pack();
-		
+		panel.start=true;
 		
 	}
 	

@@ -14,9 +14,9 @@ public class Yest {
 		GameState gs = new GameState();
 	
 		Panel panel = new Panel(gs);
-		Menu menu = new Menu(gs);
+		//Menu menu = new Menu(gs);
 
-		gs.cards.add(menu, "MENU");
+		//gs.cards.add(menu, "MENU");
 
 
 		//Initalize frame
@@ -40,7 +40,7 @@ public class Yest {
 		frame.add(panel);
 		frame.setIconImage(new ImageIcon("res/Yellow-Hexagon-Background-PNG-Image.png").getImage());
 
-		frame.add(gs.cards);
+		//frame.add(gs.cards);
 		frame.setVisible(true);
 		frame.pack();
 		panel.start=true;

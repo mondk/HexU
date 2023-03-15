@@ -30,6 +30,7 @@ public class Panel extends JPanel implements Runnable{
 	JTextPane paneT = new JTextPane();
 	JTextPane winPane = new JTextPane();
 	JButton undo = new JButton("Undo");
+	JButton generate = new JButton("Generate move");
 	boolean start =false;
 	int dialogbutton;
 	ImageIcon reMatchIcon = new ImageIcon("res/rematch.png");  //  <a target="_blank" href="https://icons8.com/icon/PT3001yzoXgN/match">Match</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
@@ -39,9 +40,28 @@ public class Panel extends JPanel implements Runnable{
 		this.setFocusable(true);
 		this.setPreferredSize(gs.SCREEN_SIZE);
 		createGrid();
-		System.out.println(gs.grid.toString());
+		
+		AI ai = new AI();
+		
+		//System.out.println(gs.grid.toString());
 		paneT.setText(gs.paneTurnString);
 		paneT.setBackground(gs.paneTColor);
+		
+		//Button to generate an ai move
+		generate.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				int i = ai.nextMove();
+				gs.grid.get(i).clicked=true;
+				gs.grid.get(i).color=gs.paneTColor;
+				paneT.setText(gs.paneTurnString);
+				paneT.setBackground(gs.paneTColor);
+				gs.nextTurn();
+			}
+			
+		});
 		undo.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
@@ -62,6 +82,9 @@ public class Panel extends JPanel implements Runnable{
 		});
 		this.add(paneT);
 		this.add(undo);
+		this.add(generate);
+		
+		//actions when hex is clicked
 		this.addMouseListener(new MouseAdapter(){
 	         public void mouseClicked(MouseEvent e) {
 	        	for(Hexagon h : gs.grid) {

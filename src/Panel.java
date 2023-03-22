@@ -68,7 +68,11 @@ public class Panel extends JPanel implements Runnable{
 	 					h.clicked=true;
 
 						gs.q.add(h.id);
+<<<<<<< Updated upstream
 
+=======
+				
+>>>>>>> Stashed changes
 	 					switch(gs.whosTurn) {
 	 					case Player1:
 	 						h.color=gs.colorP1;

@@ -166,6 +166,118 @@ public class GameState {
 		}
 	}
 
+<<<<<<< Updated upstream
+=======
+	public boolean winingState(List<Hexagon> s, Color p, List<Hexagon> win, ArrayList<ArrayList<Hexagon>> pCluster) {
+		// Array der holder alle hexagon der er en del af en cluster
+		ArrayList<Integer> seen = new ArrayList<>();
+		// Rydder listen med alle cluser for dne givne spiller
+		pCluster.clear();
+		//Loop over hele griddet, for at finde alle clusters
+		for(Hexagon v : grid) {
+			ArrayList<Hexagon> cluster = new ArrayList<>();
+
+			// Tjekker om den givne hexagon er den givne spillers farve 
+			// eller om den allerede er en del af en cluster, i så fald skip!
+			if (v.color != p || seen.contains(v.id)) {
+				continue;
+			}
+			
+			// Standard BFS ting...
+			boolean visited[] = new boolean[numberOfHexagons*numberOfHexagons];
+			LinkedList<Integer> queue = new LinkedList<Integer>();
+			visited[v.id] = true;
+			queue.add(v.id);
+			// Tilføjer hexagon til cluster
+			cluster.add(v);
+
+			while (queue.size()!=0) {
+				int inter = queue.poll();
+				Iterator<Integer> i = adj.get(inter).listIterator();
+				while(i.hasNext()) {
+					int n = i.next();
+					if(visited[n] == false && grid.get(n).color == p) {
+						visited[n] = true;
+						queue.add(n);
+						seen.add(n);
+						cluster.add(grid.get(n));
+						// Ser om den funde cluster ud fra v, indeholde en hexagon fra start og slut enden
+						// af den givne spillers plade
+						if (!Collections.disjoint(cluster, s) && !Collections.disjoint(cluster,win)){
+							return true;
+						}
+					}
+				}
+			}
+			pCluster.add(cluster);
+		}
+		System.out.println(pCluster.toString());
+		return false;
+	}
+
+	public double evaluate(ArrayList<Hexagon> board){
+		double finalSum = 0;
+		
+		switch(whosTurn){
+			case Player1:
+				for (ArrayList<Hexagon> list : p1Cluster){
+					double sum =0;
+					for (Hexagon hex : list){
+						sum += hex.score;
+					}
+					if (sum>finalSum)
+						finalSum = sum;
+				}
+			case Player2:
+				for (ArrayList<Hexagon> list : p2Cluster){
+					double sum =0;
+					for (Hexagon hex : list){
+						sum += hex.score;
+					}
+					if (sum>finalSum)
+						finalSum = sum;
+				}
+			case AI:
+				for (ArrayList<Hexagon> list : p2Cluster){
+					double sum =0;
+					for (Hexagon hex : list){
+						sum += hex.score;
+					}
+					if (sum>finalSum)
+						finalSum = sum;
+				}	
+		}
+		return finalSum;
+	}
+	public ArrayList<Integer> getValidMoves(ArrayList<Hexagon> board) {
+		// TODO Auto-generated method stub
+		ArrayList<Integer> validMoves = new ArrayList<>();
+		for(Hexagon h: board) {
+			if(!h.clicked)
+				validMoves.add(h.id);
+		}
+		return validMoves;
+		
+	}
+
+	public ArrayList<Hexagon> makeMove(ArrayList<Hexagon> board, int id, GameState.Turn currentPlayer) {
+		// TODO Auto-generated method stub
+		ArrayList<Hexagon> grid2 = board;
+		grid2.get(id).clicked=true;
+		switch(currentPlayer) {
+		case Player1:
+			grid2.get(id).color=colorP1;
+			break;
+		case Player2:
+				grid2.get(id).color=colorP2;
+				break;
+		}
+	return grid2;
+		
+	}
+
+
+>>>>>>> Stashed changes
 	public void resetGame() {
 		whosTurn = Turn.Player1;
 		paneTColor = colorP1;

@@ -15,6 +15,7 @@ public class Hexagon extends JPanel{
 		boolean clicked;
 		Polygon hexagon;
 		int id;
+		double score = 1;
 		public Hexagon (Point center, double radius, int id){
 			this.center=center;
 			this.radius=radius;
@@ -22,6 +23,7 @@ public class Hexagon extends JPanel{
 			this.clicked=false;
 			this.id=id;
 			this.setFocusable(true);
+
 		
 		}
 		

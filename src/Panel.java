@@ -37,7 +37,7 @@ public class Panel extends JPanel implements Runnable{
 		this.setPreferredSize(gs.SCREEN_SIZE);
 		createGrid();
 		
-		AI ai = new AI();
+		AI ai = new AI(gs);
 		
 		//System.out.println(gs.grid.toString());
 		paneT.setText(gs.paneTurnString);
@@ -56,6 +56,7 @@ public class Panel extends JPanel implements Runnable{
 				paneT.setText(gs.paneTurnString);
 				paneT.setBackground(gs.paneTColor);
 				gs.nextTurn();
+				
 			}
 			
 		});
@@ -87,7 +88,7 @@ public class Panel extends JPanel implements Runnable{
 	 					gs.grid.get(h.id).clicked=true;
 
 						gs.q.add(h.id);
-
+						System.out.println(gs.evaluate());
 	 					switch(gs.whosTurn) {
 	 					case Player1:
 	 						h.color=gs.colorP1;

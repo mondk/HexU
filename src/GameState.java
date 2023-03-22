@@ -19,7 +19,7 @@ public class GameState {
 	ArrayList<Triangle> border = new ArrayList<>();
 	
 	//Hexagon constants
-	int numberOfHexagons =7;
+	int numberOfHexagons =4;
 
 
 	double radius=(0.5773502717*(600-150))/(numberOfHexagons+1);
@@ -219,6 +219,41 @@ public class GameState {
 		System.out.println(pCluster.toString());
 		return false;
 	}
+
+	public double evaluate(){
+		double finalSum = 0;
+		switch(whosTurn){
+			case Player1:
+				for (ArrayList<Hexagon> list : p1Cluster){
+					double sum =0;
+					for (Hexagon hex : list){
+						sum += hex.score;
+					}
+					if (sum>finalSum)
+						finalSum = sum;
+				}
+			case Player2:
+				for (ArrayList<Hexagon> list : p2Cluster){
+					double sum =0;
+					for (Hexagon hex : list){
+						sum += hex.score;
+					}
+					if (sum>finalSum)
+						finalSum = sum;
+				}
+			case AI:
+				for (ArrayList<Hexagon> list : p2Cluster){
+					double sum =0;
+					for (Hexagon hex : list){
+						sum += hex.score;
+					}
+					if (sum>finalSum)
+						finalSum = sum;
+				}	
+		}
+		return finalSum;
+	}
+
 
 	public void resetGame() {
 		whosTurn = Turn.Player1;

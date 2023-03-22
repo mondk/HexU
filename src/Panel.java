@@ -37,7 +37,7 @@ public class Panel extends JPanel implements Runnable{
 		this.setPreferredSize(gs.SCREEN_SIZE);
 		createGrid();
 		
-		AI ai = new AI();
+		AI ai = new AI(gs);
 		
 		//System.out.println(gs.grid.toString());
 		paneT.setText(gs.paneTurnString);

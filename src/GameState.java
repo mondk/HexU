@@ -230,5 +230,11 @@ public class GameState {
 			h.clicked=false;
 		}
 	}
+
+	public void updateNumberOfHexagons(int numberOfHexagons){
+		this.numberOfHexagons = numberOfHexagons;
+		this.radius=(0.5773502717*(600-150))/(numberOfHexagons+1);
+		this.shift = 2*radius*0.8660254;
+	}
 }
 

@@ -4,10 +4,12 @@ import java.awt.Point;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Iterator;
 
-public class GameState {
+public class GameState implements Cloneable{
 	
 	//Size of game screen
 	Dimension SCREEN_SIZE = new Dimension(600,400);
@@ -16,19 +18,19 @@ public class GameState {
 	ArrayList<Hexagon> grid = new ArrayList<>();
 	
 	//Hexagon constants
-	int numberOfHexagons =6;
+	int numberOfHexagons =4;
 
 
-	double raidus=(0.5773502717*(600-150))/(numberOfHexagons+1);
-	double shift = 2*raidus*0.8660254;
+	double radius=(0.5773502717*(600-150))/(numberOfHexagons+1);
+	double shift = 2*radius*0.8660254;
+	int xOffSet= 100- (int) (radius*2);
 
 	// Player names
 	String player1Name = "Player 1";
 	String player2Name = "Player 2";
 
 	//Start point for grid
-	Point startPoint = new Point(50,75);
-	
+	Point startPoint = new Point((int) radius+50,(int) radius+50);
 	
 
 	// JPanel, which includes the different screens
@@ -43,7 +45,7 @@ public class GameState {
 
 	//Show which player turn it is
 	Turn whosTurn = Turn.Player1;
-	String paneTurnString = "Player 1";
+	String paneTurnString = player1Name;
 	Color paneTColor = colorP1;
 	
 	public enum Turn{
@@ -63,6 +65,10 @@ public class GameState {
 	// Adjaceny matrix for the BFS
 	ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
 
+	// List for clusters 
+	ArrayList<ArrayList<Hexagon>> p1Cluster = new ArrayList<>();
+	ArrayList<ArrayList<Hexagon>> p2Cluster = new ArrayList<>();
+
 	// Linked list containing moves made
 	LinkedList<Integer> q = new LinkedList<>();
 
@@ -76,7 +82,7 @@ public class GameState {
 			}
 			else {
 				whosTurn = Turn.Player1;
-				paneTurnString = "Player 1";
+				paneTurnString = player1Name;
 				paneTColor = colorP1;
 			}
 		}
@@ -84,12 +90,12 @@ public class GameState {
 		else {
 			if(whosTurn.equals(Turn.Player1)) {
 				whosTurn = Turn.Player2;
-				paneTurnString = "Player 2";
+				paneTurnString = player2Name;
 				paneTColor = colorP2;
 			}
 			else {
 				whosTurn = Turn.Player1;
-				paneTurnString = "Player 1";
+				paneTurnString = player1Name;
 				paneTColor = colorP1;
 			}
 		}
@@ -166,8 +172,6 @@ public class GameState {
 		}
 	}
 
-<<<<<<< Updated upstream
-=======
 	public boolean winingState(List<Hexagon> s, Color p, List<Hexagon> win, ArrayList<ArrayList<Hexagon>> pCluster) {
 		// Array der holder alle hexagon der er en del af en cluster
 		ArrayList<Integer> seen = new ArrayList<>();
@@ -215,7 +219,7 @@ public class GameState {
 		return false;
 	}
 
-	public double evaluate(ArrayList<Hexagon> board){
+	public double evaluate(){
 		double finalSum = 0;
 		
 		switch(whosTurn){
@@ -249,10 +253,10 @@ public class GameState {
 		}
 		return finalSum;
 	}
-	public ArrayList<Integer> getValidMoves(ArrayList<Hexagon> board) {
+	public ArrayList<Integer> getValidMoves() {
 		// TODO Auto-generated method stub
 		ArrayList<Integer> validMoves = new ArrayList<>();
-		for(Hexagon h: board) {
+		for(Hexagon h: grid) {
 			if(!h.clicked)
 				validMoves.add(h.id);
 		}
@@ -260,28 +264,18 @@ public class GameState {
 		
 	}
 
-	public ArrayList<Hexagon> makeMove(ArrayList<Hexagon> board, int id, GameState.Turn currentPlayer) {
-		// TODO Auto-generated method stub
-		ArrayList<Hexagon> grid2 = board;
-		grid2.get(id).clicked=true;
-		switch(currentPlayer) {
-		case Player1:
-			grid2.get(id).color=colorP1;
-			break;
-		case Player2:
-				grid2.get(id).color=colorP2;
-				break;
-		}
-	return grid2;
-		
-	}
 
+   
+    protected Object clone()
+        throws CloneNotSupportedException
+    {
+        return super.clone();
+    }
 
->>>>>>> Stashed changes
 	public void resetGame() {
 		whosTurn = Turn.Player1;
 		paneTColor = colorP1;
-		paneTurnString = "Player 1";
+		paneTurnString = player1Name;
 		q.clear();
 		for (Hexagon h : grid) {
 			h.color = Color.gray;
@@ -289,3 +283,4 @@ public class GameState {
 		}
 	}
 }
+

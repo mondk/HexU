@@ -4,6 +4,7 @@ import java.awt.Point;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -56,19 +57,15 @@ public class GameState {
 	}
 
 	//Lists containing start arrays for players
-	List<Hexagon> startP1 = new ArrayList<>();
-	List<Hexagon> startP2 = new ArrayList<>();
-	List<Hexagon> startAI = new ArrayList<>();
-	List<Hexagon> winP1 = new ArrayList<>();
-	List<Hexagon> winP2 = new ArrayList<>();
-	List<Hexagon> winAI = new ArrayList<>();
+	List<Integer> startP1 = new ArrayList<>();
+	List<Integer> startP2 = new ArrayList<>();
+	List<Integer> startAI = new ArrayList<>();
+	List<Integer> winP1 = new ArrayList<>();
+	List<Integer> winP2 = new ArrayList<>();
+	List<Integer> winAI = new ArrayList<>();
 
 	// Adjaceny matrix for the BFS
 	ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
-
-	// List for clusters 
-	ArrayList<ArrayList<Hexagon>> p1Cluster = new ArrayList<>();
-	ArrayList<ArrayList<Hexagon>> p2Cluster = new ArrayList<>();
 
 	// Linked list containing moves made
 	LinkedList<Integer> q = new LinkedList<>();
@@ -103,13 +100,17 @@ public class GameState {
 	}
 
 	public void fillWinStateArrays() {
-		startP1.addAll(grid.subList(0, numberOfHexagons));
-		winP1.addAll(grid.subList(numberOfHexagons*(numberOfHexagons-1), numberOfHexagons*numberOfHexagons));
+		for (Hexagon hexes: grid.subList(0, numberOfHexagons)){
+			startP1.add(hexes.id);
+		}
+		for (Hexagon hexes: grid.subList(numberOfHexagons*(numberOfHexagons-1), numberOfHexagons*numberOfHexagons)){
+			winP1.add(hexes.id);
+		}
 		for(int i=0;i<numberOfHexagons;i++) {
 			int s = i*numberOfHexagons;
 			int a = i*numberOfHexagons+numberOfHexagons-1;
-			startP2.add(grid.get(s));
-			winP2.add(grid.get(a));
+			startP2.add(grid.get(s).id);
+			winP2.add(grid.get(a).id);
 		}
 	}
 
@@ -173,14 +174,17 @@ public class GameState {
 		}
 	}
 
-	public boolean winingState(List<Hexagon> s, Color p, List<Hexagon> win, ArrayList<ArrayList<Hexagon>> pCluster) {
+	public ArrayList<ArrayList<Integer>> winingState(List<Integer> s, Color p, List<Integer> win) {
+		ArrayList<ArrayList<Integer>> result = new ArrayList<>(2);
+		result.add(new ArrayList<>());
+		ArrayList<ArrayList<Integer>> pCluster = new ArrayList<>();
+
+
 		// Array der holder alle hexagon der er en del af en cluster
 		ArrayList<Integer> seen = new ArrayList<>();
-		// Rydder listen med alle cluser for dne givne spiller
-		pCluster.clear();
 		//Loop over hele griddet, for at finde alle clusters
 		for(Hexagon v : grid) {
-			ArrayList<Hexagon> cluster = new ArrayList<>();
+			ArrayList<Integer> cluster = new ArrayList<>();
 
 			// Tjekker om den givne hexagon er den givne spillers farve 
 			// eller om den allerede er en del af en cluster, i så fald skip!
@@ -194,7 +198,7 @@ public class GameState {
 			visited[v.id] = true;
 			queue.add(v.id);
 			// Tilføjer hexagon til cluster
-			cluster.add(v);
+			cluster.add(v.id);
 
 			while (queue.size()!=0) {
 				int inter = queue.poll();
@@ -205,52 +209,33 @@ public class GameState {
 						visited[n] = true;
 						queue.add(n);
 						seen.add(n);
-						cluster.add(grid.get(n));
+						cluster.add(n);
 						// Ser om den funde cluster ud fra v, indeholde en hexagon fra start og slut enden
 						// af den givne spillers plade
 						if (!Collections.disjoint(cluster, s) && !Collections.disjoint(cluster,win)){
-							return true;
+							result.get(0).add(1);
+							return result;
 						}
 					}
 				}
 			}
 			pCluster.add(cluster);
-		}
-		System.out.println(pCluster.toString());
-		return false;
+		}	
+		result.get(0).add(0);
+		result.addAll(pCluster);
+		return result;
 	}
 
-	public double evaluate(){
+	public double evaluate(ArrayList<ArrayList<Integer>> clusters){
 		double finalSum = 0;
-		switch(whosTurn){
-			case Player1:
-				for (ArrayList<Hexagon> list : p1Cluster){
+				for (ArrayList<Integer> list : clusters){
 					double sum =0;
-					for (Hexagon hex : list){
-						sum += hex.score;
+					for (Integer hex : list){
+						sum += grid.get(hex).score;
 					}
 					if (sum>finalSum)
 						finalSum = sum;
 				}
-			case Player2:
-				for (ArrayList<Hexagon> list : p2Cluster){
-					double sum =0;
-					for (Hexagon hex : list){
-						sum += hex.score;
-					}
-					if (sum>finalSum)
-						finalSum = sum;
-				}
-			case AI:
-				for (ArrayList<Hexagon> list : p2Cluster){
-					double sum =0;
-					for (Hexagon hex : list){
-						sum += hex.score;
-					}
-					if (sum>finalSum)
-						finalSum = sum;
-				}	
-		}
 		return finalSum;
 	}
 

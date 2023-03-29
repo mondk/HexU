@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Iterator;
 
-public class GameState {
+public class GameState implements Cloneable{
 	
 	//Size of game screen
 	Dimension SCREEN_SIZE = new Dimension(600,400);
@@ -20,7 +20,7 @@ public class GameState {
 	ArrayList<Triangle> border = new ArrayList<>();
 	
 	//Hexagon constants
-	int numberOfHexagons =4;
+	int numberOfHexagons =5;
 
 
 	double radius=(0.5773502717*(600-150))/(numberOfHexagons+1);
@@ -249,6 +249,27 @@ public class GameState {
 			h.color = Color.gray;
 			h.clicked=false;
 		}
+	}
+
+	public ArrayList<Integer> getValidMoves() {
+		ArrayList<Integer> validmoves = new ArrayList<>();
+		
+		for(Hexagon h: grid) {
+			if(!h.clicked)
+				validmoves.add(h.id);
+		}
+		return validmoves;
+	}
+	
+	@Override
+	public GameState clone() {
+		GameState gs = new GameState();
+		gs.whosTurn=this.whosTurn;
+		for(Hexagon h: grid )
+			gs.grid.add(h.clone());
+		
+		return gs;
+		
 	}
 }
 

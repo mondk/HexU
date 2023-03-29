@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -31,14 +32,14 @@ public class Panel extends JPanel implements Runnable{
 	boolean start =false;
 	int dialogbutton;
 	ImageIcon reMatchIcon = new ImageIcon("res/rematch.png");  //  <a target="_blank" href="https://icons8.com/icon/PT3001yzoXgN/match">Match</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
-	
+
 	public Panel(GameState gs) {
 		this.gs=gs;
 		this.setFocusable(true);
 		this.setPreferredSize(gs.SCREEN_SIZE);
 		createGrid();
 		
-		AI ai = new AI(gs);
+		AI ai = new AI();
 		
 		//System.out.println(gs.grid.toString());
 		paneT.setText(gs.paneTurnString);
@@ -50,7 +51,7 @@ public class Panel extends JPanel implements Runnable{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				int i = ai.nextMove();
+				int i = ai.nextMove(gs);
 				gs.grid.get(i).clicked=true;
 				gs.grid.get(i).color=gs.paneTColor;
 				gs.q.add(i);
@@ -97,9 +98,11 @@ public class Panel extends JPanel implements Runnable{
 	 					case Player1:
 	 						h.color=gs.colorP1;
 	 						gs.nextTurn();
-	 						System.out.println(gs.player1Name + " clicked on hexagon: "+h.id);
+	 						
+	 						System.out.println(gs.player1Name + " clicked on hexagon: "+h.id+" score: "+h.score);
 							won = gs.winingState(gs.startP1, gs.colorP1, gs.winP1);
 							System.out.println(won);
+							
 	 						if (won.get(0).get(0)==1) {
 	 							repaint();
 	 							JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.player1Name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
@@ -185,17 +188,41 @@ public class Panel extends JPanel implements Runnable{
 			}
 		}
 	}
-
+	
 	public void createGrid() {
 		if (!gs.grid.isEmpty())
 			return;
 		int id=0;
+		int scoreI =0;
+		
 		for(int i =0;i<gs.numberOfHexagons;i++) {
+			int scoreJ =0;
+			if(i==gs.numberOfHexagons/2) {
+				
+			}
+			else if(i>gs.numberOfHexagons/2) {
+				scoreI--;
+			}
+			else {
+				scoreI++;
+			}
 			for(int j =0;j<gs.numberOfHexagons;j++) {
-				gs.grid.add( new Hexagon(new Point((int) (gs.startPoint.x+gs.shift*j+i*gs.shift*Math.cos(60*(Math.PI/180))),(int) (gs.startPoint.y+i*gs.shift*Math.sin(60*(Math.PI/180)))),gs.radius,id));
+				Hexagon h1 = new Hexagon(new Point((int) (gs.startPoint.x+gs.shift*j+i*gs.shift*Math.cos(60*(Math.PI/180))),(int) (gs.startPoint.y+i*gs.shift*Math.sin(60*(Math.PI/180)))),gs.radius,id);
+				if(j==gs.numberOfHexagons/2) {
+					
+				}
+				else if(j>gs.numberOfHexagons/2) {
+					scoreJ--;
+				}
+				else {
+					scoreJ++;
+				}
+				h1.score=scoreI+scoreJ;
+				
+				gs.grid.add( h1);
 				id++;
 				int hex = i*gs.numberOfHexagons+j;
-
+				
 				if (i==0 && j==0) {														//First hexagon
 					gs.grid.get(hex).adj.add(1);
 					gs.grid.get(hex).adj.add(gs.numberOfHexagons);
@@ -246,7 +273,7 @@ public class Panel extends JPanel implements Runnable{
 					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons);;
 					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons-1);
 				}
-				System.out.println(""+hex + " " + gs.grid.get(hex).adj.toString());
+				//System.out.println(""+hex + " " + gs.grid.get(hex).adj.toString());
 			}
 		}
 		int[] x= {gs.grid.get(0).center.x-(int) (gs.radius*2), gs.grid.get(gs.numberOfHexagons-1).center.x+(int) (gs.radius*1.3), gs.grid.get(4).center.x};
@@ -270,6 +297,7 @@ public class Panel extends JPanel implements Runnable{
 	}
 	
 	public void draw(Graphics g) {
+		
 		for (Triangle t : gs.border){
 			g.setColor(gs.colorP1);
 			g.fillPolygon(t.getPolygon());

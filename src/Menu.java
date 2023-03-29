@@ -48,7 +48,6 @@ public class Menu extends JPanel {
             }
         });
         confirmP1Color.setText("Confirm");
-//        ColorPicker colorPicker = new ColorPicker(player1Info.getPreferredSize());
         colorMenu1.add(colorPicker1);
         colorMenu1.add(confirmP1Color);
         player1Info.add(player1);
@@ -77,7 +76,6 @@ public class Menu extends JPanel {
             }
         });
         confirmP2Color.setText("Confirm");
-//        ColorPicker colorPicker = new ColorPicker(player1Info.getPreferredSize());
         colorMenu2.add(colorPicker2);
         colorMenu2.add(confirmP2Color);
         player2Info.add(player2);
@@ -86,7 +84,7 @@ public class Menu extends JPanel {
         player2Cards.add(colorMenu2);
         player2Color.setCards(player2Cards);
 
-
+        // Set the actions for the startgame buttons
         startComputerGameButton.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -116,12 +114,15 @@ public class Menu extends JPanel {
                 gs.cards.remove(0);
             }
         });
-
+        startOnlineButton.setAction(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                System.out.println("Not yet implemented");
+            }
+        });
         startComputerGameButton.setText("Start Game against Computer");
-        //startComputerGameButton.setBounds(0, 100, 100, 40);
         startMultiplayerButton.setText("Start Multiplayer Game");
-        //startGameButton.setAlignmentX();
-        //add(colorPicker);
+        startOnlineButton.setText("Start Online Game");
         playerNames.add(player1Cards);
         playerNames.add(player2Cards);
         add(playerNames);

@@ -114,66 +114,6 @@ public class GameState implements Cloneable{
 		}
 	}
 
-	// public void createAdjacenyMatrix() {
-	// 	for (int i = 0; i<numberOfHexagons; i++) {
-	// 		for (int j = 0; j<numberOfHexagons;j++) {
-	// 			adj.add(new ArrayList<Integer>());
-	// 			int hex = i*numberOfHexagons+j;
-
-	// 			if (i==0 && j==0) {												//First hexagon
-	// 				adj.get(hex).add(1);
-	// 				adj.get(hex).add(numberOfHexagons);
-	// 			}
-	// 			else if (i==numberOfHexagons-1 && j ==numberOfHexagons-1) {		//Last Hexagon
-	// 				adj.get(hex).add(hex-1);
-	// 				adj.get(hex).add(hex-numberOfHexagons);
-	// 			}
-	// 			else if(i==0 & j==numberOfHexagons-1) {							//Last hexagon first row
-	// 				adj.get(hex).add(hex-1);
-	// 				adj.get(hex).add(hex+numberOfHexagons);
-	// 				adj.get(hex).add(hex+numberOfHexagons-1);
-	// 			}
-	// 			else if (i == numberOfHexagons-1 && j ==0) {					//First hexagon last row
-	// 				adj.get(hex).add(hex-numberOfHexagons);
-	// 				adj.get(hex).add(hex-numberOfHexagons+1);
-	// 				adj.get(hex).add(hex+1);
-	// 			}
-	// 			else if (i==0) {												//Rest of first row
-	// 				adj.get(hex).add(hex+numberOfHexagons);
-	// 				adj.get(hex).add(hex+numberOfHexagons-1);
-	// 				adj.get(hex).add(hex+1);
-	// 				adj.get(hex).add(hex-1);
-	// 			}
-	// 			else if (i==numberOfHexagons-1) {								//Rest of last row
-	// 				adj.get(hex).add(hex-1);
-	// 				adj.get(hex).add(hex-numberOfHexagons);
-	// 				adj.get(hex).add(hex-numberOfHexagons+1);
-	// 				adj.get(hex).add(hex+1);
-	// 			}
-	// 			else if (j==0) {												//Rest of first column
-	// 				adj.get(hex).add(hex-numberOfHexagons);
-	// 				adj.get(hex).add(hex-numberOfHexagons+1);
-	// 				adj.get(hex).add(hex+1);
-	// 				adj.get(hex).add(hex+numberOfHexagons);
-	// 			}
-	// 			else if(j==numberOfHexagons-1) {								//Rest of last column
-	// 				adj.get(hex).add(hex-numberOfHexagons);
-	// 				adj.get(hex).add(hex-1);
-	// 				adj.get(hex).add(hex+numberOfHexagons-1);
-	// 				adj.get(hex).add(hex+numberOfHexagons);
-	// 			}
-	// 			else {															//Everything in between
-	// 				adj.get(hex).add(hex-1);
-	// 				adj.get(hex).add(hex+1);
-	// 				adj.get(hex).add(hex-numberOfHexagons);
-	// 				adj.get(hex).add(hex-numberOfHexagons+1);
-	// 				adj.get(hex).add(hex+numberOfHexagons);
-	// 				adj.get(hex).add(hex+numberOfHexagons-1);
-	// 			}
-	// 		}
-	// 	}
-	// }
-
 	public ArrayList<ArrayList<Integer>> winingState(List<Integer> s, Color p, List<Integer> win) {
 		ArrayList<ArrayList<Integer>> result = new ArrayList<>(2);
 		result.add(new ArrayList<>());
@@ -227,15 +167,33 @@ public class GameState implements Cloneable{
 	}
 
 	public double evaluate(ArrayList<ArrayList<Integer>> clusters){
+		List<ArrayList<Integer>> only_clusters = clusters.subList(1, clusters.size());
+		System.out.println(only_clusters.toString());
 		double finalSum = 0;
-				for (ArrayList<Integer> list : clusters){
-					double sum =0;
-					for (Integer hex : list){
-						sum += grid.get(hex).score;
-					}
-					if (sum>finalSum)
-						finalSum = sum;
+		for (ArrayList<Integer> list : only_clusters){
+			System.out.println(list.toString());
+			double sum =0;
+			double axis_counter = 0;
+			for (int i = 0; i <= list.size()-1; i++){
+				if ( i > 0) {
+					switch(whosTurn){
+						case Player1:
+							if (grid.get(list.get(i)).center.y != grid.get(list.get(i-1)).center.y){
+								axis_counter += 1;
+							}
+						case Player2:
+							if (grid.get(list.get(i)).center.x != grid.get(list.get(i-1)).center.x){
+								axis_counter+=1;
+							}
+						case AI:
+						}
 				}
+				sum += grid.get(list.get(i)).score;
+			}
+			sum = sum*(1+((list.size()-1)*0.25))*(1+(axis_counter*0.1));
+			System.out.println(sum);
+			finalSum += sum;
+		}
 		return finalSum;
 	}
 

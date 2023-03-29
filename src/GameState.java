@@ -167,11 +167,12 @@ public class GameState implements Cloneable{
 	}
 
 	public double evaluate(ArrayList<ArrayList<Integer>> clusters){
+		if (clusters.get(0).get(0) == 1){
+			return Double.MAX_VALUE;
+		}
 		List<ArrayList<Integer>> only_clusters = clusters.subList(1, clusters.size());
-		System.out.println(only_clusters.toString());
 		double finalSum = 0;
 		for (ArrayList<Integer> list : only_clusters){
-			System.out.println(list.toString());
 			double sum =0;
 			double axis_counter = 0;
 			for (int i = 0; i <= list.size()-1; i++){

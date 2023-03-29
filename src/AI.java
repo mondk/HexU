@@ -32,6 +32,7 @@ public class AI {
 	        	new_state=makeMove(gs,move,gs.whosTurn);
 	        	
 	            int[] eval = minimax(new_state, depth - 1, false);
+				System.out.println(eval.toString());
 	            if (eval[0] > max_eval) {
 	                max_eval = eval[0];
 	                best_move = move;
@@ -46,6 +47,7 @@ public class AI {
 	        	GameState new_state = null;
 	        	new_state=	makeMove(gs,move,gs.whosTurn);
 	            int[] eval = minimax(new_state, depth - 1, true);
+				
 	            if (eval[0] < min_eval) {
 	                min_eval = eval[0];
 	                best_move = move;
@@ -60,14 +62,14 @@ public class AI {
 		GameState gs2 = null;
 		gs2=(GameState) gs1.clone();
 		gs2.grid.get(move).clicked=true;
-				switch(currentPlayer) {
-				case Player1:
-					gs2.grid.get(move).color=gs2.colorP1;
-					break;
-				case Player2:
-					gs2.grid.get(move).color=gs2.colorP2;
-					break;
-				}
+		switch(currentPlayer) {
+			case Player1:
+				gs2.grid.get(move).color=gs2.colorP1;
+				break;
+			case Player2:
+				gs2.grid.get(move).color=gs2.colorP2;
+				break;
+		}
 	   gs2.nextTurn();
        return gs2;
 		

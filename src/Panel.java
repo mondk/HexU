@@ -101,7 +101,7 @@ public class Panel extends JPanel implements Runnable{
 	 						
 	 						System.out.println(gs.player1Name + " clicked on hexagon: "+h.id+" score: "+h.score);
 							won = gs.winingState(gs.startP1, gs.colorP1, gs.winP1);
-							System.out.println(won);
+							System.out.println(gs.evaluate(won));
 							
 	 						if (won.get(0).get(0)==1) {
 	 							repaint();

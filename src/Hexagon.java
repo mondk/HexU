@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
@@ -16,6 +17,7 @@ public class Hexagon extends JPanel{
 		Polygon hexagon;
 		int id;
 		double score = 1;
+		ArrayList<Integer> adj = new ArrayList<>();
 		public Hexagon (Point center, double radius, int id){
 			this.center=center;
 			this.radius=radius;

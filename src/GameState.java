@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Iterator;
 
-public class GameState {
+public class GameState implements Cloneable{
 	
 	//Size of game screen
 	Dimension SCREEN_SIZE = new Dimension(600,400);
@@ -20,7 +20,7 @@ public class GameState {
 	ArrayList<Triangle> border = new ArrayList<>();
 	
 	//Hexagon constants
-	int numberOfHexagons =4;
+	int numberOfHexagons =5;
 
 
 	double radius=(0.5773502717*(600-150))/(numberOfHexagons+1);
@@ -114,66 +114,6 @@ public class GameState {
 		}
 	}
 
-	// public void createAdjacenyMatrix() {
-	// 	for (int i = 0; i<numberOfHexagons; i++) {
-	// 		for (int j = 0; j<numberOfHexagons;j++) {
-	// 			adj.add(new ArrayList<Integer>());
-	// 			int hex = i*numberOfHexagons+j;
-
-	// 			if (i==0 && j==0) {												//First hexagon
-	// 				adj.get(hex).add(1);
-	// 				adj.get(hex).add(numberOfHexagons);
-	// 			}
-	// 			else if (i==numberOfHexagons-1 && j ==numberOfHexagons-1) {		//Last Hexagon
-	// 				adj.get(hex).add(hex-1);
-	// 				adj.get(hex).add(hex-numberOfHexagons);
-	// 			}
-	// 			else if(i==0 & j==numberOfHexagons-1) {							//Last hexagon first row
-	// 				adj.get(hex).add(hex-1);
-	// 				adj.get(hex).add(hex+numberOfHexagons);
-	// 				adj.get(hex).add(hex+numberOfHexagons-1);
-	// 			}
-	// 			else if (i == numberOfHexagons-1 && j ==0) {					//First hexagon last row
-	// 				adj.get(hex).add(hex-numberOfHexagons);
-	// 				adj.get(hex).add(hex-numberOfHexagons+1);
-	// 				adj.get(hex).add(hex+1);
-	// 			}
-	// 			else if (i==0) {												//Rest of first row
-	// 				adj.get(hex).add(hex+numberOfHexagons);
-	// 				adj.get(hex).add(hex+numberOfHexagons-1);
-	// 				adj.get(hex).add(hex+1);
-	// 				adj.get(hex).add(hex-1);
-	// 			}
-	// 			else if (i==numberOfHexagons-1) {								//Rest of last row
-	// 				adj.get(hex).add(hex-1);
-	// 				adj.get(hex).add(hex-numberOfHexagons);
-	// 				adj.get(hex).add(hex-numberOfHexagons+1);
-	// 				adj.get(hex).add(hex+1);
-	// 			}
-	// 			else if (j==0) {												//Rest of first column
-	// 				adj.get(hex).add(hex-numberOfHexagons);
-	// 				adj.get(hex).add(hex-numberOfHexagons+1);
-	// 				adj.get(hex).add(hex+1);
-	// 				adj.get(hex).add(hex+numberOfHexagons);
-	// 			}
-	// 			else if(j==numberOfHexagons-1) {								//Rest of last column
-	// 				adj.get(hex).add(hex-numberOfHexagons);
-	// 				adj.get(hex).add(hex-1);
-	// 				adj.get(hex).add(hex+numberOfHexagons-1);
-	// 				adj.get(hex).add(hex+numberOfHexagons);
-	// 			}
-	// 			else {															//Everything in between
-	// 				adj.get(hex).add(hex-1);
-	// 				adj.get(hex).add(hex+1);
-	// 				adj.get(hex).add(hex-numberOfHexagons);
-	// 				adj.get(hex).add(hex-numberOfHexagons+1);
-	// 				adj.get(hex).add(hex+numberOfHexagons);
-	// 				adj.get(hex).add(hex+numberOfHexagons-1);
-	// 			}
-	// 		}
-	// 	}
-	// }
-
 	public ArrayList<ArrayList<Integer>> winingState(List<Integer> s, Color p, List<Integer> win) {
 		ArrayList<ArrayList<Integer>> result = new ArrayList<>(2);
 		result.add(new ArrayList<>());
@@ -227,15 +167,34 @@ public class GameState {
 	}
 
 	public double evaluate(ArrayList<ArrayList<Integer>> clusters){
+		if (clusters.get(0).get(0) == 1){
+			return Double.MAX_VALUE;
+		}
+		List<ArrayList<Integer>> only_clusters = clusters.subList(1, clusters.size());
 		double finalSum = 0;
-				for (ArrayList<Integer> list : clusters){
-					double sum =0;
-					for (Integer hex : list){
-						sum += grid.get(hex).score;
-					}
-					if (sum>finalSum)
-						finalSum = sum;
+		for (ArrayList<Integer> list : only_clusters){
+			double sum =0;
+			double axis_counter = 0;
+			for (int i = 0; i <= list.size()-1; i++){
+				if ( i > 0) {
+					switch(whosTurn){
+						case Player1:
+							if (grid.get(list.get(i)).center.y != grid.get(list.get(i-1)).center.y){
+								axis_counter += 1;
+							}
+						case Player2:
+							if (grid.get(list.get(i)).center.x != grid.get(list.get(i-1)).center.x){
+								axis_counter+=1;
+							}
+						case AI:
+						}
 				}
+				sum += grid.get(list.get(i)).score;
+			}
+			sum = sum*(1+((list.size()-1)*0.25))*(1+(axis_counter*0.1));
+			System.out.println(sum);
+			finalSum += sum;
+		}
 		return finalSum;
 	}
 
@@ -249,6 +208,27 @@ public class GameState {
 			h.color = Color.gray;
 			h.clicked=false;
 		}
+	}
+
+	public ArrayList<Integer> getValidMoves() {
+		ArrayList<Integer> validmoves = new ArrayList<>();
+
+		for(Hexagon h: grid) {
+			if(!h.clicked)
+				validmoves.add(h.id);
+		}
+		return validmoves;
+	}
+
+	@Override
+	public GameState clone() {
+		GameState gs = new GameState();
+		gs.whosTurn=this.whosTurn;
+		for(Hexagon h: grid )
+			gs.grid.add(h.clone());
+
+		return gs;
+
 	}
 
 	public void updateNumberOfHexagons(int numberOfHexagons){

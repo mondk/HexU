@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
-public class Hexagon extends JPanel{
+public class Hexagon extends JPanel implements Cloneable{
 		
 		Color color = Color.gray;
 		Point center;
@@ -51,6 +51,15 @@ public class Hexagon extends JPanel{
 		
 		public String toString() {
 			return Integer.toString(this.id);
+		}
+		@Override
+		public Hexagon clone() {
+		Hexagon hex = new Hexagon(this.center, this.radius, this.id);
+		hex.color=this.color;
+		hex.clicked=this.clicked;
+		hex.adj=this.adj;
+		hex.score=this.score;
+		return hex;
 		}
 		
 	}

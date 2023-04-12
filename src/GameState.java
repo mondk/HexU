@@ -13,7 +13,7 @@ import java.util.Iterator;
 public class GameState implements Cloneable{
 	
 	//Size of game screen
-	Dimension SCREEN_SIZE = new Dimension(600,400);
+	//Dimension SCREEN_SIZE = new Dimension(600,400);
 	
 	//game grid
 	ArrayList<Hexagon> grid = new ArrayList<>();
@@ -27,6 +27,12 @@ public class GameState implements Cloneable{
 	double radius=(0.5773502717*(600-150))/(numberOfHexagons+1);
 	double shift = 2*radius*0.8660254;
 	int xOffSet= 100- (int) (radius*2);
+	
+	//Size of game screen depending on number of hexagones and radius
+	int widthScreen = (numberOfHexagons*(int)Math.round(radius))+(int)Math.round(shift)+400;
+	int heightScreen = (numberOfHexagons*(int)Math.round(radius))+(int)Math.round(shift)+200;
+
+	Dimension SCREEN_SIZE = new Dimension(widthScreen,heightScreen);
 
 	// Player names
 	String player1Name = "Player 1";

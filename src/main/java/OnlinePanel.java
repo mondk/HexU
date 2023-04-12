@@ -20,12 +20,13 @@ public class OnlinePanel extends JPanel {
                 try {
                     RemoteSpace space = new RemoteSpace("tcp://" + ip.getText() + ":9001/game?keep");
                     gs.setGameSpace(space);
+                    gs.host = false;
+                    gs.playerState = GameState.State.ONLINE;
                     Panel game = new Panel(gs);
                     cards.add(game);
                     CardLayout cl = (CardLayout)gs.cards.getLayout();
                     cl.next(gs.cards);
                     cards.remove(0);
-                    System.out.println("Is now on next screen");
                 } catch (IOException e) {
                     System.out.println("Invalid ip");
                 }
@@ -39,6 +40,8 @@ public class OnlinePanel extends JPanel {
                 repository.add("game",space);
                 repository.addGate("tcp://" + ip.getText() + ":9001/?keep");
                 gs.setGameSpace(space);
+                gs.playerState = GameState.State.ONLINE;
+                gs.host = true;
                 Panel panel = new Panel(gs);
                 cards.add(panel);
                 CardLayout cl = (CardLayout)gs.cards.getLayout();

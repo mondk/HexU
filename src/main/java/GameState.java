@@ -46,6 +46,8 @@ public class GameState implements Cloneable{
 
 	//Playerstate
 	boolean singlePlayer = false;
+	boolean host = true;
+	State playerState = State.MULTIPLAYER;
 	Color colorP1 = Color.decode("#d032f0");
 	Color colorP2 = Color.decode("#247324");
 
@@ -54,11 +56,18 @@ public class GameState implements Cloneable{
 	Turn whosTurn = Turn.Player1;
 	String paneTurnString = player1Name;
 	Color paneTColor = colorP1;
-	
+
+	public enum State{
+		SINGLEPLAYER,
+		MULTIPLAYER,
+		ONLINE
+	}
+
 	public enum Turn{
 		Player1,
 		Player2,
-		AI
+		AI,
+		ONLINE_PLAYER
 	}
 
 	//Lists containing start arrays for players
@@ -77,30 +86,47 @@ public class GameState implements Cloneable{
 
 	//change player turn
 	public void nextTurn() {
-		if(singlePlayer) {
-			if(whosTurn.equals(Turn.Player1)) {
-				whosTurn = Turn.AI;
-				paneTurnString = "AI";
-				paneTColor = colorP2;
-			}
-			else {
-				whosTurn = Turn.Player1;
-				paneTurnString = player1Name;
-				paneTColor = colorP1;
-			}
-		}
+		switch(playerState) {
+			case SINGLEPLAYER:
+				if(whosTurn.equals(Turn.Player1)) {
+					whosTurn = Turn.AI;
+					paneTurnString = "AI";
+					paneTColor = colorP2;
+				}
+				else {
+					whosTurn = Turn.Player1;
+					paneTurnString = player1Name;
+					paneTColor = colorP1;
+				}
+				break;
 		//Multiplayer
-		else {
-			if(whosTurn.equals(Turn.Player1)) {
-				whosTurn = Turn.Player2;
-				paneTurnString = player2Name;
-				paneTColor = colorP2;
-			}
-			else {
-				whosTurn = Turn.Player1;
-				paneTurnString = player1Name;
-				paneTColor = colorP1;
-			}
+			case MULTIPLAYER:
+				if(whosTurn.equals(Turn.Player1)) {
+					whosTurn = Turn.Player2;
+					paneTurnString = player2Name;
+					paneTColor = colorP2;
+				}
+				else {
+					whosTurn = Turn.Player1;
+					paneTurnString = player1Name;
+					paneTColor = colorP1;
+				}
+				break;
+			case ONLINE:
+				if(whosTurn.equals(Turn.Player1)){
+					whosTurn = Turn.ONLINE_PLAYER;
+					paneTurnString = player2Name;
+					paneTColor = colorP2;
+				} else if(whosTurn.equals(Turn.Player2)){
+					whosTurn = Turn.ONLINE_PLAYER;
+					paneTurnString = player2Name;
+					paneTColor = colorP2;
+				} else {
+					whosTurn = Turn.Player1;
+					paneTurnString = player2Name;
+					paneTColor = colorP2;
+				}
+
 		}
 	}
 

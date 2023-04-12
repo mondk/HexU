@@ -5,7 +5,7 @@ public class AI {
 
 	
 	public static int nextMove(GameState gs1) {
-		double[] move = minimax(gs1,2, true);
+		double[] move = minimax(gs1,1, true);
 		System.out.println("best move :"+move[1]);
 		return (int) move[1];
 	}
@@ -22,9 +22,11 @@ public class AI {
 	    	switch(gs.whosTurn) {
 	    	case Player1:
 	    	//	System.out.println(gs.winingState(gs.startP1, gs.colorP1, gs.winP1).toString());
+				System.out.println("test winningState: " + gs.winingState(gs.startP1, gs.colorP1, gs.winP1).toString());
 	    		return new double[] {  gs.evaluate(gs.winingState(gs.startP1, gs.colorP1, gs.winP1)), -1};
 	    		
 	    	case Player2:
+				System.out.println("test winningState: " + gs.winingState(gs.startP2, gs.colorP2, gs.winP2).toString());
 	    		return new double[] {  gs.evaluate(gs.winingState(gs.startP2, gs.colorP2, gs.winP2)), -1};
 	    	}
 	        
@@ -70,14 +72,13 @@ public class AI {
 		GameState gs2 = null;
 		gs2=(GameState) gs1.clone();
 		gs2.grid.get(move).clicked=true;
-System.out.println(gs2.grid.get(move).clicked+" "+gs1.grid.get(move).clicked);
+
+		System.out.println(gs2.grid.get(move).clicked+" "+gs1.grid.get(move).clicked);
 		switch(gs1.whosTurn) {
 			case Player1:
 				gs2.grid.get(move).color=gs2.colorP1;
-				break;
 			case Player2:
 				gs2.grid.get(move).color=gs2.colorP2;
-				break;
 		}
 	   gs2.nextTurn();
 	   gs2.ids+=1;

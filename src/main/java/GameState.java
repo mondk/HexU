@@ -15,9 +15,7 @@ import java.util.Iterator;
 public class GameState implements Cloneable{
 	
 	//Size of game screen
-	Dimension SCREEN_SIZE = new Dimension(600,400);
-
-	Space gameSpace = null;
+	//Dimension SCREEN_SIZE = new Dimension(600,400);
 	
 	//game grid
 	ArrayList<Hexagon> grid = new ArrayList<>();
@@ -31,6 +29,12 @@ public class GameState implements Cloneable{
 	double radius=(0.5773502717*(600-150))/(numberOfHexagons+1);
 	double shift = 2*radius*0.8660254;
 	int xOffSet= 100- (int) (radius*2);
+
+	//Size of game screen depending on number of hexagones and radius
+	int widthScreen = (numberOfHexagons*(int)Math.round(radius))+(int)Math.round(shift)+400;
+	int heightScreen = (numberOfHexagons*(int)Math.round(radius))+(int)Math.round(shift)+200;
+
+	Dimension SCREEN_SIZE = new Dimension(widthScreen,heightScreen);
 
 	// Player names
 	String player1Name = "Player 1";
@@ -56,18 +60,11 @@ public class GameState implements Cloneable{
 	Turn whosTurn = Turn.Player1;
 	String paneTurnString = player1Name;
 	Color paneTColor = colorP1;
-
-	public enum State{
-		SINGLEPLAYER,
-		MULTIPLAYER,
-		ONLINE
-	}
-
+	
 	public enum Turn{
 		Player1,
 		Player2,
-		AI,
-		ONLINE_PLAYER
+		AI
 	}
 
 	//Lists containing start arrays for players
@@ -86,47 +83,30 @@ public class GameState implements Cloneable{
 
 	//change player turn
 	public void nextTurn() {
-		switch(playerState) {
-			case SINGLEPLAYER:
-				if(whosTurn.equals(Turn.Player1)) {
-					whosTurn = Turn.AI;
-					paneTurnString = "AI";
-					paneTColor = colorP2;
-				}
-				else {
-					whosTurn = Turn.Player1;
-					paneTurnString = player1Name;
-					paneTColor = colorP1;
-				}
-				break;
+		if(singlePlayer) {
+			if(whosTurn.equals(Turn.Player1)) {
+				whosTurn = Turn.AI;
+				paneTurnString = "AI";
+				paneTColor = colorP2;
+			}
+			else {
+				whosTurn = Turn.Player1;
+				paneTurnString = player1Name;
+				paneTColor = colorP1;
+			}
+		}
 		//Multiplayer
-			case MULTIPLAYER:
-				if(whosTurn.equals(Turn.Player1)) {
-					whosTurn = Turn.Player2;
-					paneTurnString = player2Name;
-					paneTColor = colorP2;
-				}
-				else {
-					whosTurn = Turn.Player1;
-					paneTurnString = player1Name;
-					paneTColor = colorP1;
-				}
-				break;
-			case ONLINE:
-				if(whosTurn.equals(Turn.Player1)){
-					whosTurn = Turn.ONLINE_PLAYER;
-					paneTurnString = player2Name;
-					paneTColor = colorP2;
-				} else if(whosTurn.equals(Turn.Player2)){
-					whosTurn = Turn.ONLINE_PLAYER;
-					paneTurnString = player2Name;
-					paneTColor = colorP2;
-				} else {
-					whosTurn = Turn.Player1;
-					paneTurnString = player2Name;
-					paneTColor = colorP2;
-				}
-
+		else {
+			if(whosTurn.equals(Turn.Player1)) {
+				whosTurn = Turn.Player2;
+				paneTurnString = player2Name;
+				paneTColor = colorP2;
+			}
+			else {
+				whosTurn = Turn.Player1;
+				paneTurnString = player1Name;
+				paneTColor = colorP1;
+			}
 		}
 	}
 
@@ -291,11 +271,7 @@ public class GameState implements Cloneable{
 		gs.fillWinStateArrays();
 		
 		return gs;
-
-	}
-
-	public void setGameSpace(Space gameSpace) {
-		this.gameSpace = gameSpace;
+		
 	}
 }
 

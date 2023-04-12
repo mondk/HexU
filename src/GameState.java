@@ -20,8 +20,9 @@ public class GameState implements Cloneable{
 	ArrayList<Triangle> border = new ArrayList<>();
 	
 	//Hexagon constants
-	int numberOfHexagons =5;
-
+	int numberOfHexagons =4;
+	
+	int ids =0;
 
 	double radius=(0.5773502717*(600-150))/(numberOfHexagons+1);
 	double shift = 2*radius*0.8660254;
@@ -123,7 +124,7 @@ public class GameState implements Cloneable{
 		// Array der holder alle hexagon der er en del af en cluster
 		ArrayList<Integer> seen = new ArrayList<>();
 		//Loop over hele griddet, for at finde alle clusters
-		for(Hexagon v : grid) {
+		for(Hexagon v : this.grid) {
 			ArrayList<Integer> cluster = new ArrayList<>();
 
 			// Tjekker om den givne hexagon er den givne spillers farve 
@@ -142,10 +143,10 @@ public class GameState implements Cloneable{
 
 			while (queue.size()!=0) {
 				int inter = queue.poll();
-				Iterator<Integer> i = grid.get(inter).adj.listIterator();
+				Iterator<Integer> i = this.grid.get(inter).adj.listIterator();
 				while(i.hasNext()) {
 					int n = i.next();
-					if(visited[n] == false && grid.get(n).color == p) {
+					if(visited[n] == false && this.grid.get(n).color == p) {
 						visited[n] = true;
 						queue.add(n);
 						seen.add(n);
@@ -171,6 +172,7 @@ public class GameState implements Cloneable{
 			return Double.MAX_VALUE;
 		}
 		List<ArrayList<Integer>> only_clusters = clusters.subList(1, clusters.size());
+		System.out.println("only cluster "+only_clusters.toString());
 		double finalSum = 0;
 		for (ArrayList<Integer> list : only_clusters){
 			double sum =0;
@@ -191,14 +193,40 @@ public class GameState implements Cloneable{
 				}
 				sum += grid.get(list.get(i)).score;
 			}
-			sum = sum*(1+((list.size()-1)*0.25))*(1+(axis_counter*0.1));
+			sum = sum*(1+((list.size()-1)*0.25))*(1+(axis_counter*0.6));
 			System.out.println(sum);
 			finalSum += sum;
 		}
 		return finalSum;
 	}
 
-
+//	public double evaluate(ArrayList<ArrayList<Integer>> clusters) {
+//		
+//		//clears win indicator if not a winning state
+//		System.out.println("clusters:= "+ clusters.toString());
+//		if(clusters.get(0).get(0).equals(1)) {
+//			return Double.MAX_VALUE;
+//		}
+//		clusters.remove(0);
+//		double final_score =0;
+//		double temp_score =0;
+//		System.out.println("clusters:= "+ clusters.toString());
+//		for(ArrayList<Integer> list: clusters) {
+//			temp_score=0;
+//			if(list.size()==1) {
+//				final_score+=grid.get(list.get(0)).score;
+//			}
+//			else {
+//				for(int i : list) {
+//					temp_score+=grid.get(list.get(i)).score;
+//				}
+//				final_score+=temp_score*1.5;
+//			}
+//		}
+//		
+//		return final_score;
+//		
+//	}
 	public void resetGame() {
 		whosTurn = Turn.Player1;
 		paneTColor = colorP1;
@@ -220,12 +248,17 @@ public class GameState implements Cloneable{
 		return validmoves;
 	}
 	
+	
+	
 	@Override
 	public GameState clone() {
 		GameState gs = new GameState();
 		gs.whosTurn=this.whosTurn;
-		for(Hexagon h: grid )
+		
+		gs.ids=this.ids;
+		for(Hexagon h: this.grid )
 			gs.grid.add(h.clone());
+		gs.fillWinStateArrays();
 		
 		return gs;
 		

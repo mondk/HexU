@@ -123,10 +123,10 @@ public class GameState implements Cloneable{
 					paneTColor = colorP2;
 				} else {
 					whosTurn = host ? Turn.Player1 : Turn.Player2;
-					paneTurnString = player2Name;
-					paneTColor = colorP2;
+					paneTurnString = host ? player1Name : player2Name;
+					paneTColor = host ? colorP1 : colorP2;
 				}
-
+				break;
 		}
 	}
 

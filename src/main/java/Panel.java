@@ -182,12 +182,12 @@ public class Panel extends JPanel implements Runnable{
 						if(gs.playerState == GameState.State.ONLINE) {
 							try {
 								gs.nextTurn();
-								System.out.println("stuck here");
+								System.out.println("Awaiting move");
 								int move;
 								if(gs.host) move = (int) gs.gameSpace.get(new ActualField("Player2"), new FormalField(Integer.class))[1];
 								else move = (int) gs.gameSpace.get(new ActualField("Player1"), new FormalField(Integer.class))[1];
 								//int move = 0;
-								System.out.println("or here");
+								System.out.println("Got move");
 								h.color = gs.host ? gs.colorP2 : gs.colorP1;
 								won = gs.host ? gs.winingState(gs.startP2, gs.colorP2, gs.winP2) : gs.winingState(gs.startP1, gs.colorP1, gs.winP1);
 								gs.grid.get(move).clicked=true;
@@ -200,6 +200,7 @@ public class Panel extends JPanel implements Runnable{
 						}
 					}
 				}
+				repaint();
 			}
 		});
 		Thread gameThread = new Thread(this);

@@ -22,6 +22,7 @@ public class OnlinePanel extends JPanel {
                     gs.setGameSpace(space);
                     gs.host = false;
                     gs.playerState = GameState.State.ONLINE;
+                    gs.whosTurn = GameState.Turn.Player2;
                     Panel game = new Panel(gs);
                     cards.add(game);
                     CardLayout cl = (CardLayout)gs.cards.getLayout();

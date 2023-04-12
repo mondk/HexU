@@ -117,12 +117,18 @@ public class Panel extends JPanel implements Runnable{
 						gs.q.add(h.id);
 
 						ArrayList<ArrayList<Integer>> won = new ArrayList<>();
-
+						System.out.println("The turn is " + gs.whosTurn);
 						switch(gs.whosTurn) {
 							case Player1:
 								h.color=gs.colorP1;
 								gs.nextTurn();
+								if (gs.gameSpace != null) {
+									try {
+										gs.gameSpace.put("Player1", h.id);
+									} catch (InterruptedException ignored) {
 
+									}
+								}
 								System.out.println(gs.player1Name + " clicked on hexagon: "+h.id+" score: "+h.score);
 								won = gs.winingState(gs.startP1, gs.colorP1, gs.winP1);
 								System.out.println(gs.evaluate(won));
@@ -145,6 +151,13 @@ public class Panel extends JPanel implements Runnable{
 							case Player2:
 								h.color=gs.colorP2;
 								gs.nextTurn();
+								if (gs.gameSpace != null) {
+									try {
+										gs.gameSpace.put("Player2", h.id);
+									} catch (InterruptedException ignored) {
+
+									}
+								}
 								System.out.println(gs.player2Name + " clicked on hexagon: "+h.id);
 								won = gs.winingState(gs.startP2, gs.colorP2, gs.winP2);
 								//System.out.println(won);
@@ -164,20 +177,17 @@ public class Panel extends JPanel implements Runnable{
 								paneT.setBackground(gs.paneTColor);
 								paneT.setText(gs.paneTurnString);
 								break;
-							case ONLINE_PLAYER:
-								try {
-									int move = (int) gs.gameSpace.get(new ActualField("move"), new FormalField(Integer.class))[1];
-									h.color = gs.host ? gs.colorP1 : gs.colorP2;
-									won = gs.host ? gs.winingState(gs.startP1, gs.colorP1, gs.winP1) : gs.winingState(gs.startP2, gs.colorP2, gs.winP2);
-								} catch (InterruptedException ex) {
-									System.out.println("You have lost connection");
-								}
-								break;
 						}
+						repaint();
 						if(gs.playerState == GameState.State.ONLINE) {
 							try {
-								int move = (int) gs.gameSpace.get(new ActualField("move"), new FormalField(Integer.class))[1];
+								gs.nextTurn();
+								System.out.println("stuck here");
+								int move;
+								if(gs.host) move = (int) gs.gameSpace.get(new ActualField("Player2"), new FormalField(Integer.class))[1];
+								else move = (int) gs.gameSpace.get(new ActualField("Player1"), new FormalField(Integer.class))[1];
 								//int move = 0;
+								System.out.println("or here");
 								h.color = gs.host ? gs.colorP2 : gs.colorP1;
 								won = gs.host ? gs.winingState(gs.startP2, gs.colorP2, gs.winP2) : gs.winingState(gs.startP1, gs.colorP1, gs.winP1);
 								gs.grid.get(move).clicked=true;
@@ -188,7 +198,6 @@ public class Panel extends JPanel implements Runnable{
 							}
 
 						}
-						repaint();
 					}
 				}
 			}

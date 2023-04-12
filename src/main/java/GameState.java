@@ -13,28 +13,24 @@ import java.util.List;
 import java.util.Iterator;
 
 public class GameState implements Cloneable{
-	
+
 	//Size of game screen
-	//Dimension SCREEN_SIZE = new Dimension(600,400);
-	
+	Dimension SCREEN_SIZE = new Dimension(600,400);
+
+	Space gameSpace = null;
+
 	//game grid
 	ArrayList<Hexagon> grid = new ArrayList<>();
 	ArrayList<Triangle> border = new ArrayList<>();
-	
+
 	//Hexagon constants
 	int numberOfHexagons =4;
-	
+
 	int ids =0;
 
 	double radius=(0.5773502717*(600-150))/(numberOfHexagons+1);
 	double shift = 2*radius*0.8660254;
 	int xOffSet= 100- (int) (radius*2);
-
-	//Size of game screen depending on number of hexagones and radius
-	int widthScreen = (numberOfHexagons*(int)Math.round(radius))+(int)Math.round(shift)+400;
-	int heightScreen = (numberOfHexagons*(int)Math.round(radius))+(int)Math.round(shift)+200;
-
-	Dimension SCREEN_SIZE = new Dimension(widthScreen,heightScreen);
 
 	// Player names
 	String player1Name = "Player 1";
@@ -42,7 +38,7 @@ public class GameState implements Cloneable{
 
 	//Start point for grid
 	Point startPoint = new Point((int) radius+50,(int) radius+50);
-	
+
 
 	// JPanel, which includes the different screens
 	JPanel cards = new JPanel(new CardLayout());
@@ -60,11 +56,18 @@ public class GameState implements Cloneable{
 	Turn whosTurn = Turn.Player1;
 	String paneTurnString = player1Name;
 	Color paneTColor = colorP1;
-	
+
+	public enum State{
+		SINGLEPLAYER,
+		MULTIPLAYER,
+		ONLINE
+	}
+
 	public enum Turn{
 		Player1,
 		Player2,
-		AI
+		AI,
+		ONLINE_PLAYER
 	}
 
 	//Lists containing start arrays for players
@@ -83,30 +86,47 @@ public class GameState implements Cloneable{
 
 	//change player turn
 	public void nextTurn() {
-		if(singlePlayer) {
-			if(whosTurn.equals(Turn.Player1)) {
-				whosTurn = Turn.AI;
-				paneTurnString = "AI";
-				paneTColor = colorP2;
-			}
-			else {
-				whosTurn = Turn.Player1;
-				paneTurnString = player1Name;
-				paneTColor = colorP1;
-			}
-		}
-		//Multiplayer
-		else {
-			if(whosTurn.equals(Turn.Player1)) {
-				whosTurn = Turn.Player2;
-				paneTurnString = player2Name;
-				paneTColor = colorP2;
-			}
-			else {
-				whosTurn = Turn.Player1;
-				paneTurnString = player1Name;
-				paneTColor = colorP1;
-			}
+		switch(playerState) {
+			case SINGLEPLAYER:
+				if(whosTurn.equals(Turn.Player1)) {
+					whosTurn = Turn.AI;
+					paneTurnString = "AI";
+					paneTColor = colorP2;
+				}
+				else {
+					whosTurn = Turn.Player1;
+					paneTurnString = player1Name;
+					paneTColor = colorP1;
+				}
+				break;
+			//Multiplayer
+			case MULTIPLAYER:
+				if(whosTurn.equals(Turn.Player1)) {
+					whosTurn = Turn.Player2;
+					paneTurnString = player2Name;
+					paneTColor = colorP2;
+				}
+				else {
+					whosTurn = Turn.Player1;
+					paneTurnString = player1Name;
+					paneTColor = colorP1;
+				}
+				break;
+			case ONLINE:
+				if(whosTurn.equals(Turn.Player1)){
+					whosTurn = Turn.ONLINE_PLAYER;
+					paneTurnString = player2Name;
+					paneTColor = colorP2;
+				} else if(whosTurn.equals(Turn.Player2)){
+					whosTurn = Turn.ONLINE_PLAYER;
+					paneTurnString = player2Name;
+					paneTColor = colorP2;
+				} else {
+					whosTurn = host ? Turn.Player1 : Turn.Player2;
+					paneTurnString = player2Name;
+					paneTColor = colorP2;
+				}
+
 		}
 	}
 
@@ -137,12 +157,12 @@ public class GameState implements Cloneable{
 		for(Hexagon v : this.grid) {
 			ArrayList<Integer> cluster = new ArrayList<>();
 
-			// Tjekker om den givne hexagon er den givne spillers farve 
+			// Tjekker om den givne hexagon er den givne spillers farve
 			// eller om den allerede er en del af en cluster, i så fald skip!
 			if (v.color != p || seen.contains(v.id)) {
 				continue;
 			}
-			
+
 			// Standard BFS ting...
 			boolean visited[] = new boolean[numberOfHexagons*numberOfHexagons];
 			LinkedList<Integer> queue = new LinkedList<Integer>();
@@ -171,7 +191,7 @@ public class GameState implements Cloneable{
 				}
 			}
 			pCluster.add(cluster);
-		}	
+		}
 		result.get(0).add(0);
 		result.addAll(pCluster);
 		return result;
@@ -199,7 +219,7 @@ public class GameState implements Cloneable{
 								axis_counter+=1;
 							}
 						case AI:
-						}
+					}
 				}
 				sum += grid.get(list.get(i)).score;
 			}
@@ -210,8 +230,8 @@ public class GameState implements Cloneable{
 		return finalSum;
 	}
 
-//	public double evaluate(ArrayList<ArrayList<Integer>> clusters) {
-//		
+	//	public double evaluate(ArrayList<ArrayList<Integer>> clusters) {
+//
 //		//clears win indicator if not a winning state
 //		System.out.println("clusters:= "+ clusters.toString());
 //		if(clusters.get(0).get(0).equals(1)) {
@@ -233,9 +253,9 @@ public class GameState implements Cloneable{
 //				final_score+=temp_score*1.5;
 //			}
 //		}
-//		
+//
 //		return final_score;
-//		
+//
 //	}
 	public void resetGame() {
 		whosTurn = Turn.Player1;
@@ -250,28 +270,31 @@ public class GameState implements Cloneable{
 
 	public ArrayList<Integer> getValidMoves() {
 		ArrayList<Integer> validmoves = new ArrayList<>();
-		
+
 		for(Hexagon h: grid) {
 			if(!h.clicked)
 				validmoves.add(h.id);
 		}
 		return validmoves;
 	}
-	
-	
-	
+
+
+
 	@Override
 	public GameState clone() {
 		GameState gs = new GameState();
 		gs.whosTurn=this.whosTurn;
-		
+
 		gs.ids=this.ids;
 		for(Hexagon h: this.grid )
 			gs.grid.add(h.clone());
 		gs.fillWinStateArrays();
-		
+
 		return gs;
-		
+
+	}
+
+	public void setGameSpace(Space gameSpace) {
+		this.gameSpace = gameSpace;
 	}
 }
-

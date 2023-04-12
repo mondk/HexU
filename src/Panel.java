@@ -38,6 +38,7 @@ public class Panel extends JPanel implements Runnable{
 		this.setFocusable(true);
 		this.setPreferredSize(gs.SCREEN_SIZE);
 		createGrid();
+
 		
 		
 		
@@ -51,35 +52,38 @@ public class Panel extends JPanel implements Runnable{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				int i = AI.nextMove(gs);
-				for(Hexagon h: gs.grid) {
-					if(h.clicked)
-						System.out.println(h.id+" is clicked");
-				}
-				gs.grid.get(i).clicked=true;
-				gs.grid.get(i).color=gs.paneTColor;
-				gs.q.add(i);
+				String[][] matrix = AI.gridToMatrix(gs.grid);
+				AI.stringifyMatrix(matrix);
+				System.out.println(AI.getNullElements(matrix));
+				// // TODO Auto-generated method stub
+				// int i = AI.nextMove(gs);
+				// for(Hexagon h: gs.grid) {
+				// 	if(h.clicked)
+				// 		System.out.println(h.id+" is clicked");
+				// }
+				// gs.grid.get(i).clicked=true;
+				// gs.grid.get(i).color=gs.paneTColor;
+				// gs.q.add(i);
 				
-				ArrayList<ArrayList<Integer>> won = new ArrayList<>();
-				won = gs.winingState(gs.startP1, gs.colorP1, gs.winP1);
-				System.out.println(gs.evaluate(won));
-				gs.nextTurn();
-					if (won.get(0).get(0)==1) {
-						repaint();
-						JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.player1Name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
-	 					if (dialogbutton == JOptionPane.YES_OPTION) {
-	 						gs.resetGame();
-	 						paneT.setText(gs.player1Name);
-						paneT.setBackground(gs.colorP1);
+				// ArrayList<ArrayList<Integer>> won = new ArrayList<>();
+				// won = gs.winingState(gs.startP1, gs.colorP1, gs.winP1);
+				// System.out.println(gs.evaluate(won));
+				// gs.nextTurn();
+				// 	if (won.get(0).get(0)==1) {
+				// 		repaint();
+				// 		JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.player1Name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
+	 			// 		if (dialogbutton == JOptionPane.YES_OPTION) {
+	 			// 			gs.resetGame();
+	 			// 			paneT.setText(gs.player1Name);
+				// 		paneT.setBackground(gs.colorP1);
 	 						
-	 					}else {
-	 						remove(dialogbutton);
-	 					}
-					}
-				paneT.setText(gs.paneTurnString);
-				paneT.setBackground(gs.paneTColor);
-				repaint();
+	 			// 		}else {
+	 			// 			remove(dialogbutton);
+	 			// 		}
+				// 	}
+				// paneT.setText(gs.paneTurnString);
+				// paneT.setBackground(gs.paneTColor);
+				// repaint();
 				
 				
 			}

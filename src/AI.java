@@ -1,4 +1,6 @@
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AI {
 	
@@ -53,7 +55,6 @@ public class AI {
 	        double best_move = -1;
 	        for (int move : gs.getValidMoves()) {
 	        	double move1 =move;
-	        	System.out.println("move :"+move);
 	        	GameState new_state = null;
 	        	new_state=	makeMove(gs,move,gs.whosTurn);
 	            double[] eval = minimax(new_state, depth - 1, true);
@@ -71,6 +72,15 @@ public class AI {
 		
 		GameState gs2 = null;
 		gs2=(GameState) gs1.clone();
+		for (Hexagon h : gs1.grid){
+			if ( h.clicked)
+				System.out.print(h.id + " ");
+		}
+		System.out.println("");
+		// for (Hexagon h : gs2.grid){
+		// 	if ( h.clicked = true)
+		// 		System.out.print(h.id + " ");
+		// }
 		gs2.grid.get(move).clicked=true;
 
 		System.out.println(gs2.grid.get(move).clicked+" "+gs1.grid.get(move).clicked);
@@ -86,5 +96,40 @@ public class AI {
 		
 	}
 
+	public static String[][] gridToMatrix(ArrayList<Hexagon> grid){
+		String[][] matrix = new String[4][4];
+		for (int i =0; i < 4; i++){
+			for (int j = 0; j < 4;j++){
+				int hex = i*4+j;
+				String color = grid.get(hex).color.toString();
+				if (color.equals( Color.pink.toString())){
+					matrix[i][j] = "pink";
+				}else if ( color.equals( Color.green.toString())){
+					matrix[i][j] = "green";
+				}
+			}
+		}
+		return matrix;
+	}
 
+	public static String getNullElements(String[][] matrix) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < matrix.length; i++) {
+			for (int j = 0; j < matrix[i].length; j++) {
+				if (matrix[i][j] == null) {
+					sb.append("(" + i + "," + j + ")");
+				}
+			}
+		}
+		return sb.toString();
+	}
+
+	public static void stringifyMatrix (String[][] matrix){
+		for (int i =0; i < 4; i++){
+			for (int j = 0; j < 4;j++){
+				System.out.printf("%5s ", matrix[i][j]);
+			}
+			System.out.println();
+		}
+	}
 }

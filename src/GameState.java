@@ -42,8 +42,10 @@ public class GameState implements Cloneable{
 
 	//Playerstate
 	boolean singlePlayer = false;
-	Color colorP1 = Color.decode("#d032f0");
-	Color colorP2 = Color.decode("#247324");
+	Color colorP1 = Color.pink;
+	Color colorP2 = Color.green;
+	// Color colorP1 = Color.decode("#d032f0");
+	// Color colorP2 = Color.decode("#247324");
 
 
 	//Show which player turn it is

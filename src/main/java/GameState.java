@@ -1,3 +1,5 @@
+import org.jspace.Space;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -14,6 +16,8 @@ public class GameState implements Cloneable{
 	
 	//Size of game screen
 	Dimension SCREEN_SIZE = new Dimension(600,400);
+
+	Space gameSpace = null;
 	
 	//game grid
 	ArrayList<Hexagon> grid = new ArrayList<>();
@@ -228,7 +232,11 @@ public class GameState implements Cloneable{
 			gs.grid.add(h.clone());
 		
 		return gs;
-		
+
+	}
+
+	public void setGameSpace(Space gameSpace) {
+		this.gameSpace = gameSpace;
 	}
 }
 

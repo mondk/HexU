@@ -127,13 +127,13 @@ public class GameState implements Cloneable{
 		ArrayList<Integer> seen = new ArrayList<>();
 		//Loop over hele griddet, for at finde alle clusters
 		for(Hexagon v : this.grid) {
-			ArrayList<Integer> cluster = new ArrayList<>();
-
 			// Tjekker om den givne hexagon er den givne spillers farve 
 			// eller om den allerede er en del af en cluster, i så fald skip!
 			if (v.color != p || seen.contains(v.id)) {
 				continue;
 			}
+
+			ArrayList<Integer> cluster = new ArrayList<>();
 			
 			// Standard BFS ting...
 			boolean visited[] = new boolean[numberOfHexagons*numberOfHexagons];

@@ -27,6 +27,7 @@ public class Panel extends JPanel implements Runnable{
 	private Graphics graphics;							//TextFrame for player turn
 	JTextPane paneT = new JTextPane();
 	JTextPane winPane = new JTextPane();
+	private AI ai;
 	JButton undo = new JButton("Undo");
 	JButton generate = new JButton("Generate move");
 	boolean start =false;
@@ -38,7 +39,7 @@ public class Panel extends JPanel implements Runnable{
 		this.setFocusable(true);
 		this.setPreferredSize(gs.SCREEN_SIZE);
 		createGrid();
-
+		this.ai = new AI(gs);
 		
 		
 		
@@ -52,18 +53,17 @@ public class Panel extends JPanel implements Runnable{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String[][] matrix = AI.gridToMatrix(gs.grid);
-				AI.stringifyMatrix(matrix);
-				
-				for(int[] ahh :AI.getNullElements(matrix)) {
-					System.out.print("("+ahh[0]+" "+ahh[1]+") ");
+				int[] move= {};
+				switch(gs.whosTurn){
+					case Player1:
+						move = ai.nextMove(ai.gridToMatrix(gs.grid), "pink");
+					case Player2:
+						move = ai.nextMove(ai.gridToMatrix(gs.grid), "green");
 				}
-				System.out.println();
-				int[] move = {0,0};
-				AI.stringifyMatrix(AI.makeMove(move,"pink",matrix));
-				System.out.println();
-				AI.stringifyMatrix(matrix);
-				// // TODO Auto-generated method stub
+				int hex = move[0]*gs.numberOfHexagons+move[1];
+				gs.grid.get(hex).clicked = true;
+				gs.grid.get(hex).color = gs.paneTColor;
+				gs.q.add(hex);
 				// int i = AI.nextMove(gs);
 				// for(Hexagon h: gs.grid) {
 				// 	if(h.clicked)
@@ -89,9 +89,10 @@ public class Panel extends JPanel implements Runnable{
 	 			// 			remove(dialogbutton);
 	 			// 		}
 				// 	}
-				// paneT.setText(gs.paneTurnString);
-				// paneT.setBackground(gs.paneTColor);
-				// repaint();
+				gs.nextTurn();
+				paneT.setText(gs.paneTurnString);
+				paneT.setBackground(gs.paneTColor);
+				repaint();
 				
 				
 			}

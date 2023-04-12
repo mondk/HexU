@@ -59,6 +59,7 @@ public class Hexagon extends JPanel implements Cloneable{
 		hex.clicked=this.clicked;
 		hex.adj=this.adj;
 		hex.score=this.score;
+		
 		return hex;
 		}
 		

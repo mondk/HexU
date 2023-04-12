@@ -54,7 +54,15 @@ public class Panel extends JPanel implements Runnable{
 			public void actionPerformed(ActionEvent e) {
 				String[][] matrix = AI.gridToMatrix(gs.grid);
 				AI.stringifyMatrix(matrix);
-				System.out.println(AI.getNullElements(matrix));
+				
+				for(int[] ahh :AI.getNullElements(matrix)) {
+					System.out.print("("+ahh[0]+" "+ahh[1]+") ");
+				}
+				System.out.println();
+				int[] move = {0,0};
+				AI.stringifyMatrix(AI.makeMove(move,"pink",matrix));
+				System.out.println();
+				AI.stringifyMatrix(matrix);
 				// // TODO Auto-generated method stub
 				// int i = AI.nextMove(gs);
 				// for(Hexagon h: gs.grid) {

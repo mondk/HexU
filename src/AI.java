@@ -17,8 +17,9 @@ public class AI {
 
 
 	public  int[] nextMove(String[][] matrix, String player) {
-		int[] move = minimax(matrix,player,1, true);
-		System.out.println("best move :"+move[1]);
+		
+		int[] move = minimax(matrix,player,2, true);
+		System.out.println("best move :"+move[1]+" ; "+move[2]);
 		
 		return new int[] {move[1],move[2]};
 	}
@@ -26,6 +27,7 @@ public class AI {
 	public int[] minimax(String[][] matrix, String player,int depth, boolean maximizing_player) {
 	
 	    if (depth == 0) {
+	    	
 	    	return new int[] {(int) evalMatrix(matrix, player),-1,-1};
 	        
 	    }
@@ -35,16 +37,22 @@ public class AI {
 	        int[] best_move = new int[] {-1,-1};
 	        String currentPlayer = player;
 	        String nextPlayer = nextTurn(player);
+	        System.out.println("VALID MOVES : ");
+	        
+	        
 	        for (int[] move : getNullElements(matrix)) {
 	    
 	        	String[][] matrix_new=makeMove(move,currentPlayer,matrix);
 	        	
 	            int[] eval = minimax(matrix_new,nextPlayer, depth - 1, false);
-				
+				System.out.println("eval score : "+eval[0]);
 	            if (eval[0] > max_eval) {
+	            	System.out.println("inner score : "+eval[0]);
 	                max_eval = eval[0];
 	                best_move = move;
+	                
 	            }
+	            System.out.println("best move inner :"+best_move[0]+" ; "+best_move[1]);
 	        }
 	        return new int[] {max_eval, best_move[0],best_move[1]};
 	        
@@ -53,11 +61,12 @@ public class AI {
 	        int[] best_move = new int[] {-1,-1};
 	        String currentPlayer = player;
 	        String nextPlayer = nextTurn(player);
+	        
 	        for (int[] move : getNullElements(matrix)) {
 	    
 	        	String[][] matrix_new=makeMove(move,currentPlayer,matrix);
 	        	
-	            int[] eval = minimax(matrix_new,nextPlayer, depth - 1, false);
+	            int[] eval = minimax(matrix_new,nextPlayer, depth - 1, true);
 				
 	            if ( min_eval > eval[0]) {
 	                min_eval = eval[0];
@@ -83,16 +92,17 @@ public class AI {
 		if(player.equals(player1)) {
 			return player2;
 		}
-		else
+		else if(player.equals(player2))
 			return player1;
+		else return null;
 		
 	}
 
-	public static String[][] gridToMatrix(ArrayList<Hexagon> grid){
-		String[][] matrix = new String[4][4];
-		for (int i =0; i < 4; i++){
-			for (int j = 0; j < 4;j++){
-				int hex = i*4+j;
+	public static String[][] gridToMatrix(ArrayList<Hexagon> grid, int numberofHex){
+		String[][] matrix = new String[numberofHex][numberofHex];
+		for (int i =0; i < numberofHex; i++){
+			for (int j = 0; j < numberofHex;j++){
+				int hex = i*numberofHex+j;
 				String color = grid.get(hex).color.toString();
 				if (color.equals( Color.pink.toString())){
 					matrix[i][j] = "pink";
@@ -118,9 +128,9 @@ public class AI {
 		return validMoves;
 	}
 
-	public static void stringifyMatrix (String[][] matrix){
-		for (int i =0; i < 4; i++){
-			for (int j = 0; j < 4;j++){
+	public static void stringifyMatrix (String[][] matrix,int numberofHex){
+		for (int i =0; i < numberofHex; i++){
+			for (int j = 0; j < numberofHex;j++){
 				System.out.printf("%5s ", matrix[i][j]);
 			}
 			System.out.println();
@@ -136,7 +146,7 @@ public class AI {
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix[i].length; j++) {
 				if (matrix[i][j].equals(Player)) {
-					int v = i*4+j;
+					int v = i*gs.numberOfHexagons+j;
 					if (seen.contains(v)){
 						continue;
 					}
@@ -180,6 +190,7 @@ public class AI {
 				double axis_counter = 0;
 				for (int h : cluster){
 					sum += gs.grid.get(h).score;
+					System.out.println("score " +gs.grid.get(h).score);
 					if (Player.equals(player1)){
 						axis_counter+= gs.grid.get(h).center.y;
 					} else if (Player.equals(player2)){
@@ -193,9 +204,10 @@ public class AI {
 				System.out.println(sum);
 			}
 			finalScore += sum;
+			sum=0;
 		}
 	}
-	System.out.println(finalScore);
+	System.out.println("final score : "+finalScore);
 	return finalScore;
 }
 }

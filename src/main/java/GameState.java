@@ -24,7 +24,7 @@ public class GameState implements Cloneable{
 	ArrayList<Triangle> border = new ArrayList<>();
 
 	//Hexagon constants
-	int numberOfHexagons =4;
+	int numberOfHexagons =10;
 
 	int ids =0;
 
@@ -119,8 +119,8 @@ public class GameState implements Cloneable{
 					paneTColor = colorP2;
 				} else if(whosTurn.equals(Turn.Player2)){
 					whosTurn = Turn.ONLINE_PLAYER;
-					paneTurnString = player2Name;
-					paneTColor = colorP2;
+					paneTurnString = player1Name;
+					paneTColor = colorP1;
 				} else {
 					whosTurn = host ? Turn.Player1 : Turn.Player2;
 					paneTurnString = host ? player1Name : player2Name;

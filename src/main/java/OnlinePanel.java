@@ -9,8 +9,9 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class OnlinePanel extends JPanel {
-    OnlinePanel(GameState gs, JPanel cards){
+    OnlinePanel(GameState gs){
         this.setSize(gs.SCREEN_SIZE);
+        TextField name = new TextField("PlayerName");
         TextField ip = new TextField("127.0.0.1");
         JButton join = new JButton();
         JButton host = new JButton();
@@ -20,16 +21,16 @@ public class OnlinePanel extends JPanel {
                 try {
                     RemoteSpace space = new RemoteSpace("tcp://" + ip.getText() + ":9001/game?keep");
                     gs.setGameSpace(space);
+                    space.put("Player2Name",name.getText());
                     gs.host = false;
                     gs.playerState = GameState.State.ONLINE;
                     gs.whosTurn = GameState.Turn.Player2;
-                    Panel game = new Panel(gs);
-                    cards.add(game);
-                    CardLayout cl = (CardLayout)gs.cards.getLayout();
-                    cl.next(gs.cards);
-                    cards.remove(0);
+                    //Panel game = new Panel(gs);
+                    WaitingRoom waitingRoom = new WaitingRoom(gs);
                 } catch (IOException e) {
                     System.out.println("Invalid ip");
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
             }
         });
@@ -41,17 +42,20 @@ public class OnlinePanel extends JPanel {
                 repository.add("game",space);
                 repository.addGate("tcp://" + ip.getText() + ":9001/?keep");
                 gs.setGameSpace(space);
+                try {
+                    space.put("Player1Name", name.getText());
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
                 gs.playerState = GameState.State.ONLINE;
                 gs.host = true;
-                Panel panel = new Panel(gs);
-                cards.add(panel);
-                CardLayout cl = (CardLayout)gs.cards.getLayout();
-                cl.next(gs.cards);
-                cards.remove(0);
+                //Panel panel = new Panel(gs);
+                WaitingRoom waitingRoom = new WaitingRoom(gs);
             }
         });
         join.setText("Join game");
         host.setText("Host game");
+        add(name);
         add(ip);
         add(join);
         add(host);

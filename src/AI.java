@@ -98,6 +98,8 @@ public class AI {
 					matrix[i][j] = "pink";
 				}else if ( color.equals( Color.green.toString())){
 					matrix[i][j] = "green";
+				}else{
+					matrix[i][j] = "null";
 				}
 			}
 		}
@@ -108,7 +110,7 @@ public class AI {
 		ArrayList<int[]> validMoves = new ArrayList<>();
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix[i].length; j++) {
-				if (matrix[i][j] == null) {
+				if (matrix[i][j].equals("null")) {
 					validMoves.add(new int[]{i,j});
 				}
 			}
@@ -133,7 +135,7 @@ public class AI {
 		
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix[i].length; j++) {
-				if (matrix[i][j] == Player) {
+				if (matrix[i][j].equals(Player)) {
 					int v = i*4+j;
 					if (seen.contains(v)){
 						continue;
@@ -151,7 +153,7 @@ public class AI {
 						while(k.hasNext()) {
 							int n = k.next();
 							if (Player.equals(player1)){
-								if(visited[n] == false && matrix[n/gs.numberOfHexagons][n%gs.numberOfHexagons] == "pink") {
+								if(visited[n] == false && matrix[n/gs.numberOfHexagons][n%gs.numberOfHexagons].equals("pink")) {
 									visited[n] = true;
 									queue.add(n);
 									seen.add(n);
@@ -161,7 +163,7 @@ public class AI {
 									}
 								}
 							}else if (Player.equals(player2)){
-								if(visited[n] == false && matrix[n/gs.numberOfHexagons][n%gs.numberOfHexagons] == "green") {
+								if(visited[n] == false && matrix[n/gs.numberOfHexagons][n%gs.numberOfHexagons].equals("green")) {
 									visited[n] = true;
 									queue.add(n);
 									seen.add(n);
@@ -185,7 +187,10 @@ public class AI {
 					}
 					axis_counter = axis_counter/gs.numberOfHexagons;
 				}
+				System.out.println("sum chehck");
+				System.out.println(sum);
 				sum = sum*(1+((cluster.size()-1)*0.25));//*(1+(axis_counter*0.6));
+				System.out.println(sum);
 			}
 			finalScore += sum;
 		}

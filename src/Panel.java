@@ -41,7 +41,7 @@ public class Panel extends JPanel implements Runnable{
 		createGrid();
 		this.ai = new AI(gs);
 		
-		//gs.grid.get(4).score=5;
+		gs.grid.get(4).score=5;
 		
 		//System.out.println(gs.grid.toString());
 		paneT.setText(gs.paneTurnString);
@@ -57,8 +57,10 @@ public class Panel extends JPanel implements Runnable{
 				switch(gs.whosTurn){
 					case Player1:
 						move = ai.nextMove(ai.gridToMatrix(gs.grid,gs.numberOfHexagons), "pink");
+						break;
 					case Player2:
 						move = ai.nextMove(ai.gridToMatrix(gs.grid,gs.numberOfHexagons), "green");
+						break;
 				}
 				int hex = move[0]*gs.numberOfHexagons+move[1];
 				gs.grid.get(hex).clicked = true;
@@ -72,23 +74,23 @@ public class Panel extends JPanel implements Runnable{
 				// gs.grid.get(i).clicked=true;
 				// gs.grid.get(i).color=gs.paneTColor;
 				// gs.q.add(i);
-				
-				 ArrayList<ArrayList<Integer>> won = new ArrayList<>();
-				 won = gs.winingState(gs.startP1, gs.colorP1, gs.winP1);
-				// System.out.println(gs.evaluate(won));
-				
-				 	if (won.get(0).get(0)==1) {
-				 		repaint();
-				 		JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.player1Name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
-	 			 		if (dialogbutton == JOptionPane.YES_OPTION) {
-	 			 			gs.resetGame();
-	 			 			paneT.setText(gs.player1Name);
-				 		paneT.setBackground(gs.colorP1);
-	 						
-	 			 		}else {
-	 			 			remove(dialogbutton);
-	 			 		}
-				 	}
+//				
+//				 ArrayList<ArrayList<Integer>> won = new ArrayList<>();
+//				 won = gs.winingState(gs.startP1, gs.colorP1, gs.winP1);
+//				// System.out.println(gs.evaluate(won));
+//				
+//				 	if (won.get(0).get(0)==1) {
+//				 		repaint();
+//				 		JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.player1Name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
+//	 			 		if (dialogbutton == JOptionPane.YES_OPTION) {
+//	 			 			gs.resetGame();
+//	 			 			paneT.setText(gs.player1Name);
+//				 		paneT.setBackground(gs.colorP1);
+//	 						
+//	 			 		}else {
+//	 			 			remove(dialogbutton);
+//	 			 		}
+//				 	}
 				gs.nextTurn();
 				paneT.setText(gs.paneTurnString);
 				paneT.setBackground(gs.paneTColor);

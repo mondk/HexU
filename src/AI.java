@@ -17,8 +17,8 @@ public class AI {
 
 
 	public  int[] nextMove(String[][] matrix, String player) {
-		
-		int[] move = minimax(matrix,player,2, true);
+		System.out.println("\nSTART LOL"+player+"\n");
+		int[] move = minimax(matrix,player,4, true);
 		System.out.println("best move :"+move[1]+" ; "+move[2]);
 		
 		return new int[] {move[1],move[2]};
@@ -37,13 +37,19 @@ public class AI {
 	        int[] best_move = new int[] {-1,-1};
 	        String currentPlayer = player;
 	        String nextPlayer = nextTurn(player);
-	        System.out.println("VALID MOVES : ");
-	        
 	        
 	        for (int[] move : getNullElements(matrix)) {
-	    
+	        	
+	        	
+	        	System.out.println("\ncurrent move :"+move[0]+" ; "+move[1]+"\n");
+	        
 	        	String[][] matrix_new=makeMove(move,currentPlayer,matrix);
 	        	
+	        	if(depth==4) {
+	        		if(evalMatrix(matrix_new, player)==Double.MAX_VALUE) {
+		        		return new int[] {-1, move[0],move[1]};
+		        	}
+	        	}
 	            int[] eval = minimax(matrix_new,nextPlayer, depth - 1, false);
 				System.out.println("eval score : "+eval[0]);
 	            if (eval[0] > max_eval) {
@@ -94,7 +100,8 @@ public class AI {
 		}
 		else if(player.equals(player2))
 			return player1;
-		else return null;
+		else 
+			return null;
 		
 	}
 
@@ -117,6 +124,7 @@ public class AI {
 	}
 
 	public static ArrayList<int[]> getNullElements(String[][] matrix) {
+		//stringifyMatrix(matrix,4);
 		ArrayList<int[]> validMoves = new ArrayList<>();
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix[i].length; j++) {
@@ -169,6 +177,8 @@ public class AI {
 									seen.add(n);
 									cluster.add(n);
 									if (!Collections.disjoint(cluster, gs.startP1) && !Collections.disjoint(cluster,gs.winP1)){
+											
+										//System.out.println("\nBIGGEST DICK pink\n");
 										return Double.MAX_VALUE;
 									}
 								}
@@ -179,18 +189,19 @@ public class AI {
 									seen.add(n);
 									cluster.add(n);
 									if (!Collections.disjoint(cluster, gs.startP2) && !Collections.disjoint(cluster,gs.winP2)){
+										//System.out.println("\nBIGGEST DICK green\n");
 										return Double.MAX_VALUE;
 									}
 								}
 							}
 						}
 				}
-				System.out.println("cluster " + cluster.toString());
+				//System.out.println("cluster " + cluster.toString());
 				sum = 0;
 				double axis_counter = 0;
 				for (int h : cluster){
 					sum += gs.grid.get(h).score;
-					System.out.println("score " +gs.grid.get(h).score);
+					//System.out.println("score " +gs.grid.get(h).score);
 					if (Player.equals(player1)){
 						axis_counter+= gs.grid.get(h).center.y;
 					} else if (Player.equals(player2)){
@@ -198,16 +209,16 @@ public class AI {
 					}
 					axis_counter = axis_counter/gs.numberOfHexagons;
 				}
-				System.out.println("sum chehck");
-				System.out.println(sum);
+				//System.out.println("sum chehck");
+				//System.out.println(sum);
 				sum = sum*(1+((cluster.size()-1)*0.25));//*(1+(axis_counter*0.6));
-				System.out.println(sum);
+				//System.out.println(sum);
 			}
 			finalScore += sum;
 			sum=0;
 		}
 	}
-	System.out.println("final score : "+finalScore);
+	//System.out.println("final score : "+finalScore);
 	return finalScore;
 }
 }

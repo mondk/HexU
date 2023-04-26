@@ -310,7 +310,6 @@ public class Panel extends JPanel implements Runnable{
 					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons);;
 					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons-1);
 				}
-				//System.out.println(""+hex + " " + gs.grid.get(hex).adj.toString());
 			}
 		}
 		int[] x= {gs.grid.get(0).center.x-(int) (gs.radius*2), gs.grid.get(gs.numberOfHexagons-1).center.x+(int) (gs.radius*1.3), gs.grid.get(4).center.x};

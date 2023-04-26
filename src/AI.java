@@ -150,9 +150,8 @@ public class AI {
 
 		double finalScore = 0.0;	
 		double sum = 0;
-		
-		for (int i = 0; i < matrix.length; i++) {
-			for (int j = 0; j < matrix[i].length; j++) {
+		for (int i = 0; i < gs.numberOfHexagons; i++) {
+			for (int j = 0; j < gs.numberOfHexagons; j++) {
 				if (matrix[i][j].equals(Player)) {
 					int v = i*gs.numberOfHexagons+j;
 					if (seen.contains(v)){
@@ -189,29 +188,29 @@ public class AI {
 									seen.add(n);
 									cluster.add(n);
 									if (!Collections.disjoint(cluster, gs.startP2) && !Collections.disjoint(cluster,gs.winP2)){
-										//System.out.println("\nBIGGEST DICK green\n");
 										return Double.MAX_VALUE;
 									}
 								}
 							}
 						}
 				}
-				//System.out.println("cluster " + cluster.toString());
 				sum = 0;
 				double axis_counter = 0;
-				for (int h : cluster){
-					sum += gs.grid.get(h).score;
-					//System.out.println("score " +gs.grid.get(h).score);
+				if (cluster.size() > 0)
+					sum +=gs.grid.get(cluster.get(0)).score;
+				for (int h = 1; h<cluster.size();h ++){
+					sum += gs.grid.get(cluster.get(h)).score;
 					if (Player.equals(player1)){
-						axis_counter+= gs.grid.get(h).center.y;
+						if (gs.grid.get(cluster.get(h)).center.y != gs.grid.get(cluster.get(h-1)).center.y)
+							axis_counter += 1;
 					} else if (Player.equals(player2)){
-						axis_counter+= gs.grid.get(h).center.x;
+						if (gs.grid.get(cluster.get(h)).center.y == gs.grid.get(cluster.get(h-1)).center.y)
+							axis_counter += 1;
 					}
-					axis_counter = axis_counter/gs.numberOfHexagons;
 				}
 				//System.out.println("sum chehck");
 				//System.out.println(sum);
-				sum = sum*(1+((cluster.size()-1)*0.25));//*(1+(axis_counter*0.6));
+				sum = sum*(1+((cluster.size()-1)*0.25))*(1+(axis_counter*0.35));
 				//System.out.println(sum);
 			}
 			finalScore += sum;

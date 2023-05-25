@@ -21,7 +21,7 @@ public class GameState implements Cloneable{
 	
 	//Hexagon constants
 	int numberOfHexagons =4;
-	
+
 	int ids =0;
 
 	double radius=(0.5773502717*(600-150))/(numberOfHexagons+1);
@@ -207,7 +207,7 @@ public class GameState implements Cloneable{
 	}
 
 //	public double evaluate(ArrayList<ArrayList<Integer>> clusters) {
-//		
+//
 //		//clears win indicator if not a winning state
 //		System.out.println("clusters:= "+ clusters.toString());
 //		if(clusters.get(0).get(0).equals(1)) {
@@ -229,9 +229,9 @@ public class GameState implements Cloneable{
 //				final_score+=temp_score*1.5;
 //			}
 //		}
-//		
+//
 //		return final_score;
-//		
+//
 //	}
 	public void resetGame() {
 		whosTurn = Turn.Player1;
@@ -253,21 +253,28 @@ public class GameState implements Cloneable{
 		}
 		return validmoves;
 	}
-	
-	
-	
+
+
+
 	@Override
 	public GameState clone() {
 		GameState gs = new GameState();
 		gs.whosTurn=this.whosTurn;
-		
+
 		gs.ids=this.ids;
 		for(Hexagon h: this.grid )
 			gs.grid.add(h.clone());
 		gs.fillWinStateArrays();
-		
+
+
 		return gs;
-		
+
+	}
+
+	public void updateNumberOfHexagons(int numberOfHexagons){
+		this.numberOfHexagons = numberOfHexagons;
+		this.radius=(0.5773502717*(600-150))/(numberOfHexagons+1);
+		this.shift = 2*radius*0.8660254;
 	}
 }
 

@@ -10,7 +10,6 @@ import java.io.IOException;
 
 public class OnlinePanel extends JPanel {
     OnlinePanel(GameState gs){
-        this.setSize(gs.SCREEN_SIZE);
         TextField name = new TextField("PlayerName");
         TextField ip = new TextField("127.0.0.1");
         JButton join = new JButton();
@@ -25,6 +24,10 @@ public class OnlinePanel extends JPanel {
                     gs.host = false;
                     gs.playerState = GameState.State.ONLINE;
                     gs.whosTurn = GameState.Turn.Player2;
+                    gs.player1Name = name.getText();
+                    MoveListener moveListener = new MoveListener(space, "player1", gs.getValidMoves());
+                    Thread moveThread = new Thread(moveListener);
+                    moveThread.start();
                     //Panel game = new Panel(gs);
                     WaitingRoom waitingRoom = new WaitingRoom(gs);
                 } catch (IOException e) {
@@ -44,11 +47,13 @@ public class OnlinePanel extends JPanel {
                 gs.setGameSpace(space);
                 try {
                     space.put("Player1Name", name.getText());
+                    space.put("players",new HashMapIntegerString());
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
                 gs.playerState = GameState.State.ONLINE;
                 gs.host = true;
+                gs.player1Name = name.getText();
                 //Panel panel = new Panel(gs);
                 WaitingRoom waitingRoom = new WaitingRoom(gs);
             }

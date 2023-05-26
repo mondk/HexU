@@ -112,14 +112,15 @@ public class Panel extends JPanel implements Runnable{
 			public void mouseClicked(MouseEvent e) {
 				for(Hexagon h : gs.grid) {
 					if(h.getPolygon().contains(e.getPoint())&&!h.clicked) {
-						gs.grid.get(h.id).clicked=true;
 
-						gs.q.add(h.id);
 
 						ArrayList<ArrayList<Integer>> won = new ArrayList<>();
 						System.out.println("The turn is " + gs.whosTurn);
 						switch(gs.whosTurn) {
 							case Player1:
+								gs.grid.get(h.id).clicked=true;
+
+								gs.q.add(h.id);
 								h.color=gs.colorP1;
 								gs.nextTurn();
 								if (gs.gameSpace != null) {
@@ -149,6 +150,9 @@ public class Panel extends JPanel implements Runnable{
 								paneT.setText(gs.paneTurnString);
 								break;
 							case Player2:
+								gs.grid.get(h.id).clicked=true;
+
+								gs.q.add(h.id);
 								h.color=gs.colorP2;
 								gs.nextTurn();
 								if (gs.gameSpace != null) {
@@ -177,33 +181,18 @@ public class Panel extends JPanel implements Runnable{
 								paneT.setBackground(gs.paneTColor);
 								paneT.setText(gs.paneTurnString);
 								break;
+							case ONLINE_PLAYER:
+								System.out.println("It is not your turn");
+								break;
 						}
 						repaint();
-						if(gs.playerState == GameState.State.ONLINE) {
-							try {
-								gs.nextTurn();
-								System.out.println("Awaiting move");
-								int move;
-								if(gs.host) move = (int) gs.gameSpace.get(new ActualField("Player2"), new FormalField(Integer.class))[1];
-								else move = (int) gs.gameSpace.get(new ActualField("Player1"), new FormalField(Integer.class))[1];
-								//int move = 0;
-								System.out.println("Got move");
-								h.color = gs.host ? gs.colorP2 : gs.colorP1;
-								won = gs.host ? gs.winingState(gs.startP2, gs.colorP2, gs.winP2) : gs.winingState(gs.startP1, gs.colorP1, gs.winP1);
-								gs.grid.get(move).clicked=true;
-								gs.grid.get(move).color=gs.paneTColor;
-								gs.q.add(move);
-							} catch (InterruptedException ex) {
-								System.out.println("You have lost connection");
-							}
-
-						}
 					}
 				}
 				repaint();
 			}
 		});
 		Thread gameThread = new Thread(this);
+		start = true;
 		gameThread.start();
 	}
 
@@ -217,7 +206,7 @@ public class Panel extends JPanel implements Runnable{
 			long now = System.nanoTime();
 			delta += (now -lastTime)/ns;
 			lastTime = now;
-			if(delta >=1&&start) {
+			if(delta >=1&&start&& MouseInfo.getPointerInfo().getLocation() != null) {
 				checkMouseHover(MouseInfo.getPointerInfo().getLocation());
 				repaint();
 				delta--;

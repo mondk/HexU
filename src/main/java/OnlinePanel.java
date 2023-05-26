@@ -25,9 +25,7 @@ public class OnlinePanel extends JPanel {
                     gs.playerState = GameState.State.ONLINE;
                     gs.whosTurn = GameState.Turn.Player2;
                     gs.player1Name = name.getText();
-                    MoveListener moveListener = new MoveListener(space, "player1", gs.getValidMoves());
-                    Thread moveThread = new Thread(moveListener);
-                    moveThread.start();
+
                     //Panel game = new Panel(gs);
                     WaitingRoom waitingRoom = new WaitingRoom(gs);
                 } catch (IOException e) {

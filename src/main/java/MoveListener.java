@@ -22,12 +22,12 @@ public class MoveListener implements Runnable{
                 gs.grid.get(move).clicked=true;
 
                 gs.q.add(move);
-                gs.grid.get(move).color= gs.host ? gs.colorP2 : gs.colorP1;
+                gs.grid.get(move).color= gs.host ? gs.playerColors.get(1) : gs.playerColors.get(0);
                 gs.nextTurn();
                 paneT.setBackground(gs.paneTColor);
                 paneT.setText(gs.paneTurnString);
 
-                ArrayList<ArrayList<Integer>>won = gs.winingState(gs.startP2, gs.colorP2, gs.winP2);
+                ArrayList<ArrayList<Integer>>won = gs.winingState(gs.startP2, gs.playerColors.get(1), gs.winP2);
                 //System.out.println(won);
                 if (won.get(0).get(0)==1 && gs.host) {
                     gs.gameSpace.put("player2won");

@@ -19,14 +19,19 @@ public class WaitingRoom extends JPanel {
             id = listOfPlayers.size();
             System.out.println(listOfPlayers);
             for(Map.Entry<Integer,String> player : listOfPlayers.entrySet()){
-                gs.gameSpace.put(player.getKey(), "newName", id, gs.player1Name);
-                JLabel newPlayer = new JLabel(player.getValue());
+                gs.gameSpace.put(player.getKey(), "newName", id, gs.player1Name, gs.playerColors.get(id));
+                JPanel newPlayer = new JPanel();
+                JLabel newPlayerName = new JLabel(player.getValue());
+                ColorButton colorButton = new ColorButton(gs.playerColors.get(player.getKey()),null);
+                newPlayer.add(newPlayerName, 0);
+                colorButton.setEnabled(false);
+                newPlayer.add(colorButton);
                 names.add(newPlayer, (int)player.getKey());
             }
             listOfPlayers.put(id, gs.player1Name);
             gs.gameSpace.put("players", listOfPlayers);
-            JTextField ownName = new JTextField(gs.player1Name);
-            ownName.getDocument().addDocumentListener(new DocumentListener() {
+            PlayerSettings ownName = new PlayerSettings(gs, id);
+            ownName.getPlayerTextField().getDocument().addDocumentListener(new DocumentListener() {
                 @Override
                 public void insertUpdate(DocumentEvent documentEvent) {
                     changedUpdate(documentEvent);
@@ -42,9 +47,9 @@ public class WaitingRoom extends JPanel {
                     try {
                         HashMapIntegerString listOfPlayers = (HashMapIntegerString) gs.gameSpace.get(new ActualField("players"), new FormalField(HashMapIntegerString.class))[1];
                         listOfPlayers.remove(id);
-                        gs.player1Name = ownName.getText();
+                        gs.player1Name = ownName.getName();
                         for (Map.Entry<Integer,String> player : listOfPlayers.entrySet()) {
-                            gs.gameSpace.put(player.getKey(), "newName", id, gs.player1Name);
+                            gs.gameSpace.put(player.getKey(), "newName", id, gs.player1Name,gs.playerColors.get(id));
                         }
                         listOfPlayers.put(id, gs.player1Name);
                         gs.gameSpace.put("players", listOfPlayers);
@@ -53,7 +58,7 @@ public class WaitingRoom extends JPanel {
                     }
                 }
             });
-            names.add(ownName);
+            names.add(ownName.getPlayerCards());
             JTextField numberOfHexagons = new JTextField("" + gs.numberOfHexagons);
 
             add(numberOfHexagons,0);

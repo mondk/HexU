@@ -28,6 +28,7 @@ public class Menu extends JPanel {
         playerNames.setMaximumSize(playerNames.getPreferredSize());
         playerNames.setLayout(new BoxLayout(playerNames,BoxLayout.LINE_AXIS));
 
+        /*
         //player 1 settings
         JPanel player1Info = new JPanel();
         player1Info.setLayout(new BoxLayout(player1Info,BoxLayout.LINE_AXIS));
@@ -56,6 +57,7 @@ public class Menu extends JPanel {
         player1Cards.add(colorMenu1);
         player1Color.setCards(player1Cards);
 
+
         // player 2 settings
         JPanel player2Info = new JPanel();
         player2Info.setLayout(new BoxLayout(player2Info,BoxLayout.LINE_AXIS));
@@ -83,6 +85,9 @@ public class Menu extends JPanel {
         player2Cards.add(player2Info);
         player2Cards.add(colorMenu2);
         player2Color.setCards(player2Cards);
+         */
+        PlayerSettings player1Settings = new PlayerSettings(gs, 0);
+        PlayerSettings player2Settings = new PlayerSettings(gs, 1);
 
         // Set the actions for the startgame buttons
         startComputerGameButton.setAction(new AbstractAction() {
@@ -90,7 +95,7 @@ public class Menu extends JPanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 gs.singlePlayer = true;
                 gs.updateNumberOfHexagons(Integer.parseInt(hexagonField.getText()));
-                gs.player1Name = player1.getText();
+                gs.player1Name = player1Settings.getName();
                 gs.player2Name = "Computer";
                 Panel panel = new Panel(gs);
                 gs.cards.add(panel, "PANEL");
@@ -104,8 +109,8 @@ public class Menu extends JPanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 gs.singlePlayer = false;
                 gs.updateNumberOfHexagons(Integer.parseInt(hexagonField.getText()));
-                gs.player1Name = player1.getText();
-                gs.player2Name = player2.getText();
+                gs.player1Name = player1Settings.getName();
+                gs.player2Name = player2Settings.getName();
                 gs.paneTurnString = gs.player1Name;
                 Panel panel = new Panel(gs);
                 gs.cards.add(panel, "PANEL");
@@ -127,8 +132,8 @@ public class Menu extends JPanel {
         startComputerGameButton.setText("Start Game against Computer");
         startMultiplayerButton.setText("Start Multiplayer Game");
         startOnlineButton.setText("Start Online Game");
-        playerNames.add(player1Cards);
-        playerNames.add(player2Cards);
+        playerNames.add(player1Settings.getPlayerCards());
+        playerNames.add(player2Settings.getPlayerCards());
         add(playerNames);
         add(hexagonField);
         add(buttons);

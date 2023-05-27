@@ -22,12 +22,12 @@ public class AI {
 	    	switch(gs.whosTurn) {
 	    	case Player1:
 	    	//	System.out.println(gs.winingState(gs.startP1, gs.colorP1, gs.winP1).toString());
-				System.out.println("test winningState: " + gs.winingState(gs.startP1, gs.colorP1, gs.winP1).toString());
-	    		return new double[] {  gs.evaluate(gs.winingState(gs.startP1, gs.colorP1, gs.winP1)), -1};
+				System.out.println("test winningState: " + gs.winingState(gs.startP1, gs.playerColors.get(0), gs.winP1).toString());
+	    		return new double[] {  gs.evaluate(gs.winingState(gs.startP1, gs.playerColors.get(0), gs.winP1)), -1};
 	    		
 	    	case Player2:
-				System.out.println("test winningState: " + gs.winingState(gs.startP2, gs.colorP2, gs.winP2).toString());
-	    		return new double[] {  gs.evaluate(gs.winingState(gs.startP2, gs.colorP2, gs.winP2)), -1};
+				System.out.println("test winningState: " + gs.winingState(gs.startP2, gs.playerColors.get(0), gs.winP2).toString());
+	    		return new double[] {  gs.evaluate(gs.winingState(gs.startP2, gs.playerColors.get(0), gs.winP2)), -1};
 	    	}
 	        
 	    }
@@ -76,9 +76,9 @@ public class AI {
 		System.out.println(gs2.grid.get(move).clicked+" "+gs1.grid.get(move).clicked);
 		switch(gs1.whosTurn) {
 			case Player1:
-				gs2.grid.get(move).color=gs2.colorP1;
+				gs2.grid.get(move).color=gs2.playerColors.get(0);
 			case Player2:
-				gs2.grid.get(move).color=gs2.colorP2;
+				gs2.grid.get(move).color=gs2.playerColors.get(1);
 		}
 	   gs2.nextTurn();
 	   gs2.ids+=1;

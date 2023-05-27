@@ -5,12 +5,8 @@ import java.awt.Dimension;
 import java.awt.Point;
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
-import java.util.Iterator;
 
 public class GameState implements Cloneable{
 
@@ -48,14 +44,16 @@ public class GameState implements Cloneable{
 	boolean singlePlayer = false;
 	boolean host = true;
 	State playerState = State.MULTIPLAYER;
-	Color colorP1 = Color.decode("#d032f0");
-	Color colorP2 = Color.decode("#247324");
+
+	ArrayList<Color> playerColors = new ArrayList<>(Arrays.asList(Color.decode("#d032f0"), Color.decode("#247324")));
+	//Color colorP1 = Color.decode("#d032f0");
+	//Color colorP2 = Color.decode("#247324");
 
 
 	//Show which player turn it is
 	Turn whosTurn = Turn.Player1;
 	String paneTurnString = player1Name;
-	Color paneTColor = colorP1;
+	Color paneTColor = playerColors.get(0);
 
 	public enum State{
 		SINGLEPLAYER,
@@ -91,12 +89,12 @@ public class GameState implements Cloneable{
 				if(whosTurn.equals(Turn.Player1)) {
 					whosTurn = Turn.AI;
 					paneTurnString = "AI";
-					paneTColor = colorP2;
+					paneTColor = playerColors.get(1);
 				}
 				else {
 					whosTurn = Turn.Player1;
 					paneTurnString = player1Name;
-					paneTColor = colorP1;
+					paneTColor = playerColors.get(0);
 				}
 				break;
 			//Multiplayer
@@ -104,27 +102,27 @@ public class GameState implements Cloneable{
 				if(whosTurn.equals(Turn.Player1)) {
 					whosTurn = Turn.Player2;
 					paneTurnString = player2Name;
-					paneTColor = colorP2;
+					paneTColor = playerColors.get(1);
 				}
 				else {
 					whosTurn = Turn.Player1;
 					paneTurnString = player1Name;
-					paneTColor = colorP1;
+					paneTColor = playerColors.get(0);
 				}
 				break;
 			case ONLINE:
 				if(whosTurn.equals(Turn.Player1)){
 					whosTurn = Turn.ONLINE_PLAYER;
 					paneTurnString = player2Name;
-					paneTColor = colorP2;
+					paneTColor = playerColors.get(1);
 				} else if(whosTurn.equals(Turn.Player2)){
 					whosTurn = Turn.ONLINE_PLAYER;
 					paneTurnString = player1Name;
-					paneTColor = colorP1;
+					paneTColor = playerColors.get(0);
 				} else {
 					whosTurn = host ? Turn.Player1 : Turn.Player2;
 					paneTurnString = host ? player1Name : player2Name;
-					paneTColor = host ? colorP1 : colorP2;
+					paneTColor = host ? playerColors.get(0) : playerColors.get(1);
 				}
 				break;
 		}
@@ -259,7 +257,7 @@ public class GameState implements Cloneable{
 //	}
 	public void resetGame() {
 		whosTurn = Turn.Player1;
-		paneTColor = colorP1;
+		paneTColor = playerColors.get(0);
 		paneTurnString = player1Name;
 		q.clear();
 		for (Hexagon h : grid) {

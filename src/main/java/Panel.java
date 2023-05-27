@@ -64,7 +64,7 @@ public class Panel extends JPanel implements Runnable{
 				gs.q.add(i);
 
 				ArrayList<ArrayList<Integer>> won = new ArrayList<>();
-				won = gs.winingState(gs.startP1, gs.colorP1, gs.winP1);
+				won = gs.winingState(gs.startP1, gs.playerColors.get(0), gs.winP1);
 				System.out.println(gs.evaluate(won));
 				gs.nextTurn();
 				if (won.get(0).get(0)==1) {
@@ -73,7 +73,7 @@ public class Panel extends JPanel implements Runnable{
 					if (dialogbutton == JOptionPane.YES_OPTION) {
 						gs.resetGame();
 						paneT.setText(gs.player1Name);
-						paneT.setBackground(gs.colorP1);
+						paneT.setBackground(gs.playerColors.get(0));
 
 					}else {
 						remove(dialogbutton);
@@ -121,7 +121,7 @@ public class Panel extends JPanel implements Runnable{
 								gs.grid.get(h.id).clicked=true;
 
 								gs.q.add(h.id);
-								h.color=gs.colorP1;
+								h.color=gs.playerColors.get(0);
 								gs.nextTurn();
 								if (gs.gameSpace != null) {
 									try {
@@ -131,7 +131,7 @@ public class Panel extends JPanel implements Runnable{
 									}
 								}
 								System.out.println(gs.player1Name + " clicked on hexagon: "+h.id+" score: "+h.score);
-								won = gs.winingState(gs.startP1, gs.colorP1, gs.winP1);
+								won = gs.winingState(gs.startP1, gs.playerColors.get(0), gs.winP1);
 								System.out.println(gs.evaluate(won));
 
 								if (won.get(0).get(0)==1) {
@@ -140,7 +140,7 @@ public class Panel extends JPanel implements Runnable{
 									if (dialogbutton == JOptionPane.YES_OPTION) {
 										gs.resetGame();
 										paneT.setText(gs.player1Name);
-										paneT.setBackground(gs.colorP1);
+										paneT.setBackground(gs.playerColors.get(0));
 										if (gs.gameSpace != null) {
 											try {
 												gs.gameSpace.put("Player2", "reset");
@@ -160,7 +160,7 @@ public class Panel extends JPanel implements Runnable{
 								gs.grid.get(h.id).clicked=true;
 
 								gs.q.add(h.id);
-								h.color=gs.colorP2;
+								h.color=gs.playerColors.get(1);
 								gs.nextTurn();
 								if (gs.gameSpace != null) {
 									try {
@@ -170,7 +170,7 @@ public class Panel extends JPanel implements Runnable{
 									}
 								}
 								System.out.println(gs.player2Name + " clicked on hexagon: "+h.id);
-								won = gs.winingState(gs.startP2, gs.colorP2, gs.winP2);
+								won = gs.winingState(gs.startP2, gs.playerColors.get(1), gs.winP2);
 								//System.out.println(won);
 								if (won.get(0).get(0)==1 && gs.host) {
 									repaint();
@@ -178,7 +178,7 @@ public class Panel extends JPanel implements Runnable{
 									if (dialogbutton == JOptionPane.YES_OPTION) {
 										gs.resetGame();
 										paneT.setText(gs.player1Name);
-										paneT.setBackground(gs.colorP1);
+										paneT.setBackground(gs.playerColors.get(0));
 										break;
 									}else {
 										remove(dialogbutton);
@@ -233,7 +233,7 @@ public class Panel extends JPanel implements Runnable{
 						System.out.println("resetting game");
 						gs.resetGame();
 						paneT.setText(gs.player1Name);
-						paneT.setBackground(gs.colorP1);
+						paneT.setBackground(gs.playerColors.get(0));
 						gs.gameSpace.put("Player2", "reset");
 					} else {
 						remove(dialogbutton);
@@ -243,7 +243,7 @@ public class Panel extends JPanel implements Runnable{
 					gs.resetGame();
 					gs.whosTurn = GameState.Turn.ONLINE_PLAYER;
 					paneT.setText(gs.player1Name);
-					paneT.setBackground(gs.colorP1);
+					paneT.setBackground(gs.playerColors.get(0));
 				}
 			} catch (InterruptedException e) {
 				throw new RuntimeException(e);
@@ -346,7 +346,7 @@ public class Panel extends JPanel implements Runnable{
 		}
 		int[] x= {gs.grid.get(0).center.x-(int) (gs.radius*2), gs.grid.get(gs.numberOfHexagons-1).center.x+(int) (gs.radius*1.3), gs.grid.get(4).center.x};
 		int[] y= {gs.grid.get(0).center.y-(int) (gs.radius*1.5), gs.grid.get(gs.numberOfHexagons-1).center.y-(int) (gs.radius*1.5),gs.grid.get(4).center.y};
-		gs.border.add(new Triangle(gs.colorP1, x , y));
+		gs.border.add(new Triangle(gs.playerColors.get(0), x , y));
 		// gs.border.add(new Triangle());
 		// gs.border.add(new Triangle());
 		// gs.border.add(new Triangle());
@@ -367,7 +367,7 @@ public class Panel extends JPanel implements Runnable{
 	public void draw(Graphics g) {
 
 		for (Triangle t : gs.border){
-			g.setColor(gs.colorP1);
+			g.setColor(gs.playerColors.get(0));
 			g.fillPolygon(t.getPolygon());
 		}
 		for(Hexagon h:gs.grid) {

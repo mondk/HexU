@@ -30,14 +30,33 @@ public class WaitingRoomPlayerListener implements Runnable{
                     hexagonField.setText((String)numberOfHexagons[2]);
                     hexagonField.setEnabled(false);
                 }
-                Object[] newName = gameState.gameSpace.getp(new ActualField(thisPlayer), new ActualField("newName"), new FormalField(Integer.class), new FormalField(String.class));
+                Object[] newName = gameState.gameSpace.getp(new ActualField(thisPlayer), new ActualField("newName"), new FormalField(Integer.class), new FormalField(String.class), new FormalField(Color.class));
                 if(newName != null) {
                     try{
                         names.remove((int)newName[2]);
-                    } catch (Exception ignored){}
-                    names.add(new JLabel((String)newName[3]), (int)newName[2]);
+                    } catch (Exception ignored){
+                        System.out.println("Exception");
+                    }
+                    JPanel newPlayer = new JPanel();
+                    JLabel newPlayerName = new JLabel((String)newName[3]);
+                    gameState.playerColors.set((int) newName[2], (Color) newName[4]);
+                    ColorButton colorButton = new ColorButton(gameState.playerColors.get((int)newName[2]),null);
+                    newPlayer.add(newPlayerName, 0);
+                    newPlayer.add(colorButton);
+                    System.out.println("Recieved a new name");
+                    names.add(newPlayer, (int)newName[2]);
                 }
                 names.updateUI();
+                Object[] updatedPersonalColor = gameState.gameSpace.getp(new ActualField(thisPlayer), new ActualField("newColor"), new FormalField(Color.class));
+                if (updatedPersonalColor != null){
+                    for(Map.Entry<Integer,String> player : players.entrySet()){
+                        if(!Objects.equals(player.getKey(), thisPlayer)){
+                            System.out.println("I'm here " + player);
+                            System.out.println(updatedPersonalColor[2]);
+                            gameState.gameSpace.put(player.getKey(), "newName",thisPlayer,gameState.player1Name,updatedPersonalColor[2]);
+                        }
+                    }
+                }
                 Object[] startGame = gameState.gameSpace.getp(new ActualField(thisPlayer),new ActualField("startGame"));
                 if(startGame != null){
                     CardLayout cl = (CardLayout)gameState.cards.getLayout();

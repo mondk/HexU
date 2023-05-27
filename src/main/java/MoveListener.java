@@ -2,13 +2,16 @@ import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.Space;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MoveListener implements Runnable{
     GameState gs;
-    public MoveListener(GameState gs){
+    JTextPane paneT;
+    public MoveListener(GameState gs, JTextPane paneT){
         this.gs = gs;
+        this.paneT = paneT;
     }
 
     @Override
@@ -21,7 +24,8 @@ public class MoveListener implements Runnable{
                 gs.q.add(move);
                 gs.grid.get(move).color= gs.host ? gs.colorP2 : gs.colorP1;
                 gs.nextTurn();
-                System.out.println("Got a move!");
+                paneT.setBackground(gs.paneTColor);
+                paneT.setText(gs.paneTurnString);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

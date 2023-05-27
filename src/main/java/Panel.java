@@ -194,7 +194,7 @@ public class Panel extends JPanel implements Runnable{
 		Thread gameThread = new Thread(this);
 		start = true;
 		gameThread.start();
-		MoveListener moveListener = new MoveListener(gs);
+		MoveListener moveListener = new MoveListener(gs, paneT);
 		Thread moveThread = new Thread(moveListener);
 		moveThread.start();
 	}

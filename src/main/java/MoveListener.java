@@ -26,6 +26,12 @@ public class MoveListener implements Runnable{
                 gs.nextTurn();
                 paneT.setBackground(gs.paneTColor);
                 paneT.setText(gs.paneTurnString);
+
+                ArrayList<ArrayList<Integer>>won = gs.winingState(gs.startP2, gs.colorP2, gs.winP2);
+                //System.out.println(won);
+                if (won.get(0).get(0)==1 && gs.host) {
+                    gs.gameSpace.put("player2won");
+                }
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

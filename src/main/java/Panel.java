@@ -141,6 +141,13 @@ public class Panel extends JPanel implements Runnable{
 										gs.resetGame();
 										paneT.setText(gs.player1Name);
 										paneT.setBackground(gs.colorP1);
+										if (gs.gameSpace != null) {
+											try {
+												gs.gameSpace.put("Player2", "reset");
+											} catch (InterruptedException ex) {
+												throw new RuntimeException(ex);
+											}
+										}
 										break;
 									}else {
 										remove(dialogbutton);
@@ -165,7 +172,7 @@ public class Panel extends JPanel implements Runnable{
 								System.out.println(gs.player2Name + " clicked on hexagon: "+h.id);
 								won = gs.winingState(gs.startP2, gs.colorP2, gs.winP2);
 								//System.out.println(won);
-								if (won.get(0).get(0)==1) {
+								if (won.get(0).get(0)==1 && gs.host) {
 									repaint();
 									JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.player2Name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 									if (dialogbutton == JOptionPane.YES_OPTION) {
@@ -175,7 +182,6 @@ public class Panel extends JPanel implements Runnable{
 										break;
 									}else {
 										remove(dialogbutton);
-
 									}
 								}
 								paneT.setBackground(gs.paneTColor);
@@ -214,6 +220,33 @@ public class Panel extends JPanel implements Runnable{
 				repaint();
 				delta--;
 
+			}
+			try {
+				Object[] hasWon = null;
+				if(gs.gameSpace != null && gs.host) hasWon = gs.gameSpace.getp(new ActualField("player2won"));
+				Object[] reset = null;
+				if (!gs.host) reset = gs.gameSpace.getp(new ActualField("Player2"), new ActualField("reset"));
+				if (hasWon != null){
+					repaint();
+					JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.player2Name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
+					if (dialogbutton == JOptionPane.YES_OPTION) {
+						System.out.println("resetting game");
+						gs.resetGame();
+						paneT.setText(gs.player1Name);
+						paneT.setBackground(gs.colorP1);
+						gs.gameSpace.put("Player2", "reset");
+					} else {
+						remove(dialogbutton);
+					}
+				}
+				if(reset != null){
+					gs.resetGame();
+					gs.whosTurn = GameState.Turn.ONLINE_PLAYER;
+					paneT.setText(gs.player1Name);
+					paneT.setBackground(gs.colorP1);
+				}
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
 			}
 		}
 	}

@@ -12,6 +12,7 @@ public class WaitingRoom implements Runnable {
     ArrayList<WaitingRoomListener> waitingRoomListeners = new ArrayList<>();
     public WaitingRoom(GameState gameState) throws InterruptedException {
         this.gameState = gameState;
+        this.numberOfHexagons = "4";
         this.players = (HashMapIntegerString) gameState.gameSpace.get(new ActualField("players"), new FormalField(HashMapIntegerString.class))[1];
         this.thisPlayer = players.size();
         for(Map.Entry<Integer,String> player : this.players.entrySet()){
@@ -45,6 +46,7 @@ public class WaitingRoom implements Runnable {
                 System.out.println(player.getKey());
                 gameState.gameSpace.put(1, "numberOfHexagons" , numberOfHexagons);
             }
+            this.numberOfHexagons = numberOfHexagons;
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -70,9 +72,10 @@ public class WaitingRoom implements Runnable {
     public void run() {
         while(true){
             try {
-                Object[] numberOfHexagons = gameState.gameSpace.getp(new ActualField(thisPlayer),new ActualField("numberOfHexagons"), new FormalField(String.class));
                 players = (HashMapIntegerString) gameState.gameSpace.query(new ActualField("players"), new FormalField(HashMapIntegerString.class))[1];
+                Object[] numberOfHexagons = gameState.gameSpace.getp(new ActualField(thisPlayer),new ActualField("numberOfHexagons"), new FormalField(String.class));
                 if(numberOfHexagons != null && !(0 == thisPlayer)){
+                    this.numberOfHexagons = (String) numberOfHexagons[2];
                     for(WaitingRoomListener waitingRoomListener : waitingRoomListeners) {
                         waitingRoomListener.numberOfHexagonsChanged((String) numberOfHexagons[2]);
                     }

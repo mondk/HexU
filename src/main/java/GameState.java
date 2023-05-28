@@ -56,9 +56,7 @@ public class GameState implements Cloneable{
 	String paneTurnString = player1Name;
 	Color paneTColor = playerColors.get(0);
 
-	public GameState() {
-		//waitingRoom = new WaitingRoom(this);
-	}
+	public GameState() {}
 
 	public enum State{
 		SINGLEPLAYER,

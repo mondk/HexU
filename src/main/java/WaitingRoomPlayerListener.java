@@ -11,13 +11,65 @@ public class WaitingRoomPlayerListener implements Runnable{
     HashMapIntegerString players;
     JPanel names;
     Integer thisPlayer;
-    public WaitingRoomPlayerListener(GameState gameState, HashMapIntegerString players, JPanel names, Integer thisPlayer){
+    public WaitingRoomPlayerListener(GameState gameState, JPanel names) throws InterruptedException {
         this.gameState = gameState;
-        this.players = players;
         this.names = names;
-        this.thisPlayer = thisPlayer;
-        System.out.println(thisPlayer);
+        this.players = (HashMapIntegerString) gameState.gameSpace.get(new ActualField("players"), new FormalField(HashMapIntegerString.class))[1];
+        this.thisPlayer = players.size();
+        for(Map.Entry<Integer,String> player : this.players.entrySet()){
+            gameState.gameSpace.put(player.getKey(), "newName", thisPlayer, gameState.player1Name, gameState.playerColors.get(thisPlayer));
+            JPanel newPlayer = new JPanel();
+            JLabel newPlayerName = new JLabel(player.getValue());
+            ColorButton colorButton = new ColorButton(gameState.playerColors.get(player.getKey()),null);
+            newPlayer.add(newPlayerName, 0);
+            colorButton.setEnabled(false);
+            newPlayer.add(colorButton);
+            names.add(newPlayer, (int)player.getKey());
+        }
+        players.put(thisPlayer, gameState.player1Name);
+        gameState.gameSpace.put("players", players);
     }
+
+    public void startGame(){
+        try {
+            for(Map.Entry<Integer,String> player : players.entrySet()) {
+
+                gameState.gameSpace.put(player.getKey(), "startGame");
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void updateNumberOfHexagons(String numberOfHexagons){
+        try {
+            for(Map.Entry<Integer,String> player : players.entrySet()) {
+                System.out.println(player.getKey());
+                gameState.gameSpace.put(1, "numberOfHexagons" , numberOfHexagons);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void updateName(String name){
+        try {
+            System.out.println("Updating name");
+            players = (HashMapIntegerString) gameState.gameSpace.get(new ActualField("players"), new FormalField(HashMapIntegerString.class))[1];
+            players.remove(thisPlayer);
+            gameState.player1Name = name;
+            for (Map.Entry<Integer,String> player : players.entrySet()) {
+                System.out.println(player);
+                gameState.gameSpace.put(player.getKey(), "newName", thisPlayer, gameState.player1Name,gameState.playerColors.get(thisPlayer));
+            }
+            players.put(thisPlayer, gameState.player1Name);
+            gameState.gameSpace.put("players", players);
+            System.out.println("Updated name");
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public void run() {
         while(true){
@@ -32,6 +84,7 @@ public class WaitingRoomPlayerListener implements Runnable{
                 }
                 Object[] newName = gameState.gameSpace.getp(new ActualField(thisPlayer), new ActualField("newName"), new FormalField(Integer.class), new FormalField(String.class), new FormalField(Color.class));
                 if(newName != null) {
+                    System.out.println("Trying something");
                     try{
                         names.remove((int)newName[2]);
                     } catch (Exception ignored){
@@ -51,8 +104,6 @@ public class WaitingRoomPlayerListener implements Runnable{
                 if (updatedPersonalColor != null){
                     for(Map.Entry<Integer,String> player : players.entrySet()){
                         if(!Objects.equals(player.getKey(), thisPlayer)){
-                            System.out.println("I'm here " + player);
-                            System.out.println(updatedPersonalColor[2]);
                             gameState.gameSpace.put(player.getKey(), "newName",thisPlayer,gameState.player1Name,updatedPersonalColor[2]);
                         }
                     }
@@ -73,5 +124,8 @@ public class WaitingRoomPlayerListener implements Runnable{
                 throw new RuntimeException(e);
             }
         }
+    }
+    public Integer getThisPlayer(){
+        return thisPlayer;
     }
 }

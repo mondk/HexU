@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class Yest {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		GameState gs = new GameState();
 	
 		//Panel panel = new Panel(gs);

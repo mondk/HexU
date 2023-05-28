@@ -14,6 +14,7 @@ public class GameState implements Cloneable{
 	Dimension SCREEN_SIZE = new Dimension(600,400);
 
 	Space gameSpace = null;
+	WaitingRoom waitingRoom = null;
 
 	//game grid
 	ArrayList<Hexagon> grid = new ArrayList<>();
@@ -54,6 +55,10 @@ public class GameState implements Cloneable{
 	Turn whosTurn = Turn.Player1;
 	String paneTurnString = player1Name;
 	Color paneTColor = playerColors.get(0);
+
+	public GameState() {
+		//waitingRoom = new WaitingRoom(this);
+	}
 
 	public enum State{
 		SINGLEPLAYER,
@@ -281,6 +286,7 @@ public class GameState implements Cloneable{
 	@Override
 	public GameState clone() {
 		GameState gs = new GameState();
+
 		gs.whosTurn=this.whosTurn;
 		
 		gs.ids=this.ids;
@@ -300,5 +306,11 @@ public class GameState implements Cloneable{
 
 	public void setGameSpace(Space gameSpace) {
 		this.gameSpace = gameSpace;
+	}
+
+	public void startWaitingRoom() throws InterruptedException {
+		waitingRoom = new WaitingRoom(this);
+		Thread playersThread = new Thread(waitingRoom);
+        playersThread.start();
 	}
 }

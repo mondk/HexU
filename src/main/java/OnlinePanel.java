@@ -5,7 +5,6 @@ import org.jspace.SpaceRepository;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class OnlinePanel extends JPanel {
@@ -27,7 +26,7 @@ public class OnlinePanel extends JPanel {
                     gs.player1Name = name.getText();
 
                     //Panel game = new Panel(gs);
-                    WaitingRoom waitingRoom = new WaitingRoom(gs);
+                    WaitingRoomUI waitingRoomUI = new WaitingRoomUI(gs);
                 } catch (IOException e) {
                     System.out.println("Invalid ip");
                 } catch (InterruptedException e) {
@@ -53,7 +52,7 @@ public class OnlinePanel extends JPanel {
                 gs.host = true;
                 gs.player1Name = name.getText();
                 //Panel panel = new Panel(gs);
-                WaitingRoom waitingRoom = new WaitingRoom(gs);
+                WaitingRoomUI waitingRoomUI = new WaitingRoomUI(gs);
             }
         });
         join.setText("Join game");

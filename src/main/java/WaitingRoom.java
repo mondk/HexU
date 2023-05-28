@@ -1,118 +1,120 @@
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import org.jspace.ActualField;
+import org.jspace.FormalField;
+
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.util.*;
 
-public class WaitingRoom extends JPanel {
-    GameState gs;
-    public WaitingRoom(GameState gameState) {
+public class WaitingRoom implements Runnable {
+    GameState gameState;
+    HashMapIntegerString players;
+    String numberOfHexagons;
+    int thisPlayer;
+    ArrayList<WaitingRoomListener> waitingRoomListeners = new ArrayList<>();
+    public WaitingRoom(GameState gameState) throws InterruptedException {
+        this.gameState = gameState;
+        this.players = (HashMapIntegerString) gameState.gameSpace.get(new ActualField("players"), new FormalField(HashMapIntegerString.class))[1];
+        this.thisPlayer = players.size();
+        for(Map.Entry<Integer,String> player : this.players.entrySet()){
+            gameState.gameSpace.put(player.getKey(), "newName", thisPlayer, gameState.player1Name, gameState.playerColors.get(thisPlayer));
+        }
+        players.put(thisPlayer, gameState.player1Name);
+        gameState.gameSpace.put("players", players);
+    }
+
+    public void subscribe(WaitingRoomListener newWaitingRoomListener){
+        waitingRoomListeners.add(newWaitingRoomListener);
+    }
+
+    public void unsubscribe(WaitingRoomListener newWaitingRoomListener){
+        waitingRoomListeners.remove(newWaitingRoomListener);
+    }
+
+    public void startGame(){
         try {
-            this.gs = gameState;
-            WaitingRoomPlayerListener players = new WaitingRoomPlayerListener(gs, this);
-
-            Thread playersThread = new Thread(players);
-            playersThread.start();
-
-            PlayerSettings ownName = new PlayerSettings(gs, players.getThisPlayer());
-            JPanel names = new JPanel();
-            names.setLayout(new GridLayout(0,1));
-            for(Map.Entry<Integer,String> player : players.getPlayers().entrySet()){
-                if(Objects.equals(player.getKey(), players.getThisPlayer())) continue;
-                JPanel newPlayer = new JPanel();
-                JLabel newPlayerName = new JLabel(player.getValue());
-                ColorButton colorButton = new ColorButton(gs.playerColors.get(player.getKey()),null);
-                newPlayer.add(newPlayerName, player.getKey());
-                colorButton.setEnabled(false);
-                newPlayer.add(colorButton);
-                names.add(newPlayer, (int)player.getKey());
+            for(Map.Entry<Integer,String> player : players.entrySet()) {
+                gameState.gameSpace.put(player.getKey(), "startGame");
             }
-            ownName.getPlayerTextField().getDocument().addDocumentListener(new DocumentListener() {
-                @Override
-                public void insertUpdate(DocumentEvent documentEvent) {
-                    changedUpdate(documentEvent);
-                }
-
-                @Override
-                public void removeUpdate(DocumentEvent documentEvent) {
-                    changedUpdate(documentEvent);
-                }
-
-                @Override
-                public void changedUpdate(DocumentEvent documentEvent) {
-                    players.updateName(ownName.getName());
-                }
-            });
-            names.add(ownName.getPlayerCards());
-            JTextField numberOfHexagons = new JTextField("" + gs.numberOfHexagons);
-
-            add(numberOfHexagons,0);
-            add(names, 1);
-            JButton startButton = new JButton("StartGame");
-            add(startButton);
-            if(!gs.host){
-                startButton.setEnabled(false);
-                numberOfHexagons.setEnabled(false);
-            } else {
-                numberOfHexagons.getDocument().addDocumentListener(new DocumentListener() {
-                    @Override
-                    public void insertUpdate(DocumentEvent documentEvent) {
-                        changedUpdate(documentEvent);
-                    }
-
-                    @Override
-                    public void removeUpdate(DocumentEvent documentEvent) {
-                        changedUpdate(documentEvent);
-                    }
-
-                    @Override
-                    public void changedUpdate(DocumentEvent documentEvent) {
-                        players.updateNumberOfHexagons(numberOfHexagons.getText());
-                    }
-                });
-                startButton.setAction(new AbstractAction() {
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        players.startGame();
-                    }
-                });
-                startButton.setText("Start Game");
-            }
-            gs.cards.add(this);
-            CardLayout cl = (CardLayout)gs.cards.getLayout();
-            cl.next(gs.cards);
-
-        } catch (Exception e){
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void updateNumberOfHexagons(String numberOfHexagons){
-        JTextField hexagonField = (JTextField) getComponent(0);
-        hexagonField.setEnabled(true);
-        hexagonField.setText(numberOfHexagons);
-        hexagonField.updateUI();
-        hexagonField.setEnabled(false);
-    }
-    public String getNumberOfHexagons(){
-        return ((JTextField)getComponent(0)).getText();
+        try {
+            for(Map.Entry<Integer,String> player : players.entrySet()) {
+                System.out.println(player.getKey());
+                gameState.gameSpace.put(1, "numberOfHexagons" , numberOfHexagons);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void updateNames(Integer id, String name, Color color){
-        JPanel names = (JPanel)getComponent(1);
-        try{
-            System.out.println("removed id " + id);
-            names.remove(id);
-        } catch (Exception ignored){}
-        System.out.println("id=" + id);
-        JPanel newPlayer = new JPanel();
-        JLabel newPlayerName = new JLabel(name);
-        gs.playerColors.set(id, color);
-        ColorButton colorButton = new ColorButton(gs.playerColors.get(id),null);
-        newPlayer.add(newPlayerName);
-        newPlayer.add(colorButton);
-        names.add(newPlayer, (int)id);
-        names.updateUI();
+    public void updateName(String name){
+        try {
+            players = (HashMapIntegerString) gameState.gameSpace.get(new ActualField("players"), new FormalField(HashMapIntegerString.class))[1];
+            players.remove(thisPlayer);
+            gameState.player1Name = name;
+            for (Map.Entry<Integer,String> player : players.entrySet()) {
+                System.out.println(player.getKey() + " " + thisPlayer);
+                gameState.gameSpace.put(player.getKey(), "newName", thisPlayer, gameState.player1Name,gameState.playerColors.get(thisPlayer));
+            }
+            players.put(thisPlayer, gameState.player1Name);
+            gameState.gameSpace.put("players", players);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void run() {
+        while(true){
+            try {
+                Object[] numberOfHexagons = gameState.gameSpace.getp(new ActualField(thisPlayer),new ActualField("numberOfHexagons"), new FormalField(String.class));
+                players = (HashMapIntegerString) gameState.gameSpace.query(new ActualField("players"), new FormalField(HashMapIntegerString.class))[1];
+                if(numberOfHexagons != null && !(0 == thisPlayer)){
+                    for(WaitingRoomListener waitingRoomListener : waitingRoomListeners) {
+                        waitingRoomListener.numberOfHexagonsChanged((String) numberOfHexagons[2]);
+                    }
+                }
+                Object[] newName = gameState.gameSpace.getp(new ActualField(thisPlayer), new ActualField("newName"), new FormalField(Integer.class), new FormalField(String.class), new FormalField(Color.class));
+
+                if(newName != null) {
+                    for(WaitingRoomListener waitingRoomListener : waitingRoomListeners) {
+                        waitingRoomListener.nameChanged((int) newName[2], (String) newName[3], (Color) newName[4]);
+                    }
+                }
+
+                Object[] updatedPersonalColor = gameState.gameSpace.getp(new ActualField(thisPlayer), new ActualField("newColor"), new FormalField(Color.class));
+                if (updatedPersonalColor != null){
+                    for(Map.Entry<Integer,String> player : players.entrySet()){
+                        if(!Objects.equals(player.getKey(), thisPlayer)){
+                            gameState.gameSpace.put(player.getKey(), "newName",thisPlayer,gameState.player1Name,updatedPersonalColor[2]);
+                        }
+                    }
+                }
+                Object[] startGame = gameState.gameSpace.getp(new ActualField(thisPlayer),new ActualField("startGame"));
+                if(startGame != null){
+                    CardLayout cl = (CardLayout)gameState.cards.getLayout();
+                    gameState.player1Name = (String)players.values().toArray()[0];
+                    gameState.player2Name = (String)players.values().toArray()[1];
+                    gameState.updateNumberOfHexagons(Integer.parseInt(this.numberOfHexagons));
+                    gameState.whosTurn = thisPlayer == 0 ? GameState.Turn.Player1 : GameState.Turn.ONLINE_PLAYER;
+                    Panel panel = new Panel(gameState);
+                    gameState.cards.add(panel);
+                    cl.next(gameState.cards);
+                    gameState.cards.remove(0);
+                    break;
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+    public Integer getThisPlayer(){
+        return thisPlayer;
+    }
+    public HashMapIntegerString getPlayers(){
+        return players;
     }
 }

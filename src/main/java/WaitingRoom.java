@@ -11,7 +11,7 @@ public class WaitingRoom implements Runnable {
     ArrayList<WaitingRoomListener> waitingRoomListeners = new ArrayList<>();
     public WaitingRoom(GameState gameState) throws InterruptedException {
         this.gameState = gameState;
-        this.numberOfHexagons = "4";
+        this.numberOfHexagons = String.valueOf(gameState.numberOfHexagons);
         gameState.onlinePlayers = (HashMapIntegerString) gameState.gameSpace.get(new ActualField("players"), new FormalField(HashMapIntegerString.class))[1];
         gameState.onlineId = gameState.onlinePlayers.size();
         this.thisPlayer = gameState.onlineId;

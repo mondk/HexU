@@ -103,7 +103,9 @@ public class WaitingRoom implements Runnable {
                     gameState.player2Name = (String)players.values().toArray()[1];
                     gameState.updateNumberOfHexagons(Integer.parseInt(this.numberOfHexagons));
                     gameState.whosTurn = thisPlayer == 0 ? GameState.Turn.Player1 : GameState.Turn.ONLINE_PLAYER;
+                    gameState.startOnlineMove();
                     Panel panel = new Panel(gameState);
+                    gameState.onlineMove.subscribe(panel);
                     gameState.cards.add(panel);
                     cl.next(gameState.cards);
                     gameState.cards.remove(0);

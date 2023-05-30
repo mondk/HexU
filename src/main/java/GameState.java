@@ -15,6 +15,7 @@ public class GameState implements Cloneable{
 
 	Space gameSpace = null;
 	WaitingRoom waitingRoom = null;
+	OnlineMove onlineMove = null;
 
 	//game grid
 	ArrayList<Hexagon> grid = new ArrayList<>();
@@ -310,5 +311,10 @@ public class GameState implements Cloneable{
 		waitingRoom = new WaitingRoom(this);
 		Thread playersThread = new Thread(waitingRoom);
         playersThread.start();
+	}
+	public void startOnlineMove() throws InterruptedException {
+		onlineMove = new OnlineMove(this);
+		Thread moveThread = new Thread(onlineMove);
+		moveThread.start();
 	}
 }

@@ -349,6 +349,8 @@ public class GameState implements Cloneable{
 	public void startOnlineGame() throws InterruptedException {
 		CardLayout cl = (CardLayout)cards.getLayout();
 		player1Name = (String)onlinePlayers.values().toArray()[0];
+		paneTurnString = player1Name;
+		paneTColor = playerColors.get(0);
 		player2Name = (String)onlinePlayers.values().toArray()[1];
 		//player3Name = (String)onlinePlayers.values().toArray()[2];
 		updateNumberOfHexagons(Integer.parseInt(waitingRoom.numberOfHexagons));

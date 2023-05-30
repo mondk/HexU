@@ -75,7 +75,7 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
                 startButton.setAction(new AbstractAction() {
                     @Override
                     public void actionPerformed(ActionEvent actionEvent) {
-                        gameState.waitingRoom.startGame();
+                        gameState.waitingRoom.startGame(0);
                     }
                 });
                 startButton.setText("Start Game");

@@ -346,15 +346,15 @@ public class GameState implements Cloneable{
 		Thread moveThread = new Thread(onlineMove);
 		moveThread.start();
 	}
-	public void startOnlineGame() throws InterruptedException {
+	public void startOnlineGame(int startPlayer) throws InterruptedException {
 		CardLayout cl = (CardLayout)cards.getLayout();
 		player1Name = (String)onlinePlayers.values().toArray()[0];
 		paneTurnString = player1Name;
-		paneTColor = playerColors.get(0);
+		paneTColor = playerColors.get(startPlayer);
 		player2Name = (String)onlinePlayers.values().toArray()[1];
 		//player3Name = (String)onlinePlayers.values().toArray()[2];
 		updateNumberOfHexagons(Integer.parseInt(waitingRoom.numberOfHexagons));
-		whosTurn = onlineId == 0 ? GameState.Turn.Player1 : GameState.Turn.ONLINE_PLAYER;
+		whosTurn = onlineId == startPlayer ? GameState.Turn.values()[startPlayer] : GameState.Turn.ONLINE_PLAYER;
 		startOnlineMove();
 		Panel panel = new Panel(this);
 		onlineMove.subscribe(panel);

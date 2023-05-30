@@ -42,10 +42,10 @@ public class WaitingRoom implements Runnable {
         waitingRoomListeners.remove(newWaitingRoomListener);
     }
 
-    public void startGame(){
+    public void startGame(int startingPlayer){
         try {
             for(Map.Entry<Integer,String> player : gameState.onlinePlayers.entrySet()) {
-                gameState.gameSpace.put(player.getKey(), "startGame");
+                gameState.gameSpace.put(player.getKey(), "startGame", startingPlayer);
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -107,9 +107,9 @@ public class WaitingRoom implements Runnable {
                         }
                     }
                 }
-                Object[] startGame = gameState.gameSpace.getp(new ActualField(thisPlayer),new ActualField("startGame"));
+                Object[] startGame = gameState.gameSpace.getp(new ActualField(thisPlayer),new ActualField("startGame"), new FormalField(Integer.class));
                 if(startGame != null){
-                    gameState.startOnlineGame();
+                    gameState.startOnlineGame((int)startGame[2]);
                     break;
                 }
             } catch (InterruptedException e) {

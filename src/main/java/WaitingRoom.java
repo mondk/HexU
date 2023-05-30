@@ -109,17 +109,7 @@ public class WaitingRoom implements Runnable {
                 }
                 Object[] startGame = gameState.gameSpace.getp(new ActualField(thisPlayer),new ActualField("startGame"));
                 if(startGame != null){
-                    CardLayout cl = (CardLayout)gameState.cards.getLayout();
-                    gameState.player1Name = (String)gameState.onlinePlayers.values().toArray()[0];
-                    gameState.player2Name = (String)gameState.onlinePlayers.values().toArray()[1];
-                    gameState.updateNumberOfHexagons(Integer.parseInt(this.numberOfHexagons));
-                    gameState.whosTurn = thisPlayer == 0 ? GameState.Turn.Player1 : GameState.Turn.ONLINE_PLAYER;
-                    gameState.startOnlineMove();
-                    Panel panel = new Panel(gameState);
-                    gameState.onlineMove.subscribe(panel);
-                    gameState.cards.add(panel);
-                    cl.next(gameState.cards);
-                    gameState.cards.remove(0);
+                    gameState.startOnlineGame();
                     break;
                 }
             } catch (InterruptedException e) {

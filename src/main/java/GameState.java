@@ -1,10 +1,14 @@
+import org.jspace.RemoteSpace;
+import org.jspace.SequentialSpace;
 import org.jspace.Space;
+import org.jspace.SpaceRepository;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -309,6 +313,29 @@ public class GameState implements Cloneable{
 		this.gameSpace = gameSpace;
 	}
 
+	public void joinGame(String ip) throws IOException {
+		gameSpace = new RemoteSpace("tcp://" + ip + ":9001/game?keep");
+		this.host = false;
+		this.playerState = GameState.State.ONLINE;
+		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this);
+	}
+
+	public void hostGame(String ip) {
+		SpaceRepository repository = new SpaceRepository();
+		gameSpace = new SequentialSpace();
+		repository.add("game",gameSpace);
+		repository.addGate("tcp://" + ip + ":9001/?keep");
+		try {
+			//space.put("Player1Name", name.getText());
+			gameSpace.put("players",new HashMapIntegerString());
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+		playerState = GameState.State.ONLINE;
+		host = true;
+		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this);
+	}
+
 	public void startWaitingRoom() throws InterruptedException {
 		waitingRoom = new WaitingRoom(this);
 		Thread playersThread = new Thread(waitingRoom);
@@ -318,5 +345,19 @@ public class GameState implements Cloneable{
 		onlineMove = new OnlineMove(this);
 		Thread moveThread = new Thread(onlineMove);
 		moveThread.start();
+	}
+	public void startOnlineGame() throws InterruptedException {
+		CardLayout cl = (CardLayout)cards.getLayout();
+		player1Name = (String)onlinePlayers.values().toArray()[0];
+		player2Name = (String)onlinePlayers.values().toArray()[1];
+		//player3Name = (String)onlinePlayers.values().toArray()[2];
+		updateNumberOfHexagons(Integer.parseInt(waitingRoom.numberOfHexagons));
+		whosTurn = onlineId == 0 ? GameState.Turn.Player1 : GameState.Turn.ONLINE_PLAYER;
+		startOnlineMove();
+		Panel panel = new Panel(this);
+		onlineMove.subscribe(panel);
+		cards.add(panel);
+		cl.next(cards);
+		cards.remove(0);
 	}
 }

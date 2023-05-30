@@ -108,7 +108,11 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
         System.out.println("id=" + id);
         JPanel newPlayer = new JPanel();
         JLabel newPlayerName = new JLabel(name);
-        gs.playerColors.set(id, color);
+        try {
+            gs.playerColors.set(id, color);
+        } catch (IndexOutOfBoundsException e) {
+            gs.playerColors.add(color);
+        }
         ColorButton colorButton = new ColorButton(gs.playerColors.get(id),null);
         newPlayer.add(newPlayerName);
         newPlayer.add(colorButton);

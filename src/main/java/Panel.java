@@ -123,7 +123,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 								gs.nextTurn();
 								if (gs.gameSpace != null) {
 									try {
-										gs.gameSpace.put("Player1", h.id);
+										gs.onlineMove.makeMove(h.id);
 									} catch (InterruptedException ignored) {
 
 									}
@@ -141,7 +141,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 										paneT.setBackground(gs.playerColors.get(0));
 										if (gs.gameSpace != null) {
 											try {
-												gs.gameSpace.put("Player2", "reset");
+												gs.onlineMove.resetGame();
 											} catch (InterruptedException ex) {
 												throw new RuntimeException(ex);
 											}
@@ -162,7 +162,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 								gs.nextTurn();
 								if (gs.gameSpace != null) {
 									try {
-										gs.gameSpace.put("Player2", h.id);
+										gs.onlineMove.makeMove(h.id);
 									} catch (InterruptedException ignored) {
 
 									}
@@ -214,7 +214,6 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				checkMouseHover(MouseInfo.getPointerInfo().getLocation());
 				repaint();
 				delta--;
-
 			}
 			/*
 			try {
@@ -373,22 +372,21 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 
 
 	@Override
-	public void performedMove(int id) throws InterruptedException {
-		gs.grid.get(id).clicked=true;
-		gs.q.add(id);
-		gs.grid.get(id).color= gs.host ? gs.playerColors.get(1) : gs.playerColors.get(0);
+	public void performedMove(int playerId, int moveId) throws InterruptedException {
+		gs.grid.get(moveId).clicked=true;
+		gs.q.add(moveId);
+		gs.grid.get(moveId).color= gs.playerColors.get(playerId);
 		gs.nextTurn();
 		paneT.setBackground(gs.paneTColor);
 		paneT.setText(gs.paneTurnString);
 
-		ArrayList<ArrayList<Integer>> won = gs.winingState(gs.startP2, gs.playerColors.get(1), gs.winP2);
+		ArrayList<ArrayList<Integer>> won = gs.winingState(gs.startP2, gs.playerColors.get(playerId), gs.winP2);
 		//System.out.println(won);
 		if (won.get(0).get(0)==1 && gs.host) {
 			repaint();
 			JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.player2Name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 			if (dialogbutton == JOptionPane.YES_OPTION) {
 				reset(0);
-				gs.gameSpace.put("player2won");
 			}else {
 				remove(dialogbutton);
 			}
@@ -396,10 +394,11 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	}
 
 	@Override
-	public void reset(int id) {
+	public void reset(int id) throws InterruptedException {
 		gs.resetGame();
 		paneT.setText(gs.player1Name);
 		paneT.setBackground(gs.playerColors.get(id));
-		if(!gs.host)gs.whosTurn = GameState.Turn.ONLINE_PLAYER;
+		if(gs.host)gs.onlineMove.resetGame();
+		else gs.whosTurn = GameState.Turn.ONLINE_PLAYER;
 	}
 }

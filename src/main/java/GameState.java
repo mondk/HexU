@@ -16,6 +16,8 @@ public class GameState implements Cloneable{
 	Space gameSpace = null;
 	WaitingRoom waitingRoom = null;
 	OnlineMove onlineMove = null;
+	int onlineId;
+	HashMapIntegerString onlinePlayers = new HashMapIntegerString();
 
 	//game grid
 	ArrayList<Hexagon> grid = new ArrayList<>();

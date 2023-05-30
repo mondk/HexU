@@ -6,20 +6,32 @@ import java.util.*;
 
 public class WaitingRoom implements Runnable {
     GameState gameState;
-    HashMapIntegerString players;
     String numberOfHexagons;
     int thisPlayer;
     ArrayList<WaitingRoomListener> waitingRoomListeners = new ArrayList<>();
     public WaitingRoom(GameState gameState) throws InterruptedException {
         this.gameState = gameState;
         this.numberOfHexagons = "4";
-        this.players = (HashMapIntegerString) gameState.gameSpace.get(new ActualField("players"), new FormalField(HashMapIntegerString.class))[1];
-        this.thisPlayer = players.size();
-        for(Map.Entry<Integer,String> player : this.players.entrySet()){
-            gameState.gameSpace.put(player.getKey(), "newName", thisPlayer, gameState.player1Name, gameState.playerColors.get(thisPlayer));
+        gameState.onlinePlayers = (HashMapIntegerString) gameState.gameSpace.get(new ActualField("players"), new FormalField(HashMapIntegerString.class))[1];
+        gameState.onlineId = gameState.onlinePlayers.size();
+        this.thisPlayer = gameState.onlineId;
+        for(Map.Entry<Integer,String> player : gameState.onlinePlayers.entrySet()) {
+            try {
+                gameState.playerColors.get(player.getKey());
+            } catch (IndexOutOfBoundsException e) {
+                gameState.playerColors.add(Color.ORANGE);
+            }
         }
-        players.put(thisPlayer, gameState.player1Name);
-        gameState.gameSpace.put("players", players);
+        for(Map.Entry<Integer,String> player : gameState.onlinePlayers.entrySet()) {
+            try {
+                gameState.gameSpace.put(player.getKey(), "newName", thisPlayer, gameState.player1Name, gameState.playerColors.get(thisPlayer));
+            } catch (Exception e) {
+                gameState.playerColors.add(Color.ORANGE);
+                gameState.gameSpace.put(player.getKey(), "newName", thisPlayer, gameState.player1Name, gameState.playerColors.get(thisPlayer));
+            }
+        }
+        gameState.onlinePlayers.put(thisPlayer, gameState.player1Name);
+        gameState.gameSpace.put("players", gameState.onlinePlayers);
     }
 
     public void subscribe(WaitingRoomListener newWaitingRoomListener){
@@ -32,7 +44,7 @@ public class WaitingRoom implements Runnable {
 
     public void startGame(){
         try {
-            for(Map.Entry<Integer,String> player : players.entrySet()) {
+            for(Map.Entry<Integer,String> player : gameState.onlinePlayers.entrySet()) {
                 gameState.gameSpace.put(player.getKey(), "startGame");
             }
         } catch (InterruptedException e) {
@@ -42,9 +54,8 @@ public class WaitingRoom implements Runnable {
 
     public void updateNumberOfHexagons(String numberOfHexagons){
         try {
-            for(Map.Entry<Integer,String> player : players.entrySet()) {
-                System.out.println(player.getKey());
-                gameState.gameSpace.put(1, "numberOfHexagons" , numberOfHexagons);
+            for(Map.Entry<Integer,String> player : gameState.onlinePlayers.entrySet()) {
+                gameState.gameSpace.put(player.getKey(), "numberOfHexagons" , numberOfHexagons);
             }
             this.numberOfHexagons = numberOfHexagons;
         } catch (InterruptedException e) {
@@ -54,15 +65,15 @@ public class WaitingRoom implements Runnable {
 
     public void updateName(String name){
         try {
-            players = (HashMapIntegerString) gameState.gameSpace.get(new ActualField("players"), new FormalField(HashMapIntegerString.class))[1];
-            players.remove(thisPlayer);
+            gameState.onlinePlayers = (HashMapIntegerString) gameState.gameSpace.get(new ActualField("players"), new FormalField(HashMapIntegerString.class))[1];
+            gameState.onlinePlayers.remove(thisPlayer);
             gameState.player1Name = name;
-            for (Map.Entry<Integer,String> player : players.entrySet()) {
+            for (Map.Entry<Integer,String> player : gameState.onlinePlayers.entrySet()) {
                 System.out.println(player.getKey() + " " + thisPlayer);
                 gameState.gameSpace.put(player.getKey(), "newName", thisPlayer, gameState.player1Name,gameState.playerColors.get(thisPlayer));
             }
-            players.put(thisPlayer, gameState.player1Name);
-            gameState.gameSpace.put("players", players);
+            gameState.onlinePlayers.put(thisPlayer, gameState.player1Name);
+            gameState.gameSpace.put("players", gameState.onlinePlayers);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -72,7 +83,7 @@ public class WaitingRoom implements Runnable {
     public void run() {
         while(true){
             try {
-                players = (HashMapIntegerString) gameState.gameSpace.query(new ActualField("players"), new FormalField(HashMapIntegerString.class))[1];
+                gameState.onlinePlayers = (HashMapIntegerString) gameState.gameSpace.query(new ActualField("players"), new FormalField(HashMapIntegerString.class))[1];
                 Object[] numberOfHexagons = gameState.gameSpace.getp(new ActualField(thisPlayer),new ActualField("numberOfHexagons"), new FormalField(String.class));
                 if(numberOfHexagons != null && !(0 == thisPlayer)){
                     this.numberOfHexagons = (String) numberOfHexagons[2];
@@ -90,7 +101,7 @@ public class WaitingRoom implements Runnable {
 
                 Object[] updatedPersonalColor = gameState.gameSpace.getp(new ActualField(thisPlayer), new ActualField("newColor"), new FormalField(Color.class));
                 if (updatedPersonalColor != null){
-                    for(Map.Entry<Integer,String> player : players.entrySet()){
+                    for(Map.Entry<Integer,String> player : gameState.onlinePlayers.entrySet()){
                         if(!Objects.equals(player.getKey(), thisPlayer)){
                             gameState.gameSpace.put(player.getKey(), "newName",thisPlayer,gameState.player1Name,updatedPersonalColor[2]);
                         }
@@ -99,8 +110,8 @@ public class WaitingRoom implements Runnable {
                 Object[] startGame = gameState.gameSpace.getp(new ActualField(thisPlayer),new ActualField("startGame"));
                 if(startGame != null){
                     CardLayout cl = (CardLayout)gameState.cards.getLayout();
-                    gameState.player1Name = (String)players.values().toArray()[0];
-                    gameState.player2Name = (String)players.values().toArray()[1];
+                    gameState.player1Name = (String)gameState.onlinePlayers.values().toArray()[0];
+                    gameState.player2Name = (String)gameState.onlinePlayers.values().toArray()[1];
                     gameState.updateNumberOfHexagons(Integer.parseInt(this.numberOfHexagons));
                     gameState.whosTurn = thisPlayer == 0 ? GameState.Turn.Player1 : GameState.Turn.ONLINE_PLAYER;
                     gameState.startOnlineMove();
@@ -120,6 +131,6 @@ public class WaitingRoom implements Runnable {
         return thisPlayer;
     }
     public HashMapIntegerString getPlayers(){
-        return players;
+        return gameState.onlinePlayers;
     }
 }

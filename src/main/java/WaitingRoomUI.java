@@ -46,7 +46,13 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
                 }
             });
             names.add(ownName.getPlayerCards());
-            JTextField numberOfHexagons = new JTextField("" + gs.numberOfHexagons);
+            JPanel numberOfHexagons = new JPanel();
+            numberOfHexagons.setLayout(new GridLayout(0,1));
+            JLabel numberOfHexagonsLabel = new JLabel("Number Of Hexagons");
+            JTextField numberOfHexagonsTextField = new JTextField("" + gs.numberOfHexagons);
+            numberOfHexagons.add(numberOfHexagonsLabel);
+            numberOfHexagons.add(numberOfHexagonsTextField);
+
 
             add(numberOfHexagons,0);
             add(names, 1);
@@ -54,9 +60,9 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
             add(startButton);
             if(!gs.host){
                 startButton.setEnabled(false);
-                numberOfHexagons.setEnabled(false);
+                numberOfHexagonsTextField.setEnabled(false);
             } else {
-                numberOfHexagons.getDocument().addDocumentListener(new DocumentListener() {
+                numberOfHexagonsTextField.getDocument().addDocumentListener(new DocumentListener() {
                     @Override
                     public void insertUpdate(DocumentEvent documentEvent) {
                         changedUpdate(documentEvent);
@@ -70,7 +76,7 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
                     @Override
                     public void changedUpdate(DocumentEvent documentEvent) {
                         try {
-                            gameState.waitingRoom.updateNumberOfHexagons(Integer.parseInt(numberOfHexagons.getText()));
+                            gameState.waitingRoom.updateNumberOfHexagons(Integer.parseInt(numberOfHexagonsTextField.getText()));
                         } catch(Exception e) {
                             System.out.println("You should only input numbers");
                         }
@@ -95,7 +101,7 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
 
     @Override
     public void numberOfHexagonsChanged(Integer numberOfHexagons){
-        JTextField hexagonField = (JTextField) getComponent(0);
+        JTextField hexagonField = (JTextField) ((JPanel)getComponent(0)).getComponent(1);
         hexagonField.setEnabled(true);
         hexagonField.setText(String.valueOf(numberOfHexagons));
         hexagonField.updateUI();

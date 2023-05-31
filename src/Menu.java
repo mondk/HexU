@@ -57,8 +57,8 @@ public class Menu extends JPanel {
         namesAndButtons.add(changePlayersButtons);
 
 
-        PlayerSettings player1Settings = new PlayerSettings(gs, 0);
-        PlayerSettings player2Settings = new PlayerSettings(gs, 1);
+        addPlayer(gs, playerNames);
+        addPlayer(gs, playerNames);
 
         // Set the actions for the startgame buttons
         startComputerGameButton.setAction(new AbstractAction() {
@@ -82,8 +82,6 @@ public class Menu extends JPanel {
         startComputerGameButton.setText("Start Game against Computer");
         startMultiplayerButton.setText("Start Multiplayer Game");
         startOnlineButton.setText("Start Online Game");
-        playerNames.add(player1Settings.getPlayerCards());
-        playerNames.add(player2Settings.getPlayerCards());
         add(numberOfHexagons);
         add(namesAndButtons);
         add(buttons);

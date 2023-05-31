@@ -9,7 +9,7 @@ public class PlayerSettings extends JPanel {
     private JButton confirmPColor;
     private ColorPicker colorPicker;
     private ColorButton playerColor;
-    public PlayerSettings(GameState gs, int id) {
+    public PlayerSettings(GameState gs, Integer id) {
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         setPreferredSize(new Dimension(275, 30));
         playerCards = new JPanel(new CardLayout());

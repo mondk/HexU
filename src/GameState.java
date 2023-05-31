@@ -20,7 +20,7 @@ public class GameState implements Cloneable{
 	Space gameSpace = null;
 	WaitingRoom waitingRoom = null;
 	OnlineMove onlineMove = null;
-	int onlineId;
+	Integer onlineId = 0;
 	HashMapIntegerString onlinePlayers = new HashMapIntegerString();
 
 	//game grid
@@ -327,7 +327,7 @@ public class GameState implements Cloneable{
 		repository.addGate("tcp://" + ip + ":9001/?keep");
 		try {
 			//space.put("Player1Name", name.getText());
-			gameSpace.put("players",new HashMapIntegerString());
+			gameSpace.put(WaitingRoom.PLAYERS_LIST_IDENTIFIER,new HashMapIntegerString());
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}

@@ -108,6 +108,13 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
     }
 
     @Override
+    public void playerLeft(Integer id) {
+        JPanel names = (JPanel)getComponent(1);
+        names.remove(id);
+        names.updateUI();
+    }
+
+    @Override
     public void nameChanged(Integer id, String name, Color color){
         JPanel names = (JPanel)getComponent(1);
         try{

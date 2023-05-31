@@ -33,6 +33,9 @@ public class Yest {
 				} catch(IOException IOe) {
 					System.out.println(IOe);
 				}
+				try{
+					gs.waitingRoom.disconnect();
+				} catch (Exception e) {}
 				System.exit(0);
 			}
 		});

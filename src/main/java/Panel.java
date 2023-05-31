@@ -215,29 +215,6 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				repaint();
 				delta--;
 			}
-			/*
-			try {
-				Object[] hasWon = null;
-				if(gs.gameSpace != null && gs.host) hasWon = gs.gameSpace.getp(new ActualField("player2won"));
-
-				if (hasWon != null){
-					repaint();
-					JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.player2Name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
-					if (dialogbutton == JOptionPane.YES_OPTION) {
-						System.out.println("resetting game");
-						gs.resetGame();
-						paneT.setText(gs.player1Name);
-						paneT.setBackground(gs.playerColors.get(0));
-						gs.gameSpace.put("Player2", "reset");
-					} else {
-						remove(dialogbutton);
-					}
-				}
-
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
-			}
-			 */
 		}
 	}
 

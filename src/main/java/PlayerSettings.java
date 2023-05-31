@@ -27,7 +27,7 @@ public class PlayerSettings extends JPanel {
                 playerColor.setColor(colorPicker.getColor());
                 if(gs.gameSpace != null) {
                     try {
-                        gs.gameSpace.put(id, "newColor", gs.playerColors.get(id));
+                        gs.waitingRoom.updateColor(gs.playerColors.get(id));
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }

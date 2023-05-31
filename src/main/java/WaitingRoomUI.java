@@ -69,7 +69,11 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
 
                     @Override
                     public void changedUpdate(DocumentEvent documentEvent) {
-                        gameState.waitingRoom.updateNumberOfHexagons(numberOfHexagons.getText());
+                        try {
+                            gameState.waitingRoom.updateNumberOfHexagons(Integer.parseInt(numberOfHexagons.getText()));
+                        } catch(Exception e) {
+                            System.out.println("You should only input numbers");
+                        }
                     }
                 });
                 startButton.setAction(new AbstractAction() {
@@ -90,10 +94,10 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
     }
 
     @Override
-    public void numberOfHexagonsChanged(String numberOfHexagons){
+    public void numberOfHexagonsChanged(Integer numberOfHexagons){
         JTextField hexagonField = (JTextField) getComponent(0);
         hexagonField.setEnabled(true);
-        hexagonField.setText(numberOfHexagons);
+        hexagonField.setText(String.valueOf(numberOfHexagons));
         hexagonField.updateUI();
         hexagonField.setEnabled(false);
     }

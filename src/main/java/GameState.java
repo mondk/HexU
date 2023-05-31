@@ -353,7 +353,7 @@ public class GameState implements Cloneable{
 		paneTColor = playerColors.get(startPlayer);
 		player2Name = (String)onlinePlayers.values().toArray()[1];
 		//player3Name = (String)onlinePlayers.values().toArray()[2];
-		updateNumberOfHexagons(Integer.parseInt(waitingRoom.numberOfHexagons));
+		updateNumberOfHexagons(numberOfHexagons);
 		whosTurn = onlineId == startPlayer ? GameState.Turn.values()[startPlayer] : GameState.Turn.ONLINE_PLAYER;
 		startOnlineMove();
 		Panel panel = new Panel(this);

@@ -6,12 +6,10 @@ import java.util.*;
 
 public class WaitingRoom implements Runnable {
     GameState gameState;
-    String numberOfHexagons;
     int thisPlayer;
     ArrayList<WaitingRoomListener> waitingRoomListeners = new ArrayList<>();
     public WaitingRoom(GameState gameState) throws InterruptedException {
         this.gameState = gameState;
-        this.numberOfHexagons = String.valueOf(gameState.numberOfHexagons);
         gameState.onlinePlayers = (HashMapIntegerString) gameState.gameSpace.get(new ActualField("players"), new FormalField(HashMapIntegerString.class))[1];
         gameState.onlineId = gameState.onlinePlayers.size();
         this.thisPlayer = gameState.onlineId;
@@ -52,12 +50,12 @@ public class WaitingRoom implements Runnable {
         }
     }
 
-    public void updateNumberOfHexagons(String numberOfHexagons){
+    public void updateNumberOfHexagons(int numberOfHexagons){
         try {
             for(Map.Entry<Integer,String> player : gameState.onlinePlayers.entrySet()) {
                 gameState.gameSpace.put(player.getKey(), "numberOfHexagons" , numberOfHexagons);
             }
-            this.numberOfHexagons = numberOfHexagons;
+            gameState.numberOfHexagons = numberOfHexagons;
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -79,16 +77,24 @@ public class WaitingRoom implements Runnable {
         }
     }
 
+    public void updateColor(Color color) throws InterruptedException {
+        for(Map.Entry<Integer,String> player : gameState.onlinePlayers.entrySet()){
+            if(!Objects.equals(player.getKey(), thisPlayer)){
+                gameState.gameSpace.put(player.getKey(), "newName",thisPlayer,gameState.player1Name,color);
+            }
+        }
+    }
+
     @Override
     public void run() {
         while(true){
             try {
                 gameState.onlinePlayers = (HashMapIntegerString) gameState.gameSpace.query(new ActualField("players"), new FormalField(HashMapIntegerString.class))[1];
-                Object[] numberOfHexagons = gameState.gameSpace.getp(new ActualField(thisPlayer),new ActualField("numberOfHexagons"), new FormalField(String.class));
+                Object[] numberOfHexagons = gameState.gameSpace.getp(new ActualField(thisPlayer),new ActualField("numberOfHexagons"), new FormalField(Integer.class));
                 if(numberOfHexagons != null && !(0 == thisPlayer)){
-                    this.numberOfHexagons = (String) numberOfHexagons[2];
+                    gameState.numberOfHexagons = (Integer) numberOfHexagons[2];
                     for(WaitingRoomListener waitingRoomListener : waitingRoomListeners) {
-                        waitingRoomListener.numberOfHexagonsChanged((String) numberOfHexagons[2]);
+                        waitingRoomListener.numberOfHexagonsChanged((Integer) numberOfHexagons[2]);
                     }
                 }
                 Object[] newName = gameState.gameSpace.getp(new ActualField(thisPlayer), new ActualField("newName"), new FormalField(Integer.class), new FormalField(String.class), new FormalField(Color.class));
@@ -99,14 +105,6 @@ public class WaitingRoom implements Runnable {
                     }
                 }
 
-                Object[] updatedPersonalColor = gameState.gameSpace.getp(new ActualField(thisPlayer), new ActualField("newColor"), new FormalField(Color.class));
-                if (updatedPersonalColor != null){
-                    for(Map.Entry<Integer,String> player : gameState.onlinePlayers.entrySet()){
-                        if(!Objects.equals(player.getKey(), thisPlayer)){
-                            gameState.gameSpace.put(player.getKey(), "newName",thisPlayer,gameState.player1Name,updatedPersonalColor[2]);
-                        }
-                    }
-                }
                 Object[] startGame = gameState.gameSpace.getp(new ActualField(thisPlayer),new ActualField("startGame"), new FormalField(Integer.class));
                 if(startGame != null){
                     gameState.startOnlineGame((int)startGame[2]);

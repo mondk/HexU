@@ -1,7 +1,6 @@
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Map;
 

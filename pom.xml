@@ -30,4 +30,11 @@
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+  	<dependency>
+  		<groupId>io.github.pspaces.jspace</groupId>
+  		<artifactId>common</artifactId>
+  		<version>[0.0,)</version>
+  	</dependency>
+  </dependencies>
 </project>

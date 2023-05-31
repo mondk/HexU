@@ -3,7 +3,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeListener;
 import java.util.*;
 
 public class WaitingRoomUI extends JPanel implements WaitingRoomListener {

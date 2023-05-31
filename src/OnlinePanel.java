@@ -1,7 +1,3 @@
-import org.jspace.RemoteSpace;
-import org.jspace.SequentialSpace;
-import org.jspace.SpaceRepository;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

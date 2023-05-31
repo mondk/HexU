@@ -64,13 +64,13 @@ public class Menu extends JPanel {
         startComputerGameButton.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), player1Settings.getName());
+                gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), true);
             }
         });
         startMultiplayerButton.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), player1Settings.getName(), player2Settings.getName());
+                gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), false);
             }
         });
         startOnlineButton.setAction(new AbstractAction() {
@@ -90,7 +90,6 @@ public class Menu extends JPanel {
     }
 
     private void addPlayer(GameState gs, JPanel playerNames){
-        System.out.println(playerNames.getComponentCount());
         playerNames.add(new PlayerSettings(gs, playerNames.getComponentCount()).getPlayerCards());
         playerNames.updateUI();
     }

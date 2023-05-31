@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
@@ -26,6 +28,23 @@ public class PlayerSettings extends JPanel {
                 CardLayout cl = (CardLayout) playerCards.getLayout();
                 cl.next(playerCards);
                 playerColor.setColor(colorPicker.getColor());
+            }
+        });
+        player.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent documentEvent) {
+                changedUpdate(documentEvent);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent documentEvent) {
+                changedUpdate(documentEvent);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent documentEvent) {
+                if (id == 0) gs.player1Name = player.getText();
+                else gs.player2Name = player.getText();
             }
         });
         confirmPColor.setText("Confirm");

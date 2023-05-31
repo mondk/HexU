@@ -276,5 +276,28 @@ public class GameState implements Cloneable{
 		this.radius=(0.5773502717*(600-150))/(numberOfHexagons+1);
 		this.shift = 2*radius*0.8660254;
 	}
+
+	public void startGame(int numberOfHexagons, String player1Name){
+		this.singlePlayer = true;
+		this.numberOfHexagons = numberOfHexagons;
+		this.player1Name = player1Name;
+		this.player2Name = "Computer";
+		Panel panel = new Panel(this);
+		cards.add(panel, "PANEL");
+		CardLayout cl = (CardLayout)cards.getLayout();
+		cl.next(cards);
+		cards.remove(0);
+	}
+	public void startGame(int numberOfHexagons, String player1Name, String player2Name){
+		this.singlePlayer = false;
+		this.numberOfHexagons = numberOfHexagons;
+		this.player1Name = player1Name;
+		this.player2Name = player2Name;
+		Panel panel = new Panel(this);
+		cards.add(panel, "PANEL");
+		CardLayout cl = (CardLayout)cards.getLayout();
+		cl.next(cards);
+		cards.remove(0);
+	}
 }
 

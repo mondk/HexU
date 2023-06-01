@@ -17,9 +17,9 @@ public class AI {
 
 
 	public  int[] nextMove(String[][] matrix, String player) {
-		System.out.println("\nSTART LOL"+player+"\n");
+		//System.out.println("\nSTART LOL"+player+"\n");
 		int[] move = minimax(matrix,player,4, true);
-		System.out.println("best move :"+move[1]+" ; "+move[2]);
+		//System.out.println("best move :"+move[1]+" ; "+move[2]);
 		
 		return new int[] {move[1],move[2]};
 	}
@@ -41,7 +41,7 @@ public class AI {
 	        for (int[] move : getNullElements(matrix)) {
 	        	
 	        	
-	        	System.out.println("\ncurrent move :"+move[0]+" ; "+move[1]+"\n");
+	        	//System.out.println("\ncurrent move :"+move[0]+" ; "+move[1]+"\n");
 	        
 	        	String[][] matrix_new=makeMove(move,currentPlayer,matrix);
 	        	
@@ -51,14 +51,14 @@ public class AI {
 		        	}
 	        	}
 	            int[] eval = minimax(matrix_new,nextPlayer, depth - 1, false);
-				System.out.println("eval score : "+eval[0]);
+				//System.out.println("eval score : "+eval[0]);
 	            if (eval[0] > max_eval) {
 	            	System.out.println("inner score : "+eval[0]);
 	                max_eval = eval[0];
 	                best_move = move;
 	                
 	            }
-	            System.out.println("best move inner :"+best_move[0]+" ; "+best_move[1]);
+	            //System.out.println("best move inner :"+best_move[0]+" ; "+best_move[1]);
 	        }
 	        return new int[] {max_eval, best_move[0],best_move[1]};
 	        

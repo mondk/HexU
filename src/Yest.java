@@ -27,8 +27,11 @@ public class Yest {
 			@Override
 			public void windowClosing(WindowEvent windowEvent){
 				try{
-					FileWriter saveWriter = new FileWriter("saves.txt");
-					saveWriter.write(gs.q.toString());
+					FileWriter saveWriter = new FileWriter("res/saves.txt");
+					saveWriter.write("hexes: " + gs.numberOfHexagons);
+					saveWriter.write("\nP1: " + gs.player1Name + "\nP1C: " + gs.colorP1.toString() );
+					saveWriter.write("\nP2: "+ gs.player2Name + "\nP2C: " + String.valueOf(gs.colorP2.getRGB()));
+					saveWriter.write("\nmoves: " + gs.q.toString());
 					saveWriter.close();
 				} catch(IOException IOe){
 					System.out.println(IOe);

@@ -20,7 +20,7 @@ public class GameState implements Cloneable{
 	ArrayList<Triangle> border = new ArrayList<>();
 	
 	//Hexagon constants
-	int numberOfHexagons =5;
+	int numberOfHexagons =8;
 	
 	int ids =0;
 
@@ -66,9 +66,6 @@ public class GameState implements Cloneable{
 	List<Integer> winP1 = new ArrayList<>();
 	List<Integer> winP2 = new ArrayList<>();
 	List<Integer> winAI = new ArrayList<>();
-
-	// // Adjaceny matrix for the BFS
-	// ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
 
 	// Linked list containing moves made
 	LinkedList<Integer> q = new LinkedList<>();
@@ -169,66 +166,6 @@ public class GameState implements Cloneable{
 		return result;
 	}
 
-	public double evaluate(ArrayList<ArrayList<Integer>> clusters){
-		if (clusters.get(0).get(0) == 1){
-			return Double.MAX_VALUE;
-		}
-		List<ArrayList<Integer>> only_clusters = clusters.subList(1, clusters.size());
-		System.out.println("only cluster "+only_clusters.toString());
-		double finalSum = 0;
-		for (ArrayList<Integer> list : only_clusters){
-			double sum =0;
-			double axis_counter = 0;
-			for (int i = 0; i <= list.size()-1; i++){
-				if ( i > 0) {
-					switch(whosTurn){
-						case Player1:
-							if (grid.get(list.get(i)).center.y != grid.get(list.get(i-1)).center.y){
-								axis_counter += 1;
-							}
-						case Player2:
-							if (grid.get(list.get(i)).center.x != grid.get(list.get(i-1)).center.x){
-								axis_counter+=1;
-							}
-						case AI:
-						}
-				}
-				sum += grid.get(list.get(i)).score;
-			}
-			sum = sum*(1+((list.size()-1)*0.25))*(1+(axis_counter*0.6));
-			System.out.println(sum);
-			finalSum += sum;
-		}
-		return finalSum;
-	}
-
-//	public double evaluate(ArrayList<ArrayList<Integer>> clusters) {
-//		
-//		//clears win indicator if not a winning state
-//		System.out.println("clusters:= "+ clusters.toString());
-//		if(clusters.get(0).get(0).equals(1)) {
-//			return Double.MAX_VALUE;
-//		}
-//		clusters.remove(0);
-//		double final_score =0;
-//		double temp_score =0;
-//		System.out.println("clusters:= "+ clusters.toString());
-//		for(ArrayList<Integer> list: clusters) {
-//			temp_score=0;
-//			if(list.size()==1) {
-//				final_score+=grid.get(list.get(0)).score;
-//			}
-//			else {
-//				for(int i : list) {
-//					temp_score+=grid.get(list.get(i)).score;
-//				}
-//				final_score+=temp_score*1.5;
-//			}
-//		}
-//		
-//		return final_score;
-//		
-//	}
 	public void resetGame() {
 		whosTurn = Turn.Player1;
 		paneTColor = colorP1;

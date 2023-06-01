@@ -7,8 +7,6 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
-<<<<<<< Updated upstream
-=======
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -16,7 +14,6 @@ import java.util.Arrays;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
->>>>>>> Stashed changes
 
 
 
@@ -25,15 +22,11 @@ public class Panel extends JPanel{
 	
 	private GameState gs;
 	private Image image;
-<<<<<<< Updated upstream
-	private Graphics graphics;//TextFrame for player turn
-=======
 	private Graphics graphics;							//TextFrame for player turn
 	Point hexCenter1;
 	Point hexCenter2;
 	Point hexCenter3;
 	Point hexCenter4;
->>>>>>> Stashed changes
 	JTextPane paneT = new JTextPane();
 	
 	
@@ -84,8 +77,6 @@ public class Panel extends JPanel{
 						id++;
 					}
 				}
-<<<<<<< Updated upstream
-=======
 				else if(j>gs.numberOfHexagons/2) {
 					scoreJ--;
 				}
@@ -227,7 +218,6 @@ public class Panel extends JPanel{
 
 		
 		gs.fillWinStateArrays();
->>>>>>> Stashed changes
 	}
 	
 	@Override

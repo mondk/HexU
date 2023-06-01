@@ -39,8 +39,6 @@ public class Hexagon extends JPanel{
 			return this.hexagon;
 		}
 		
-<<<<<<< Updated upstream
-=======
 		public String toString() {
 			return Integer.toString(this.id);
 		}
@@ -59,6 +57,5 @@ public class Hexagon extends JPanel{
 		
 		return hex;
 		}
->>>>>>> Stashed changes
 		
 	}

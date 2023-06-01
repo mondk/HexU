@@ -39,5 +39,26 @@ public class Hexagon extends JPanel{
 			return this.hexagon;
 		}
 		
+<<<<<<< Updated upstream
+=======
+		public String toString() {
+			return Integer.toString(this.id);
+		}
+		public Point getCenter() {
+			int centerX = (int) (center.getX() + (Math.cos(30 * Math.PI / 180) * radius));
+			int centerY = (int) (center.getY() + (Math.sin(30 * Math.PI / 180) * radius));
+			return new Point(centerX, centerY);
+		}
+		@Override
+		public Hexagon clone() {
+		Hexagon hex = new Hexagon(this.center, this.radius, this.id);
+		hex.color=this.color;
+		hex.clicked=this.clicked;
+		hex.adj=this.adj;
+		hex.score=this.score;
+		
+		return hex;
+		}
+>>>>>>> Stashed changes
 		
 	}

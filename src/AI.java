@@ -8,13 +8,13 @@ import java.util.List;
 public class AI {
 	
 	private GameState gs;
-	static String player1 ;
-	static String player2 ;
+	static String player1;
+	static String player2;
 
 	public AI(GameState gs){
 		this.gs = gs;
-		this.player1=gs.colorP1.toString();
-		this.player2=gs.colorP2.toString();
+		this.player1=gs.players.get(0).color.toString();
+		this.player2=gs.players.get(1).color.toString();
 	}
 
 

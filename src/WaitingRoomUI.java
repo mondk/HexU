@@ -22,7 +22,7 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
                 if(Objects.equals(player.getKey(), gameState.waitingRoom.getThisPlayer())) continue;
                 JPanel newPlayer = new JPanel();
                 JLabel newPlayerName = new JLabel(player.getValue());
-                ColorButton colorButton = new ColorButton(gs.playerColors.get(player.getKey()),null);
+                ColorButton colorButton = new ColorButton(gs.players.get(player.getKey()).color,null);
                 newPlayer.add(newPlayerName, player.getKey());
                 colorButton.setEnabled(false);
                 newPlayer.add(colorButton);
@@ -125,11 +125,11 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
         JPanel newPlayer = new JPanel();
         JLabel newPlayerName = new JLabel(name);
         try {
-            gs.playerColors.set(id, color);
+            gs.players.get(id).color = color;
         } catch (IndexOutOfBoundsException e) {
-            gs.playerColors.add(color);
+            gs.players.put(id, new Player("Player" + id, color));
         }
-        ColorButton colorButton = new ColorButton(gs.playerColors.get(id),null);
+        ColorButton colorButton = new ColorButton(gs.players.get(id).color,null);
         newPlayer.add(newPlayerName);
         newPlayer.add(colorButton);
         names.add(newPlayer, (int)id);

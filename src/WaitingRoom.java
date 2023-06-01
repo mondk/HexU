@@ -21,20 +21,22 @@ public class WaitingRoom implements Runnable {
         this.thisPlayer = gameState.onlineId;
         for(Map.Entry<Integer,String> player : gameState.onlinePlayers.entrySet()) {
             try {
-                gameState.playerColors.get(player.getKey());
+                gameState.players.get(player.getKey());
             } catch (IndexOutOfBoundsException e) {
-                gameState.playerColors.add(Color.ORANGE);
+                //gameState.playerColors.add(Color.ORANGE);
+                gameState.addPlayer();
             }
         }
         for(Map.Entry<Integer,String> player : gameState.onlinePlayers.entrySet()) {
             try {
-                gameState.gameSpace.put(player.getKey(), NEW_NAME_IDENTIFIER, thisPlayer, gameState.player1Name, gameState.playerColors.get(thisPlayer).getRGB());
+                gameState.gameSpace.put(player.getKey(), NEW_NAME_IDENTIFIER, thisPlayer, gameState.players.get(gameState.onlineId).name, gameState.players.get(thisPlayer).color.getRGB());
             } catch (Exception e) {
-                gameState.playerColors.add(Color.ORANGE);
-                gameState.gameSpace.put(player.getKey(), NEW_NAME_IDENTIFIER, thisPlayer, gameState.player1Name, gameState.playerColors.get(thisPlayer).getRGB());
+                //gameState.playerColors.add(Color.ORANGE);
+                gameState.addPlayer();
+                gameState.gameSpace.put(player.getKey(), NEW_NAME_IDENTIFIER, thisPlayer, gameState.players.get(gameState.onlineId).name, gameState.players.get(thisPlayer).color.getRGB());
             }
         }
-        gameState.onlinePlayers.put(thisPlayer, gameState.player1Name);
+        gameState.onlinePlayers.put(thisPlayer, gameState.players.get(gameState.onlineId).name);
         gameState.gameSpace.put(PLAYERS_LIST_IDENTIFIER, gameState.onlinePlayers);
     }
 
@@ -69,9 +71,19 @@ public class WaitingRoom implements Runnable {
 
     public void updateName(String name){
         try {
+            for (Map.Entry<Integer, String> player : gameState.onlinePlayers.entrySet()) {
+                if (!Objects.equals(player.getKey(), thisPlayer)) {
+                    gameState.gameSpace.put(player.getKey(), NEW_NAME_IDENTIFIER, thisPlayer, name, gameState.players.get(gameState.onlineId).color);
+                }
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        /*
+        try {
             gameState.onlinePlayers = (HashMapIntegerString) gameState.gameSpace.get(new ActualField(PLAYERS_LIST_IDENTIFIER), new FormalField(HashMapIntegerString.class))[1];
             gameState.onlinePlayers.remove(thisPlayer);
-            gameState.player1Name = name;
+            gameState. = name;
             for (Map.Entry<Integer,String> player : gameState.onlinePlayers.entrySet()) {
                 gameState.gameSpace.put(player.getKey(), NEW_NAME_IDENTIFIER, thisPlayer, gameState.player1Name,gameState.playerColors.get(thisPlayer).getRGB());
             }
@@ -80,12 +92,13 @@ public class WaitingRoom implements Runnable {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+         */
     }
 
     public void updateColor(Color color) throws InterruptedException {
         for(Map.Entry<Integer,String> player : gameState.onlinePlayers.entrySet()){
             if(!Objects.equals(player.getKey(), thisPlayer)){
-                gameState.gameSpace.put(player.getKey(), NEW_NAME_IDENTIFIER,thisPlayer,gameState.player1Name, color.getRGB());
+                gameState.gameSpace.put(player.getKey(), NEW_NAME_IDENTIFIER,thisPlayer,gameState.players.get(gameState.onlineId).name, color.getRGB());
             }
         }
     }

@@ -383,16 +383,16 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	public void performedMove(int playerId, int moveId) throws InterruptedException {
 		gs.grid.get(moveId).clicked=true;
 		gs.q.add(moveId);
-		gs.grid.get(moveId).color= gs.playerColors.get(playerId);
+		gs.grid.get(moveId).color= gs.players.get(playerId).color;
 		gs.nextTurn();
 		paneT.setBackground(gs.paneTColor);
 		paneT.setText(gs.paneTurnString);
 
-		ArrayList<ArrayList<Integer>> won = gs.winingState(gs.startP2, gs.playerColors.get(playerId), gs.winP2);
+		ArrayList<ArrayList<Integer>> won = gs.winingState(gs.startP2, gs.players.get(playerId).color, gs.winP2);
 		//System.out.println(won);
 		if (won.get(0).get(0)==1 && gs.host) {
 			repaint();
-			JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.player2Name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
+			JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(1).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 			if (dialogbutton == JOptionPane.YES_OPTION) {
 				reset(0);
 			}else {
@@ -404,8 +404,8 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	@Override
 	public void reset(int id) throws InterruptedException {
 		gs.resetGame();
-		paneT.setText(gs.player1Name);
-		paneT.setBackground(gs.playerColors.get(id));
+		paneT.setText(gs.players.get(0).name);
+		paneT.setBackground(gs.players.get(id).color);
 		if(gs.host)gs.onlineMove.resetGame();
 		else gs.whosTurn = GameState.Turn.ONLINE_PLAYER;
 	}

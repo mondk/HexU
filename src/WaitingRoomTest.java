@@ -25,7 +25,7 @@ class WaitingRoomTest {
         gs.waitingRoom.updateColor(player1NewColor);
         gs2.joinGame("127.0.0.1");
         assertEquals(player1NewName, gs2.onlinePlayers.get(gs.onlineId));
-        assertEquals(player1NewColor, gs2.playerColors.get(gs.onlineId));
+        assertEquals(player1NewColor, gs2.players.get(gs.onlineId).color);
     }
     @Test
     public void updateNameAfterJoinTest() throws InterruptedException, IOException {
@@ -48,7 +48,7 @@ class WaitingRoomTest {
         gs2.waitingRoom.updateColor(player2Color);
         // Wait a while for sync
         Thread.sleep(10);
-        assertEquals(player1Color, gs2.playerColors.get(gs.onlineId));
-        assertEquals(player2Color, gs.playerColors.get(gs2.onlineId));
+        assertEquals(player1Color, gs2.players.get(gs.onlineId).color);
+        assertEquals(player2Color, gs.players.get(gs2.onlineId).color);
     }
 }

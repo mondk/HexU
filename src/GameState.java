@@ -17,7 +17,6 @@ import java.util.ArrayList;
 public class GameState{
 	
 	//Size of game screen
-	Dimension SCREEN_SIZE = new Dimension(600,400);
 
 	Space gameSpace = null;
 	WaitingRoom waitingRoom = null;
@@ -118,40 +117,40 @@ public class GameState{
 				if(whosTurn.equals(Turn.Player1)) {
 					whosTurn = Turn.AI;
 					paneTurnString = "AI";
-					paneTColor = playerColors.get(1);
+					paneTColor = players.get(1).color;
 				}
 				else {
 					whosTurn = Turn.Player1;
-					paneTurnString = player1Name;
-					paneTColor = playerColors.get(0);
+					paneTurnString = players.get(0).name;
+					paneTColor = players.get(0).color;
 				}
 				break;
 			//Multiplayer
 			case MULTIPLAYER:
 				if(whosTurn.equals(Turn.Player1)) {
 					whosTurn = Turn.Player2;
-					paneTurnString = player2Name;
-					paneTColor = playerColors.get(1);
+					paneTurnString = players.get(1).name;
+					paneTColor = players.get(1).color;
 				}
 				else {
 					whosTurn = Turn.Player1;
-					paneTurnString = player1Name;
-					paneTColor = playerColors.get(0);
+					paneTurnString = players.get(0).name;
+					paneTColor = players.get(0).color;
 				}
 				break;
 			case ONLINE:
 				if(whosTurn.equals(Turn.Player1)){
 					whosTurn = Turn.ONLINE_PLAYER;
-					paneTurnString = player2Name;
-					paneTColor = playerColors.get(1);
+					paneTurnString = players.get(1).name;
+					paneTColor = players.get(1).color;
 				} else if(whosTurn.equals(Turn.Player2)){
 					whosTurn = Turn.ONLINE_PLAYER;
-					paneTurnString = player1Name;
-					paneTColor = playerColors.get(0);
+					paneTurnString = players.get(0).name;
+					paneTColor = players.get(0).color;
 				} else {
 					whosTurn = host ? Turn.Player1 : Turn.Player2;
-					paneTurnString = host ? player1Name : player2Name;
-					paneTColor = host ? playerColors.get(0) : playerColors.get(1);
+					paneTurnString = host ? players.get(0).name : players.get(1).name;
+					paneTColor = host ? players.get(0).color : players.get(1).color;
 				}
 				break;
 		}
@@ -335,11 +334,8 @@ public class GameState{
 	}
 	public void startOnlineGame(int startPlayer) throws InterruptedException {
 		CardLayout cl = (CardLayout)cards.getLayout();
-		player1Name = (String)onlinePlayers.values().toArray()[0];
-		paneTurnString = player1Name;
-		paneTColor = playerColors.get(startPlayer);
-		player2Name = (String)onlinePlayers.values().toArray()[1];
-		//player3Name = (String)onlinePlayers.values().toArray()[2];
+		paneTurnString = players.get(startPlayer).name;
+		paneTColor = players.get(startPlayer).color;
 		updateNumberOfHexagons(numberOfHexagons);
 		whosTurn = onlineId == startPlayer ? GameState.Turn.values()[startPlayer] : GameState.Turn.ONLINE_PLAYER;
 		startOnlineMove();

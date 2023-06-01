@@ -21,9 +21,8 @@ public class GameState implements Cloneable{
 	
 	//Hexagon constants
 	int numberOfHexagons =4;
-	
-	int ids =0;
 
+	// Variables for hexagon placement
 	double radius=(0.5773502717*(600-150))/(numberOfHexagons+1);
 	double shift = 2*radius*0.8660254;
 	int xOffSet= 100- (int) (radius*2);
@@ -199,8 +198,6 @@ public class GameState implements Cloneable{
 	public GameState clone() {
 		GameState gs = new GameState();
 		gs.whosTurn=this.whosTurn;
-
-		gs.ids=this.ids;
 		for(Hexagon h: this.grid )
 			gs.grid.add(h.clone());
 		gs.fillWinStateArrays();

@@ -3,12 +3,8 @@ import java.awt.Dimension;
 import java.awt.Point;
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
-import java.util.Iterator;
 
 public class GameState implements Cloneable{
 	
@@ -33,9 +29,12 @@ public class GameState implements Cloneable{
 
 	Dimension SCREEN_SIZE = new Dimension(widthScreen,heightScreen);
 
+
+	HashMap<Integer,Player> players = new HashMap<>();
+
 	// Player names
-	String player1Name = "Player 1";
-	String player2Name = "Player 2";
+	//String player1Name = "Player 1";
+	//String player2Name = "Player 2";
 
 	//Start point for grid
 	Point startPoint = new Point((int) radius+50,(int) radius+50);
@@ -47,17 +46,26 @@ public class GameState implements Cloneable{
 
 	//Playerstate
 	boolean singlePlayer = false;
-	Color colorP1 = Color.pink;
-	Color colorP2 = Color.green;
+	//Color colorP1 = Color.pink;
+	//Color colorP2 = Color.green;
 	// Color colorP1 = Color.decode("#d032f0");
 	// Color colorP2 = Color.decode("#247324");
 
 
 	//Show which player turn it is
 	Turn whosTurn = Turn.Player1;
-	String paneTurnString = player1Name;
-	Color paneTColor = colorP1;
-	
+	//String paneTurnString = player1Name;
+	//Color paneTColor = colorP1;
+	String paneTurnString;
+	Color paneTColor;
+
+	public GameState(){
+		players.put(0, new Player("Player 1", Color.pink));
+		players.put(1, new Player("Player 2", Color.green));
+		paneTurnString = players.get(0).name;
+		paneTColor = players.get(0).color;
+	}
+
 	public enum Turn{
 		Player1,
 		Player2,
@@ -81,25 +89,25 @@ public class GameState implements Cloneable{
 			if(whosTurn.equals(Turn.Player1)) {
 				whosTurn = Turn.AI;
 				paneTurnString = "AI";
-				paneTColor = colorP2;
+				paneTColor = players.get(1).color;
 			}
 			else {
 				whosTurn = Turn.Player1;
-				paneTurnString = player1Name;
-				paneTColor = colorP1;
+				paneTurnString = players.get(0).name;
+				paneTColor = players.get(0).color;
 			}
 		}
 		//Multiplayer
 		else {
 			if(whosTurn.equals(Turn.Player1)) {
 				whosTurn = Turn.Player2;
-				paneTurnString = player2Name;
-				paneTColor = colorP2;
+				paneTurnString = players.get(1).name;
+				paneTColor = players.get(1).color;
 			}
 			else {
 				whosTurn = Turn.Player1;
-				paneTurnString = player1Name;
-				paneTColor = colorP1;
+				paneTurnString = players.get(0).name;
+				paneTColor = players.get(0).color;
 			}
 		}
 	}
@@ -173,8 +181,8 @@ public class GameState implements Cloneable{
 
 	public void resetGame() {
 		whosTurn = Turn.Player1;
-		paneTColor = colorP1;
-		paneTurnString = player1Name;
+		paneTColor = players.get(0).color;
+		paneTurnString = players.get(0).name;
 		q.clear();
 		for (Hexagon h : grid) {
 			h.color = Color.gray;
@@ -211,6 +219,27 @@ public class GameState implements Cloneable{
 		this.numberOfHexagons = numberOfHexagons;
 		this.radius=(0.5773502717*(600-150))/(numberOfHexagons+1);
 		this.shift = 2*radius*0.8660254;
+	}
+
+	public void addPlayer(){
+		int id = players.size();
+		players.put(id, new Player("Player " + id, Color.orange));
+	}
+
+	public void removePlayer(){
+		players.remove(players.size());
+	}
+
+	public void startGame(int numberOfHexagons, boolean singlePlayer){
+		this.paneTColor = players.get(0).color;
+		this.paneTurnString = players.get(0).name;
+		this.singlePlayer = singlePlayer;
+		this.numberOfHexagons = numberOfHexagons;
+		Panel panel = new Panel(this);
+		cards.add(panel, "PANEL");
+		CardLayout cl = (CardLayout)cards.getLayout();
+		cl.next(cards);
+		cards.remove(0);
 	}
 }
 

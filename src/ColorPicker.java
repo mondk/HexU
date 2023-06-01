@@ -15,7 +15,6 @@ public class ColorPicker extends JPanel {
     private int circleX;
     @Override
     protected void paintComponent(Graphics g) {
-        System.out.println("Drawing rect with size " + colors.getWidth() + " times " + colors.getHeight());
         for(int i = 0; i < colors.getWidth(); i++){
             int hue = scale(0, (int)colors.getWidth(),0,360, i);
             float realHue = hue/(float)360.0;
@@ -29,7 +28,6 @@ public class ColorPicker extends JPanel {
     }
     ColorPicker(Dimension size){
         colors.setSize(size.width, size.height);
-        System.out.println("Creating rect with size " + colors.getWidth() + " times " + colors.getHeight());
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         setPreferredSize(size);
 

@@ -27,6 +27,7 @@ public class Panel extends JPanel implements Runnable{
 	private Graphics graphics;							//TextFrame for player turn
 	JTextPane paneT = new JTextPane();
 	JTextPane winPane = new JTextPane();
+	private AI ai;
 	JButton undo = new JButton("Undo");
 	JButton generate = new JButton("Generate move");
 	boolean start =false;
@@ -38,7 +39,7 @@ public class Panel extends JPanel implements Runnable{
 		this.setFocusable(true);
 		this.setPreferredSize(gs.SCREEN_SIZE);
 		createGrid();
-		
+		this.ai = new AI(gs);
 		
 		
 		//System.out.println(gs.grid.toString());
@@ -47,36 +48,35 @@ public class Panel extends JPanel implements Runnable{
 		
 		//Button to generate an ai move
 		generate.addActionListener(new ActionListener() {
-
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				int i = AI.nextMove(gs);
-				for(Hexagon h: gs.grid) {
-					if(h.clicked)
-						System.out.println(h.id+" is clicked");
+				int[] move= {};
+				switch(gs.whosTurn){
+					case Player1:
+						move = ai.nextMove(ai.gridToMatrix(gs.grid,gs.numberOfHexagons), gs.colorP1.toString());
+						break;
+					case Player2:
+						move = ai.nextMove(ai.gridToMatrix(gs.grid,gs.numberOfHexagons), gs.colorP2.toString());
+						break;
 				}
-				gs.grid.get(i).clicked=true;
-				gs.grid.get(i).color=gs.paneTColor;
-				gs.q.add(i);
-				
-				ArrayList<ArrayList<Integer>> won = new ArrayList<>();
-				won = gs.winingState(gs.startP1, gs.colorP1, gs.winP1);
-				System.out.println(gs.evaluate(won));
-				gs.nextTurn();
-					if (won.get(0).get(0)==1) {
-						repaint();
-						JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.player1Name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
-	 					if (dialogbutton == JOptionPane.YES_OPTION) {
-	 						gs.resetGame();
-	 						paneT.setText(gs.player1Name);
-						paneT.setBackground(gs.colorP1);
-	 						
-	 					}else {
-	 						remove(dialogbutton);
-	 					}
+				int hex = move[0]*gs.numberOfHexagons+move[1];
+				gs.grid.get(hex).clicked = true;
+				gs.grid.get(hex).color = gs.paneTColor;
+				gs.q.add(hex);
+				ArrayList<ArrayList<Integer>> won = gs.winingState(gs.startP1, gs.colorP1, gs.winP1);
+				if (won.get(0).get(0)==1) {
+					repaint();
+					JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.player1Name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
+					if (dialogbutton == JOptionPane.YES_OPTION) {
+						gs.resetGame();
+						paneT.setText(gs.player1Name);
+					paneT.setBackground(gs.colorP1);
+						
+					}else {
+						remove(dialogbutton);
 					}
+				}
+				gs.nextTurn();
 				paneT.setText(gs.paneTurnString);
 				paneT.setBackground(gs.paneTColor);
 				repaint();
@@ -123,7 +123,7 @@ public class Panel extends JPanel implements Runnable{
 	 						
 	 						System.out.println(gs.player1Name + " clicked on hexagon: "+h.id+" score: "+h.score);
 							won = gs.winingState(gs.startP1, gs.colorP1, gs.winP1);
-							System.out.println(gs.evaluate(won));
+							
 							
 	 						if (won.get(0).get(0)==1) {
 	 							repaint();
@@ -143,7 +143,7 @@ public class Panel extends JPanel implements Runnable{
 	 					case Player2:
 	 						h.color=gs.colorP2;
 	 						gs.nextTurn();
-	 						System.out.println(gs.player2Name + " clicked on hexagon: "+h.id);
+	 						System.out.println(gs.player2Name + " clicked on hexagon: "+h.id+" score: "+h.score);
 							won = gs.winingState(gs.startP2, gs.colorP2, gs.winP2);
 							//System.out.println(won);
 	 						if (won.get(0).get(0)==1) {
@@ -295,7 +295,6 @@ public class Panel extends JPanel implements Runnable{
 					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons);;
 					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons-1);
 				}
-				//System.out.println(""+hex + " " + gs.grid.get(hex).adj.toString());
 			}
 		}
 		int[] x= {gs.grid.get(0).center.x-(int) (gs.radius*2), gs.grid.get(gs.numberOfHexagons-1).center.x+(int) (gs.radius*1.3), gs.grid.get(4).center.x};

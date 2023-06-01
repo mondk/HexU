@@ -1,0 +1,6 @@
+hexes: 4
+P1: Player 1
+P1C: java.awt.Color[r=255,g=175,b=175]
+P2: Player 2
+P2C: -16711936
+moves: []

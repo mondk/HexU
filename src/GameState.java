@@ -12,6 +12,7 @@ import java.util.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
+import java.util.ArrayList;
 
 public class GameState implements Cloneable{
 	
@@ -26,7 +27,8 @@ public class GameState implements Cloneable{
 
 	//game grid
 	ArrayList<Hexagon> grid = new ArrayList<>();
-	ArrayList<Triangle> border = new ArrayList<>();
+	//ArrayList<Triangle> border = new ArrayList<>();
+	ArrayList<BorderR> border = new ArrayList<>();
 	
 	//Hexagon constants
 	int numberOfHexagons =4;

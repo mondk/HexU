@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -26,6 +27,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	private Graphics graphics;                            //TextFrame for player turn
 	JTextPane paneT = new JTextPane();
 	JTextPane winPane = new JTextPane();
+	private AI ai;
 	JButton undo = new JButton("Undo");
 	JButton generate = new JButton("Generate move");
 	boolean start =false;
@@ -37,51 +39,51 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		this.setFocusable(true);
 		this.setPreferredSize(gs.SCREEN_SIZE);
 		createGrid();
-
-
+		this.ai = new AI(gs);
+		
+		
 		//System.out.println(gs.grid.toString());
 		paneT.setText(gs.paneTurnString);
 		paneT.setBackground(gs.paneTColor);
-
+		
 		//Button to generate an ai move
 		generate.addActionListener(new ActionListener() {
-
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				int i = AI.nextMove(gs);
-				for(Hexagon h: gs.grid) {
-					if(h.clicked)
-						System.out.println(h.id+" is clicked");
+				int[] move= {};
+				switch(gs.whosTurn){
+					case Player1:
+						move = ai.nextMove(ai.gridToMatrix(gs.grid,gs.numberOfHexagons), gs.players.get(0).color.toString());
+						break;
+					case Player2:
+						move = ai.nextMove(ai.gridToMatrix(gs.grid,gs.numberOfHexagons), gs.players.get(1).color.toString());
+						break;
 				}
-				gs.grid.get(i).clicked=true;
-				gs.grid.get(i).color=gs.paneTColor;
-				gs.q.add(i);
-
-				ArrayList<ArrayList<Integer>> won = new ArrayList<>();
-				won = gs.winingState(gs.startP1, gs.playerColors.get(0), gs.winP1);
-				System.out.println(gs.evaluate(won));
-				gs.nextTurn();
+				int hex = move[0]*gs.numberOfHexagons+move[1];
+				gs.grid.get(hex).clicked = true;
+				gs.grid.get(hex).color = gs.paneTColor;
+				gs.q.add(hex);
+				ArrayList<ArrayList<Integer>> won = gs.winingState(gs.startP1, gs.players.get(0).color, gs.winP1);
 				if (won.get(0).get(0)==1) {
 					repaint();
-					JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.player1Name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
+					JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(0).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 					if (dialogbutton == JOptionPane.YES_OPTION) {
 						gs.resetGame();
-						paneT.setText(gs.player1Name);
-						paneT.setBackground(gs.playerColors.get(0));
+						paneT.setText(gs.players.get(0).name);
+					paneT.setBackground(gs.players.get(0).color);
 
 					}else {
 						remove(dialogbutton);
 					}
 				}
+				gs.nextTurn();
 				paneT.setText(gs.paneTurnString);
 				paneT.setBackground(gs.paneTColor);
 				repaint();
-
-
+				
+				
 			}
-
+			
 		});
 		undo.addActionListener(new ActionListener(){
 			@Override
@@ -102,13 +104,14 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		this.add(paneT);
 		this.add(undo);
 		this.add(generate);
-
+		
 		//actions when hex is clicked
 		this.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e) {
 				for(Hexagon h : gs.grid) {
 					if(h.getPolygon().contains(e.getPoint())&&!h.clicked) {
 
+						gs.q.add(h.id);
 
 						ArrayList<ArrayList<Integer>> won = new ArrayList<>();
 						System.out.println("The turn is " + gs.whosTurn);
@@ -193,6 +196,60 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				repaint();
 			}
 		});
+
+	 					switch(gs.whosTurn) {
+	 					case Player1:
+	 						h.color=gs.players.get(0).color;
+	 						gs.nextTurn();
+
+	 						System.out.println(gs.players.get(0).name + " clicked on hexagon: "+h.id+" score: "+h.score);
+							won = gs.winingState(gs.startP1, gs.players.get(0).color, gs.winP1);
+
+
+	 						if (won.get(0).get(0)==1) {
+	 							repaint();
+	 							JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(0).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
+	 		 					if (dialogbutton == JOptionPane.YES_OPTION) {
+	 		 						gs.resetGame();
+	 		 						paneT.setText(gs.players.get(0).name);
+									paneT.setBackground(gs.players.get(0).color);
+	 		 						break;
+	 		 					}else {
+	 		 						remove(dialogbutton);
+	 		 					}
+	 						}
+	 						paneT.setBackground(gs.paneTColor);
+	 						paneT.setText(gs.paneTurnString);
+	 						break;
+	 					case Player2:
+	 						h.color=gs.players.get(1).color;
+	 						gs.nextTurn();
+	 						System.out.println(gs.players.get(1).name + " clicked on hexagon: "+h.id+" score: "+h.score);
+							won = gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2);
+							//System.out.println(won);
+	 						if (won.get(0).get(0)==1) {
+	 							repaint();
+	 							JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(1).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
+	 							if (dialogbutton == JOptionPane.YES_OPTION) {
+	 		 						gs.resetGame();
+	 		 						paneT.setText(gs.players.get(0).name);
+									paneT.setBackground(gs.players.get(0).color);
+	 		 						break;
+	 		 					}else {
+	 		 						remove(dialogbutton);
+
+	 		 					}
+	 						}
+	 						paneT.setBackground(gs.paneTColor);
+	 						paneT.setText(gs.paneTurnString);
+	 						break;
+	 					}
+
+	 					repaint();
+	 				}
+	 			}
+	          }
+	       });
 		Thread gameThread = new Thread(this);
 		start = true;
 		gameThread.start();
@@ -239,66 +296,78 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 			return;
 		int id=0;
 		int scoreI =0;
-
+		
 		for(int i =0;i<gs.numberOfHexagons;i++) {
 			int scoreJ =0;
 			if(i==gs.numberOfHexagons/2) {
-
-			} else if(i>gs.numberOfHexagons/2) {
+				
+			}
+			else if(i>gs.numberOfHexagons/2) {
 				scoreI--;
-			} else {
+			}
+			else {
 				scoreI++;
 			}
 			for(int j =0;j<gs.numberOfHexagons;j++) {
 				Hexagon h1 = new Hexagon(new Point((int) (gs.startPoint.x+gs.shift*j+i*gs.shift*Math.cos(60*(Math.PI/180))),(int) (gs.startPoint.y+i*gs.shift*Math.sin(60*(Math.PI/180)))),gs.radius,id);
 				if(j==gs.numberOfHexagons/2) {
-
-				} else if(j>gs.numberOfHexagons/2) {
+					
+				}
+				else if(j>gs.numberOfHexagons/2) {
 					scoreJ--;
-				} else {
+				}
+				else {
 					scoreJ++;
 				}
 				h1.score=scoreI+scoreJ;
-
+				
 				gs.grid.add( h1);
 				id++;
 				int hex = i*gs.numberOfHexagons+j;
-
-				if (i==0 && j==0) {                                                        //First hexagon
+				
+				if (i==0 && j==0) {														//First hexagon
 					gs.grid.get(hex).adj.add(1);
 					gs.grid.get(hex).adj.add(gs.numberOfHexagons);
-				} else if (i==gs.numberOfHexagons-1 && j ==gs.numberOfHexagons-1) {        //Last Hexagon
+				}
+				else if (i==gs.numberOfHexagons-1 && j ==gs.numberOfHexagons-1) {		//Last Hexagon
 					gs.grid.get(hex).adj.add(hex-1);
 					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons);
-				} else if(i==0 & j==gs.numberOfHexagons-1) {                                //Last hexagon first row
+				}
+				else if(i==0 & j==gs.numberOfHexagons-1) {								//Last hexagon first row
 					gs.grid.get(hex).adj.add(hex-1);
 					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons);
 					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons-1);
-				} else if (i == gs.numberOfHexagons-1 && j ==0) {                            //First hexagon last row
+				}
+				else if (i == gs.numberOfHexagons-1 && j ==0) {							//First hexagon last row
 					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons);
 					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons+1);
 					gs.grid.get(hex).adj.add(hex+1);
-				} else if (i==0) {                                                        //Rest of first row
+				}
+				else if (i==0) {														//Rest of first row
 					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons);;
 					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons-1);
 					gs.grid.get(hex).adj.add(hex+1);
 					gs.grid.get(hex).adj.add(hex-1);
-				} else if (i==gs.numberOfHexagons-1) {                                    //Rest of last row
+				}
+				else if (i==gs.numberOfHexagons-1) {									//Rest of last row
 					gs.grid.get(hex).adj.add(hex-1);
 					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons);
 					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons+1);
 					gs.grid.get(hex).adj.add(hex+1);
-				} else if (j==0) {                                                        //Rest of first column
+				}
+				else if (j==0) {														//Rest of first column
 					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons);
 					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons+1);
 					gs.grid.get(hex).adj.add(hex+1);
 					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons);
-				} else if(j==gs.numberOfHexagons-1) {                                        //Rest of last column
+				}
+				else if(j==gs.numberOfHexagons-1) {										//Rest of last column
 					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons);
 					gs.grid.get(hex).adj.add(hex-1);
 					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons-1);
 					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons);
-				} else {                                                                    //Everything in between
+				}
+				else {																	//Everything in between
 					gs.grid.get(hex).adj.add(hex-1);
 					gs.grid.get(hex).adj.add(hex+1);
 					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons);
@@ -311,28 +380,28 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		}
 		int[] x= {gs.grid.get(0).center.x-(int) (gs.radius*2), gs.grid.get(gs.numberOfHexagons-1).center.x+(int) (gs.radius*1.3), gs.grid.get(4).center.x};
 		int[] y= {gs.grid.get(0).center.y-(int) (gs.radius*1.5), gs.grid.get(gs.numberOfHexagons-1).center.y-(int) (gs.radius*1.5),gs.grid.get(4).center.y};
-		gs.border.add(new Triangle(gs.playerColors.get(0), x , y));
+		gs.border.add(new Triangle(gs.players.get(0).color, x , y));
 		// gs.border.add(new Triangle());
 		// gs.border.add(new Triangle());
 		// gs.border.add(new Triangle());
 
-
+		
 		gs.fillWinStateArrays();
 	}
-
+	
 	@Override
 	public void paintComponent(Graphics g) {
 		image = createImage(getWidth(),getHeight());
 		graphics = image.getGraphics();
 		draw(graphics);
 		g.drawImage(image,0,0,this);
-
+		
 	}
-
+	
 	public void draw(Graphics g) {
-
+		
 		for (Triangle t : gs.border){
-			g.setColor(gs.playerColors.get(0));
+			g.setColor(gs.players.get(0).color);
 			g.fillPolygon(t.getPolygon());
 		}
 		for(Hexagon h:gs.grid) {
@@ -342,9 +411,11 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 			g.drawPolygon(h.getPolygon());
 		}
 
+		
 
 	}
-
+	
+	
 
 	@Override
 	public void performedMove(int playerId, int moveId) throws InterruptedException {

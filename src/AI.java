@@ -1,88 +1,225 @@
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 public class AI {
 	
+	private GameState gs;
+	static String player1;
+	static String player2;
 
-	
-	public static int nextMove(GameState gs1) {
-		double[] move = minimax(gs1,1, true);
-		System.out.println("best move :"+move[1]);
-		return (int) move[1];
+	public AI(GameState gs){
+		this.gs = gs;
+		this.player1=gs.players.get(0).color.toString();
+		this.player2=gs.players.get(1).color.toString();
 	}
 
-	public static double[] minimax(GameState gs,int depth, boolean maximizing_player) {
-		System.out.println("id :"+gs.ids);
+
+	public  int[] nextMove(String[][] matrix, String player) {
+		//System.out.println("\nSTART LOL"+player+"\n");
+		int[] move = minimax(matrix,player,4, true);
+		//System.out.println("best move :"+move[1]+" ; "+move[2]);
+
+		return new int[] {move[1],move[2]};
+	}
+
+	public int[] minimax(String[][] matrix, String player,int depth, boolean maximizing_player) {
+
 	    if (depth == 0) {
-	    	System.out.println("final id "+gs.ids);
-	    	for(Hexagon h: gs.grid) {
-	    		if(h.clicked)
-	    			System.out.print(h.id+" ");
-	    	}
-	    	gs.nextTurn();
-	    	switch(gs.whosTurn) {
-	    	case Player1:
-	    	//	System.out.println(gs.winingState(gs.startP1, gs.colorP1, gs.winP1).toString());
-				System.out.println("test winningState: " + gs.winingState(gs.startP1, gs.playerColors.get(0), gs.winP1).toString());
-	    		return new double[] {  gs.evaluate(gs.winingState(gs.startP1, gs.playerColors.get(0), gs.winP1)), -1};
-	    		
-	    	case Player2:
-				System.out.println("test winningState: " + gs.winingState(gs.startP2, gs.playerColors.get(0), gs.winP2).toString());
-	    		return new double[] {  gs.evaluate(gs.winingState(gs.startP2, gs.playerColors.get(0), gs.winP2)), -1};
-	    	}
+
+	    	return new int[] {(int) evalMatrix(matrix, player),-1,-1};
 	        
 	    }
 
 	    if (maximizing_player) {
-	        double max_eval = Integer.MIN_VALUE;
-	        double best_move = -1;
-	        for (int move : gs.getValidMoves()) {
-	        	double move1 = move;
-	        	GameState new_state = null;
-	        	new_state=makeMove(gs,move,gs.whosTurn);
+	        int max_eval = Integer.MIN_VALUE;
+	        int[] best_move = new int[] {-1,-1};
+	        String currentPlayer = player;
+	        String nextPlayer = nextTurn(player);
+
+	        for (int[] move : getNullElements(matrix)) {
 	        	
-	            double[] eval = minimax(new_state, depth - 1, false);
-				System.out.println("score: "+eval[0]);
+
+	        	//System.out.println("\ncurrent move :"+move[0]+" ; "+move[1]+"\n");
+
+	        	String[][] matrix_new=makeMove(move,currentPlayer,matrix);
+
+	        	if(depth==4) {
+	        		if(evalMatrix(matrix_new, player)==Double.MAX_VALUE) {
+		        		return new int[] {-1, move[0],move[1]};
+		        	}
+	        	}
+	            int[] eval = minimax(matrix_new,nextPlayer, depth - 1, false);
+				//System.out.println("eval score : "+eval[0]);
 	            if (eval[0] > max_eval) {
+	            	System.out.println("inner score : "+eval[0]);
 	                max_eval = eval[0];
-	                best_move = move1;
+	                best_move = move;
+
 	            }
+	            //System.out.println("best move inner :"+best_move[0]+" ; "+best_move[1]);
 	        }
-	        return new double[] {max_eval, best_move};
+	        return new int[] {max_eval, best_move[0],best_move[1]};
+
 	    } else {
-	        double min_eval = Integer.MAX_VALUE;
-	        double best_move = -1;
-	        for (int move : gs.getValidMoves()) {
-	        	double move1 =move;
-	        	System.out.println("move :"+move);
-	        	GameState new_state = null;
-	        	new_state=	makeMove(gs,move,gs.whosTurn);
-	            double[] eval = minimax(new_state, depth - 1, true);
+	    	int min_eval = Integer.MAX_VALUE;
+	        int[] best_move = new int[] {-1,-1};
+	        String currentPlayer = player;
+	        String nextPlayer = nextTurn(player);
+
+	        for (int[] move : getNullElements(matrix)) {
+
+	        	String[][] matrix_new=makeMove(move,currentPlayer,matrix);
+
+	            int[] eval = minimax(matrix_new,nextPlayer, depth - 1, true);
 				
-	            if (eval[0] < min_eval) {
+	            if ( min_eval > eval[0]) {
 	                min_eval = eval[0];
-	                best_move = move1;
+	                best_move = move;
 	            }
 	        }
-	        return new double[] {min_eval, best_move};
+	        return new int[] {min_eval, best_move[0],best_move[1]};
 	    }
 	}
 	
-	public static GameState makeMove(GameState gs1, int move, GameState.Turn currentPlayer) {
-		
-		GameState gs2 = null;
-		gs2=(GameState) gs1.clone();
-		gs2.grid.get(move).clicked=true;
-
-		System.out.println(gs2.grid.get(move).clicked+" "+gs1.grid.get(move).clicked);
-		switch(gs1.whosTurn) {
-			case Player1:
-				gs2.grid.get(move).color=gs2.playerColors.get(0);
-			case Player2:
-				gs2.grid.get(move).color=gs2.playerColors.get(1);
-		}
-	   gs2.nextTurn();
-	   gs2.ids+=1;
-       return gs2;
+	public static String[][] makeMove(int[] move,String player, String[][] matrix){
+		String[][] m2 = matrix.clone();
+		for (int i = 0; i < matrix.length; i++) {
+	        m2[i] = matrix[i].clone();
+	    }
+		m2[move[0]][move[1]]=player;
+		return m2;
 		
 	}
 
+	public static String nextTurn(String player) {
 
+		if(player.equals(player1)) {
+			return player2;
+		}
+		else if(player.equals(player2))
+			return player1;
+		else
+			return null;
+
+	}
+
+	public static String[][] gridToMatrix(ArrayList<Hexagon> grid, int numberofHex){
+		String[][] matrix = new String[numberofHex][numberofHex];
+		for (int i =0; i < numberofHex; i++){
+			for (int j = 0; j < numberofHex;j++){
+				int hex = i*numberofHex+j;
+				String color = grid.get(hex).color.toString();
+				if (color.equals( player1)){
+					matrix[i][j] = player1;
+				}else if ( color.equals(player2)){
+					matrix[i][j] = player2;
+				}else{
+					matrix[i][j] = "null";
+				}
+			}
+		}
+		return matrix;
+	}
+
+	public static ArrayList<int[]> getNullElements(String[][] matrix) {
+		//stringifyMatrix(matrix,4);
+		ArrayList<int[]> validMoves = new ArrayList<>();
+		for (int i = 0; i < matrix.length; i++) {
+			for (int j = 0; j < matrix[i].length; j++) {
+				if (matrix[i][j].equals("null")) {
+					validMoves.add(new int[]{i,j});
+				}
+			}
+		}
+		return validMoves;
+	}
+
+	public static void stringifyMatrix (String[][] matrix,int numberofHex){
+		for (int i =0; i < numberofHex; i++){
+			for (int j = 0; j < numberofHex;j++){
+				System.out.printf("%5s ", matrix[i][j]);
+			}
+			System.out.println();
+		}
+	}
+
+	public double evalMatrix(String[][] matrix, String Player){
+		ArrayList<Integer> seen = new ArrayList<>();
+
+		double finalScore = 0.0;
+		double sum = 0;
+		for (int i = 0; i < gs.numberOfHexagons; i++) {
+			for (int j = 0; j < gs.numberOfHexagons; j++) {
+				if (matrix[i][j].equals(Player)) {
+					int v = i*gs.numberOfHexagons+j;
+					if (seen.contains(v)){
+						continue;
+					}
+					ArrayList<Integer> cluster = new ArrayList<>();
+					boolean visited[] = new boolean[gs.numberOfHexagons*gs.numberOfHexagons];
+					LinkedList<Integer> queue = new LinkedList<Integer>();
+					visited[v] = true;
+					queue.add(v);
+					cluster.add(v);
+
+					while (queue.size()!=0) {
+						int inter = queue.poll();
+						Iterator<Integer> k = gs.grid.get(inter).adj.listIterator();
+						while(k.hasNext()) {
+							int n = k.next();
+							if (Player.equals(player1)){
+								if(visited[n] == false && matrix[n/gs.numberOfHexagons][n%gs.numberOfHexagons].equals(player1)) {
+									visited[n] = true;
+									queue.add(n);
+									seen.add(n);
+									cluster.add(n);
+									if (!Collections.disjoint(cluster, gs.startP1) && !Collections.disjoint(cluster,gs.winP1)){
+
+
+										return Double.MAX_VALUE;
+									}
+								}
+							}else if (Player.equals(player2)){
+								if(visited[n] == false && matrix[n/gs.numberOfHexagons][n%gs.numberOfHexagons].equals(player2)) {
+									visited[n] = true;
+									queue.add(n);
+									seen.add(n);
+									cluster.add(n);
+									if (!Collections.disjoint(cluster, gs.startP2) && !Collections.disjoint(cluster,gs.winP2)){
+										return Double.MAX_VALUE;
+									}
+								}
+							}
+						}
+				}
+				sum = 0;
+				double axis_counter = 0;
+				if (cluster.size() > 0)
+					sum +=gs.grid.get(cluster.get(0)).score;
+				for (int h = 1; h<cluster.size();h ++){
+					sum += gs.grid.get(cluster.get(h)).score;
+					if (Player.equals(player1)){
+						if (gs.grid.get(cluster.get(h)).center.y != gs.grid.get(cluster.get(h-1)).center.y)
+							axis_counter += 1;
+					} else if (Player.equals(player2)){
+						if (gs.grid.get(cluster.get(h)).center.y == gs.grid.get(cluster.get(h-1)).center.y)
+							axis_counter += 1;
+					}
+				}
+				//System.out.println("sum chehck");
+				//System.out.println(sum);
+				sum = sum*(1+((cluster.size()-1)*0.25))*(1+(axis_counter*0.55));
+				//System.out.println(sum);
+			}
+			finalScore += sum;
+			sum=0;
+		}
+	}
+	//System.out.println("final score : "+finalScore);
+	return finalScore;
+}
 }

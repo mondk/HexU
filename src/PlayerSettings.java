@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
@@ -9,29 +11,38 @@ public class PlayerSettings extends JPanel {
     private JButton confirmPColor;
     private ColorPicker colorPicker;
     private ColorButton playerColor;
-    public PlayerSettings(GameState gs, Integer id) {
+    public PlayerSettings(GameState gs, int id) {
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         setPreferredSize(new Dimension(275, 30));
         playerCards = new JPanel(new CardLayout());
-        player = new JTextField("Player");
+        player = new JTextField("Player" + id);
         colorMenu = new JPanel();
         confirmPColor = new JButton("Confirm");
         colorPicker = new ColorPicker(new Dimension(125, 20));
-        playerColor = new ColorButton(gs.playerColors.get(id), playerCards);
+        playerColor = new ColorButton(gs.players.get(id).color, playerCards);
         confirmPColor.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                gs.playerColors.set(id, colorPicker.getColor());
+                gs.players.get(id).color = colorPicker.getColor();
                 CardLayout cl = (CardLayout) playerCards.getLayout();
                 cl.next(playerCards);
                 playerColor.setColor(colorPicker.getColor());
-                if(gs.gameSpace != null) {
-                    try {
-                        gs.waitingRoom.updateColor(gs.playerColors.get(id));
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+            }
+        });
+        player.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent documentEvent) {
+                changedUpdate(documentEvent);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent documentEvent) {
+                changedUpdate(documentEvent);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent documentEvent) {
+                gs.players.get(id).name = player.getText();
             }
         });
         confirmPColor.setText("Confirm");

@@ -52,12 +52,12 @@ public class Hexagon extends JPanel implements Cloneable{
 		}
 		@Override
 		public Hexagon clone() {
-		Hexagon hex = new Hexagon(this.center, this.radius, this.id);
-		hex.color=this.color;
-		hex.clicked=this.clicked;
-		hex.adj=this.adj;
-		hex.score=this.score;
-		
+			Hexagon hex = new Hexagon(this.center, this.radius, this.id);
+			hex.color=this.color;
+			hex.clicked=this.clicked;
+			hex.adj=this.adj;
+			hex.score=this.score;
+			
 		return hex;
 		}
 		

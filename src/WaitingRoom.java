@@ -73,7 +73,6 @@ public class WaitingRoom implements Runnable {
             gameState.onlinePlayers.remove(thisPlayer);
             gameState.player1Name = name;
             for (Map.Entry<Integer,String> player : gameState.onlinePlayers.entrySet()) {
-                System.out.println(player.getKey() + " " + thisPlayer);
                 gameState.gameSpace.put(player.getKey(), NEW_NAME_IDENTIFIER, thisPlayer, gameState.player1Name,gameState.playerColors.get(thisPlayer).getRGB());
             }
             gameState.onlinePlayers.put(thisPlayer, gameState.player1Name);

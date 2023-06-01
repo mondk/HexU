@@ -56,8 +56,9 @@ public class AI {
 	            int[] eval = minimax(matrix_new,nextPlayer, depth - 1, false,alpha_ ,beta_);
 				//System.out.println("eval score : "+eval[0]);
 	            if (eval[0] > max_eval) {
+
 	            	System.out.println("inner score : "+eval[0]);
-	            	System.out.println("max score : "+max_eval);
+
 	                max_eval = eval[0];
 	                best_move = move;
 	                

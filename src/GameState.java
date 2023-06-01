@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class GameState implements Cloneable{
+public class GameState{
 	
 	//Size of game screen
 	//Dimension SCREEN_SIZE = new Dimension(600,400);
@@ -41,7 +41,6 @@ public class GameState implements Cloneable{
 	//Start point for grid
 	Point startPoint = new Point((int) radius+50,(int) radius+50);
 	
-
 	// JPanel, which includes the different screens
 	JPanel cards = new JPanel(new CardLayout());
 
@@ -53,6 +52,7 @@ public class GameState implements Cloneable{
 	// Color colorP1 = Color.decode("#d032f0");
 	// Color colorP2 = Color.decode("#247324");
 
+	String[] load = {};
 
 	//Show which player turn it is
 	Turn whosTurn = Turn.Player1;
@@ -202,21 +202,6 @@ public class GameState implements Cloneable{
 		return validmoves;
 	}
 
-
-
-	@Override
-	public GameState clone() {
-		GameState gs = new GameState();
-		gs.whosTurn=this.whosTurn;
-		for(Hexagon h: this.grid )
-			gs.grid.add(h.clone());
-		gs.fillWinStateArrays();
-
-
-		return gs;
-
-	}
-
 	public void updateNumberOfHexagons(int numberOfHexagons){
 		this.numberOfHexagons = numberOfHexagons;
 		this.radius=(0.5773502717*(600-150))/(numberOfHexagons+1);
@@ -242,6 +227,30 @@ public class GameState implements Cloneable{
 		CardLayout cl = (CardLayout)cards.getLayout();
 		cl.next(cards);
 		cards.remove(0);
+	}
+
+
+	public void fillLoadMoves(String[] moves){
+		try{
+			for (String move : moves) {
+				switch(whosTurn){
+				case Player1:
+					grid.get(Integer.parseInt(move)).color = players.get(0).color;
+					grid.get(Integer.parseInt(move)).clicked = true;
+					nextTurn();
+					break;
+				case Player2: 
+					grid.get(Integer.parseInt(move)).color = players.get(1).color;
+					grid.get(Integer.parseInt(move)).clicked = true;
+					nextTurn();
+					break;
+				}
+				q.add(Integer.parseInt(move));
+			}
+		} catch (Exception null_error){
+			System.out.println("No moves loaded");
+		}
+
 	}
 }
 

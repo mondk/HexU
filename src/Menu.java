@@ -1,6 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 public class Menu extends JPanel {
 
@@ -19,11 +22,13 @@ public class Menu extends JPanel {
         JButton startComputerGameButton = new JButton("Start Game against computer");
         JButton startMultiplayerButton = new JButton("Start Multiplayer Game");
         JButton startOnlineButton = new JButton("Start Online Game");
+        JButton continueLastGame = new JButton("Continue where you left off");
         JPanel buttons = new JPanel();
         buttons.setLayout(new BoxLayout(buttons,BoxLayout.PAGE_AXIS));
         buttons.add(startComputerGameButton);
         buttons.add(startMultiplayerButton);
         buttons.add(startOnlineButton);
+        buttons.add(continueLastGame);
 
         // Player Names
         JPanel playerNames = new JPanel();
@@ -79,9 +84,61 @@ public class Menu extends JPanel {
                 System.out.println("Not yet implemented");
             }
         });
+
+        continueLastGame.setAction(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent){
+                try {
+                    File Obj = new File("res/saves.txt");
+                    Scanner Reader = new Scanner(Obj);
+                    while (Reader.hasNextLine()) {
+                        String[] data = Reader.nextLine().split(": ");
+                        //System.out.println(data[0].toString()+ " " + data[1].toString());
+                        if (data[0].equals("mode")){
+                            if (data[1].equals("false"))
+                                gs.singlePlayer = false;
+                            else 
+                                gs.singlePlayer = true;
+                        }
+                        else if (data[0].equals("hexes")){
+                            gs.updateNumberOfHexagons(Integer.parseInt(data[1]));
+                        }
+                        else if (data[0].equals("P1")){
+                            gs.players.get(0).name = data[1];
+                        }
+                        else if (data[0].equals("CP1")){
+                            gs.players.get(0).color = new Color(Integer.parseInt(data[1]));
+                        }
+                        else if (data[0].equals("P2")){
+                            gs.players.get(1).name = data[1];
+                        }
+                        else if (data[0].equals("CP2")){
+                            gs.players.get(1).color = new Color(Integer.parseInt(data[1]));
+                        }
+                        else if (data[0].equals("moves")){
+                            gs.load = data[1].substring(1, data[1].length()-1).split(", ");
+                        }
+                        
+                    }
+                    Reader.close();
+                    gs.paneTurnString = gs.players.get(0).name;
+                    gs.paneTColor=gs.players.get(0).color;
+                    Panel panel = new Panel(gs);
+                    gs.cards.add(panel, "PANEL");
+                    CardLayout cl = (CardLayout)gs.cards.getLayout();
+                    cl.next(gs.cards);
+                    gs.cards.remove(0);
+                }
+                catch (FileNotFoundException e) {
+                    System.out.println("An error has occurred.");
+                    e.printStackTrace();
+                }
+            }
+        });        
         startComputerGameButton.setText("Start Game against Computer");
         startMultiplayerButton.setText("Start Multiplayer Game");
         startOnlineButton.setText("Start Online Game");
+        continueLastGame.setText("Continue last game");
         add(numberOfHexagons);
         add(namesAndButtons);
         add(buttons);

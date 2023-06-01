@@ -28,9 +28,15 @@ public class Yest {
 			public void windowClosing(WindowEvent windowEvent){
 				try{
 					FileWriter saveWriter = new FileWriter("res/saves.txt");
-					saveWriter.write("hexes: " + gs.numberOfHexagons);
-					saveWriter.write("\nP1: " + gs.players.get(0).name + "\nP1C: " + gs.players.get(0).color.toString() );
-					saveWriter.write("\nP2: "+ gs.players.get(1).name + "\nP2C: " + String.valueOf(gs.players.get(1).color.getRGB()));
+					if (gs.singlePlayer)
+						saveWriter.write("mode: " + "true");
+					else 
+						saveWriter.write("mode: " + "false");
+					saveWriter.write("\nhexes: " + gs.numberOfHexagons);
+					saveWriter.write("\nP1: " + gs.players.get(0).name);
+					saveWriter.write("\nCP1: " + String.valueOf(gs.players.get(0).color.getRGB()));
+					saveWriter.write("\nP2: " + gs.players.get(1).name);
+					saveWriter.write("\nCP2: " + String.valueOf(gs.players.get(1).color.getRGB()));
 					saveWriter.write("\nmoves: " + gs.q.toString());
 					saveWriter.close();
 				} catch(IOException IOe) {

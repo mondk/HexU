@@ -41,7 +41,6 @@ public class Panel extends JPanel implements Runnable{
 		createGrid();
 		this.ai = new AI(gs);
 		
-		gs.grid.get(4).score=5;
 		
 		//System.out.println(gs.grid.toString());
 		paneT.setText(gs.paneTurnString);
@@ -54,10 +53,10 @@ public class Panel extends JPanel implements Runnable{
 				int[] move= {};
 				switch(gs.whosTurn){
 					case Player1:
-						move = ai.nextMove(ai.gridToMatrix(gs.grid,gs.numberOfHexagons), "pink");
+						move = ai.nextMove(ai.gridToMatrix(gs.grid,gs.numberOfHexagons), gs.colorP1.toString());
 						break;
 					case Player2:
-						move = ai.nextMove(ai.gridToMatrix(gs.grid,gs.numberOfHexagons), "green");
+						move = ai.nextMove(ai.gridToMatrix(gs.grid,gs.numberOfHexagons), gs.colorP2.toString());
 						break;
 				}
 				int hex = move[0]*gs.numberOfHexagons+move[1];
@@ -144,7 +143,7 @@ public class Panel extends JPanel implements Runnable{
 	 					case Player2:
 	 						h.color=gs.colorP2;
 	 						gs.nextTurn();
-	 						System.out.println(gs.player2Name + " clicked on hexagon: "+h.id);
+	 						System.out.println(gs.player2Name + " clicked on hexagon: "+h.id+" score: "+h.score);
 							won = gs.winingState(gs.startP2, gs.colorP2, gs.winP2);
 							//System.out.println(won);
 	 						if (won.get(0).get(0)==1) {

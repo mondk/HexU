@@ -20,7 +20,7 @@ public class GameState implements Cloneable{
 	ArrayList<Triangle> border = new ArrayList<>();
 	
 	//Hexagon constants
-	int numberOfHexagons =8;
+	int numberOfHexagons =4;
 	
 	int ids =0;
 

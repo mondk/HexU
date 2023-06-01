@@ -8,11 +8,13 @@ import java.util.List;
 public class AI {
 	
 	private GameState gs;
-	static String player1 = "pink";
-	static String player2 = "green";
+	static String player1 ;
+	static String player2 ;
 
 	public AI(GameState gs){
 		this.gs = gs;
+		this.player1=gs.colorP1.toString();
+		this.player2=gs.colorP2.toString();
 	}
 
 
@@ -111,10 +113,10 @@ public class AI {
 			for (int j = 0; j < numberofHex;j++){
 				int hex = i*numberofHex+j;
 				String color = grid.get(hex).color.toString();
-				if (color.equals( Color.pink.toString())){
-					matrix[i][j] = "pink";
-				}else if ( color.equals( Color.green.toString())){
-					matrix[i][j] = "green";
+				if (color.equals( player1)){
+					matrix[i][j] = player1;
+				}else if ( color.equals(player2)){
+					matrix[i][j] = player2;
 				}else{
 					matrix[i][j] = "null";
 				}
@@ -170,19 +172,19 @@ public class AI {
 						while(k.hasNext()) {
 							int n = k.next();
 							if (Player.equals(player1)){
-								if(visited[n] == false && matrix[n/gs.numberOfHexagons][n%gs.numberOfHexagons].equals("pink")) {
+								if(visited[n] == false && matrix[n/gs.numberOfHexagons][n%gs.numberOfHexagons].equals(player1)) {
 									visited[n] = true;
 									queue.add(n);
 									seen.add(n);
 									cluster.add(n);
 									if (!Collections.disjoint(cluster, gs.startP1) && !Collections.disjoint(cluster,gs.winP1)){
 											
-										//System.out.println("\nBIGGEST DICK pink\n");
+					
 										return Double.MAX_VALUE;
 									}
 								}
 							}else if (Player.equals(player2)){
-								if(visited[n] == false && matrix[n/gs.numberOfHexagons][n%gs.numberOfHexagons].equals("green")) {
+								if(visited[n] == false && matrix[n/gs.numberOfHexagons][n%gs.numberOfHexagons].equals(player2)) {
 									visited[n] = true;
 									queue.add(n);
 									seen.add(n);
@@ -210,7 +212,7 @@ public class AI {
 				}
 				//System.out.println("sum chehck");
 				//System.out.println(sum);
-				sum = sum*(1+((cluster.size()-1)*0.25))*(1+(axis_counter*0.35));
+				sum = sum*(1+((cluster.size()-1)*0.25))*(1+(axis_counter*0.55));
 				//System.out.println(sum);
 			}
 			finalScore += sum;

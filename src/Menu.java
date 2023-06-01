@@ -92,6 +92,8 @@ public class Menu extends JPanel {
                 gs.updateNumberOfHexagons(Integer.parseInt(hexagonField.getText()));
                 gs.player1Name = player1.getText();
                 gs.player2Name = "Computer";
+                gs.paneTurnString = gs.player1Name;
+                gs.paneTColor=gs.colorP1;
                 Panel panel = new Panel(gs);
                 gs.cards.add(panel, "PANEL");
                 CardLayout cl = (CardLayout)gs.cards.getLayout();
@@ -107,6 +109,7 @@ public class Menu extends JPanel {
                 gs.player1Name = player1.getText();
                 gs.player2Name = player2.getText();
                 gs.paneTurnString = gs.player1Name;
+                gs.paneTColor=gs.colorP1;
                 Panel panel = new Panel(gs);
                 gs.cards.add(panel, "PANEL");
                 CardLayout cl = (CardLayout)gs.cards.getLayout();

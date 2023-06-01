@@ -86,7 +86,7 @@ public class WaitingRoom implements Runnable {
     public void updateColor(Color color) throws InterruptedException {
         for(Map.Entry<Integer,String> player : gameState.onlinePlayers.entrySet()){
             if(!Objects.equals(player.getKey(), thisPlayer)){
-                gameState.gameSpace.put(player.getKey(), PLAYERS_LIST_IDENTIFIER,thisPlayer,gameState.player1Name, color.getRGB());
+                gameState.gameSpace.put(player.getKey(), NEW_NAME_IDENTIFIER,thisPlayer,gameState.player1Name, color.getRGB());
             }
         }
     }

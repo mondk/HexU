@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import java.util.ArrayList;
 import java.util.Random;
-
+import java.util.Arrays;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
@@ -25,6 +25,10 @@ public class Panel extends JPanel implements Runnable{
 	private GameState gs;
 	private Image image;
 	private Graphics graphics;							//TextFrame for player turn
+	Point hexCenter1;
+	Point hexCenter2;
+	Point hexCenter3;
+	Point hexCenter4;
 	JTextPane paneT = new JTextPane();
 	JTextPane winPane = new JTextPane();
 	private AI ai;
@@ -248,20 +252,24 @@ public class Panel extends JPanel implements Runnable{
 				if (i==0 && j==0) {														//First hexagon
 					gs.grid.get(hex).adj.add(1);
 					gs.grid.get(hex).adj.add(gs.numberOfHexagons);
+					hexCenter1 = gs.grid.get(hex).getCenter();
 				}
 				else if (i==gs.numberOfHexagons-1 && j ==gs.numberOfHexagons-1) {		//Last Hexagon
 					gs.grid.get(hex).adj.add(hex-1);
 					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons);
+					hexCenter3 = gs.grid.get(hex).getCenter();
 				}
 				else if(i==0 & j==gs.numberOfHexagons-1) {								//Last hexagon first row
 					gs.grid.get(hex).adj.add(hex-1);
 					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons);
 					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons-1);
+					hexCenter2 = gs.grid.get(hex).getCenter();
 				}
 				else if (i == gs.numberOfHexagons-1 && j ==0) {							//First hexagon last row
 					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons);
 					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons+1);
 					gs.grid.get(hex).adj.add(hex+1);
+					hexCenter4 = gs.grid.get(hex).getCenter();
 				}
 				else if (i==0) {														//Rest of first row
 					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons);;
@@ -292,14 +300,39 @@ public class Panel extends JPanel implements Runnable{
 					gs.grid.get(hex).adj.add(hex+1);
 					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons);
 					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons+1);
-					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons);;
+					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons);
 					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons-1);
 				}
 			}
 		}
-		int[] x= {gs.grid.get(0).center.x-(int) (gs.radius*2), gs.grid.get(gs.numberOfHexagons-1).center.x+(int) (gs.radius*1.3), gs.grid.get(4).center.x};
-		int[] y= {gs.grid.get(0).center.y-(int) (gs.radius*1.5), gs.grid.get(gs.numberOfHexagons-1).center.y-(int) (gs.radius*1.5),gs.grid.get(4).center.y};
-		gs.border.add(new Triangle(gs.players.get(0).color, x , y));
+
+		//Colors for borders, indicating players sides
+		int xp1 = (int) Math.round(hexCenter1.getX());
+		int xp2 = (int) Math.round(hexCenter2.getX());
+		int xp3 = (int) Math.round(hexCenter3.getX());
+		int xp4 = (int) Math.round(hexCenter4.getX());
+		int yp1 = (int) Math.round(hexCenter1.getY());
+		int yp2 = (int) Math.round(hexCenter2.getY());
+		int yp3 = (int) Math.round(hexCenter3.getY());
+		int yp4 = (int) Math.round(hexCenter4.getY());
+		//int rInt = (int) Math.round(gs.radius*1.5);
+		int[] x1= {xp1-(int) Math.round(gs.radius),xp2-(int) Math.round(gs.radius*0.75),xp2-(int) Math.round(gs.radius*0.75),xp1-(int) Math.round(gs.radius)};
+		int[] x2= {xp3-(int) Math.round(gs.radius*0.75),xp4-(int) Math.round(gs.radius),xp4-(int) Math.round(gs.radius),xp3-(int) Math.round(gs.radius*0.75)};
+		int[] x3= {xp1-(int) Math.round(gs.radius*1.75),xp1-(int) Math.round(gs.radius),xp4-(int) Math.round(gs.radius),xp4-(int) Math.round(gs.radius*1.75)};
+		int[] x4= {xp2-(int) Math.round(gs.radius),xp2,xp3,xp3-(int) Math.round(gs.radius)};
+		int[] y1= {yp1-(int) Math.round(gs.radius*1.5),yp2-(int) Math.round(gs.radius*1.5),yp2,yp1};
+		int[] y2= {yp3,yp4,yp4+(int) Math.round(gs.radius*0.5),yp3+(int) Math.round(gs.radius*0.5)};
+		int[] y3= {yp1,yp1,yp4,yp4};
+		int[] y4= {yp2-(int) Math.round(gs.radius),yp2-(int) Math.round(gs.radius),yp3-(int) Math.round(gs.radius),yp3-(int) Math.round(gs.radius)};
+
+		gs.border.add(new BorderR(gs.players.get(0).color, x1 , y1)); //top
+		gs.border.add(new BorderR(gs.players.get(0).color, x2 , y2)); //buttom
+		gs.border.add(new BorderR(gs.players.get(1).color, x3 , y3)); //left
+		gs.border.add(new BorderR(gs.players.get(1).color, x4 , y4)); //right
+
+		//int[] x= {gs.grid.get(0).center.x-(int) (gs.radius*2), gs.grid.get(gs.numberOfHexagons-1).center.x+(int) (gs.radius*1.3), gs.grid.get(4).center.x};
+		//int[] y= {gs.grid.get(0).center.y-(int) (gs.radius*1.5), gs.grid.get(gs.numberOfHexagons-1).center.y-(int) (gs.radius*1.5),gs.grid.get(4).center.y};
+		//gs.border.add(new Triangle(gs.players.get(0).color, x , y));
 		// gs.border.add(new Triangle());
 		// gs.border.add(new Triangle());
 		// gs.border.add(new Triangle());
@@ -319,8 +352,8 @@ public class Panel extends JPanel implements Runnable{
 	
 	public void draw(Graphics g) {
 		
-		for (Triangle t : gs.border){
-			g.setColor(gs.players.get(0).color);
+		for (BorderR t : gs.border){
+			g.setColor(t.color);
 			g.fillPolygon(t.getPolygon());
 		}
 		for(Hexagon h:gs.grid) {

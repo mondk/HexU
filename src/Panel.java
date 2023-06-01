@@ -55,6 +55,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int[] move= {};
+				
 				switch(gs.whosTurn){
 					case Player1:
 						move = ai.nextMove(ai.gridToMatrix(gs.grid,gs.numberOfHexagons), gs.players.get(0).color.toString());
@@ -67,25 +68,42 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				gs.grid.get(hex).clicked = true;
 				gs.grid.get(hex).color = gs.paneTColor;
 				gs.q.add(hex);
-				ArrayList<ArrayList<Integer>> won = gs.winingState(gs.startP1, gs.players.get(0).color, gs.winP1);
-				if (won.get(0).get(0)==1) {
-					repaint();
-					JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(0).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
-					if (dialogbutton == JOptionPane.YES_OPTION) {
-						gs.resetGame();
-						paneT.setText(gs.players.get(0).name);
-					paneT.setBackground(gs.players.get(0).color);
+				ArrayList<ArrayList<Integer>> won = new ArrayList<>();
+				switch(gs.whosTurn){
+					case Player1:
+						won = gs.winingState(gs.startP1, gs.players.get(0).color, gs.winP1);
+						if (won.get(0).get(0)==1) {
+							repaint();
+							JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(0).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
+							if (dialogbutton == JOptionPane.YES_OPTION) {
+								gs.resetGame();
+								paneT.setText(gs.players.get(0).name);
+								paneT.setBackground(gs.players.get(0).color);
+								
+							}else {
+								remove(dialogbutton);
+							}
+						}
+					case Player2:
+						won = gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2);
+						if (won.get(0).get(0)==1) {
+							repaint();
+							JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(1).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
+							if (dialogbutton == JOptionPane.YES_OPTION) {
+								gs.resetGame();
+								paneT.setText(gs.players.get(1).name);
+								paneT.setBackground(gs.players.get(1).color);
+								
+							}else {
+								remove(dialogbutton);
+							}
+						}
 						
-					}else {
-						remove(dialogbutton);
-					}
 				}
 				gs.nextTurn();
 				paneT.setText(gs.paneTurnString);
 				paneT.setBackground(gs.paneTColor);
 				repaint();
-				
-				
 			}
 			
 		});
@@ -316,11 +334,11 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		int yp3 = (int) Math.round(hexCenter3.getY());
 		int yp4 = (int) Math.round(hexCenter4.getY());
 		//int rInt = (int) Math.round(gs.radius*1.5);
-		int[] x1= {xp1-(int) Math.round(gs.radius),xp2-(int) Math.round(gs.radius*0.75),xp2-(int) Math.round(gs.radius*0.75),xp1-(int) Math.round(gs.radius)};
-		int[] x2= {xp3-(int) Math.round(gs.radius*0.75),xp4-(int) Math.round(gs.radius),xp4-(int) Math.round(gs.radius),xp3-(int) Math.round(gs.radius*0.75)};
+		int[] x1= {xp1-(int) Math.round(gs.radius)+3,xp2-(int) Math.round(gs.radius*0.75)-3,xp2-(int) Math.round(gs.radius*0.75)-3,xp1-(int) Math.round(gs.radius)+3};
+		int[] x2= {xp3-(int) Math.round(gs.radius*0.75)-3,xp4-(int) Math.round(gs.radius)+3,xp4-(int) Math.round(gs.radius)+3,xp3-(int) Math.round(gs.radius*0.75)-3};
 		int[] x3= {xp1-(int) Math.round(gs.radius*1.75),xp1-(int) Math.round(gs.radius),xp4-(int) Math.round(gs.radius),xp4-(int) Math.round(gs.radius*1.75)};
 		int[] x4= {xp2-(int) Math.round(gs.radius),xp2,xp3,xp3-(int) Math.round(gs.radius)};
-		int[] y1= {yp1-(int) Math.round(gs.radius*1.5),yp2-(int) Math.round(gs.radius*1.5),yp2,yp1};
+		int[] y1= {yp1-(int) Math.round(gs.radius*1.5)+2,yp2-(int) Math.round(gs.radius*1.5)+2,yp2,yp1};
 		int[] y2= {yp3,yp4,yp4+(int) Math.round(gs.radius*0.5),yp3+(int) Math.round(gs.radius*0.5)};
 		int[] y3= {yp1,yp1,yp4,yp4};
 		int[] y4= {yp2-(int) Math.round(gs.radius),yp2-(int) Math.round(gs.radius),yp3-(int) Math.round(gs.radius),yp3-(int) Math.round(gs.radius)};
@@ -329,15 +347,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		gs.border.add(new BorderR(gs.players.get(0).color, x2 , y2)); //buttom
 		gs.border.add(new BorderR(gs.players.get(1).color, x3 , y3)); //left
 		gs.border.add(new BorderR(gs.players.get(1).color, x4 , y4)); //right
-
-		//int[] x= {gs.grid.get(0).center.x-(int) (gs.radius*2), gs.grid.get(gs.numberOfHexagons-1).center.x+(int) (gs.radius*1.3), gs.grid.get(4).center.x};
-		//int[] y= {gs.grid.get(0).center.y-(int) (gs.radius*1.5), gs.grid.get(gs.numberOfHexagons-1).center.y-(int) (gs.radius*1.5),gs.grid.get(4).center.y};
-		//gs.border.add(new Triangle(gs.players.get(0).color, x , y));
-		// gs.border.add(new Triangle());
-		// gs.border.add(new Triangle());
-		// gs.border.add(new Triangle());
-
-		
+	
 		gs.fillWinStateArrays();
 	}
 	

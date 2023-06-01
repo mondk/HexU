@@ -65,38 +65,12 @@ public class Menu extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), true);
-                /*
-                gs.singlePlayer = true;
-                gs.updateNumberOfHexagons(Integer.parseInt(hexagonField.getText()));
-                gs.player1Name = player1.getText();
-                gs.player2Name = "Computer";
-                gs.paneTurnString = gs.player1Name;
-                gs.paneTColor=gs.colorP1;
-                Panel panel = new Panel(gs);
-                gs.cards.add(panel, "PANEL");
-                CardLayout cl = (CardLayout)gs.cards.getLayout();
-                cl.next(gs.cards);
-                gs.cards.remove(0);
-                 */
             }
         });
         startMultiplayerButton.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), false);
-                /*
-                gs.singlePlayer = false;
-                gs.updateNumberOfHexagons(Integer.parseInt(hexagonField.getText()));
-                gs.player1Name = player1.getText();
-                gs.player2Name = player2.getText();
-                gs.paneTurnString = gs.player1Name;
-                gs.paneTColor=gs.colorP1;
-                Panel panel = new Panel(gs);
-                gs.cards.add(panel, "PANEL");
-                CardLayout cl = (CardLayout)gs.cards.getLayout();
-                cl.next(gs.cards);
-                gs.cards.remove(0);
-                 */
             }
         });
         startOnlineButton.setAction(new AbstractAction() {
@@ -114,6 +88,7 @@ public class Menu extends JPanel {
     }
 
     private void addPlayer(GameState gs, JPanel playerNames){
+        gs.addPlayer();
         playerNames.add(new PlayerSettings(gs, playerNames.getComponentCount()).getPlayerCards());
         playerNames.updateUI();
     }

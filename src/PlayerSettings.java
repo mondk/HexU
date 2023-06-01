@@ -19,12 +19,11 @@ public class PlayerSettings extends JPanel {
         colorMenu = new JPanel();
         confirmPColor = new JButton("Confirm");
         colorPicker = new ColorPicker(new Dimension(125, 20));
-        playerColor = id == 0 ? new ColorButton(gs.colorP1, playerCards) : new ColorButton(gs.colorP2, playerCards);
+        playerColor = new ColorButton(gs.players.get(id).color, playerCards);
         confirmPColor.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                if (id == 0) gs.colorP1 = colorPicker.getColor();
-                else gs.colorP2 = colorPicker.getColor();
+                gs.players.get(id).color = colorPicker.getColor();
                 CardLayout cl = (CardLayout) playerCards.getLayout();
                 cl.next(playerCards);
                 playerColor.setColor(colorPicker.getColor());
@@ -43,8 +42,7 @@ public class PlayerSettings extends JPanel {
 
             @Override
             public void changedUpdate(DocumentEvent documentEvent) {
-                if (id == 0) gs.player1Name = player.getText();
-                else gs.player2Name = player.getText();
+                gs.players.get(id).name = player.getText();
             }
         });
         confirmPColor.setText("Confirm");

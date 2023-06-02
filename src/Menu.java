@@ -1,4 +1,5 @@
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -70,6 +71,7 @@ public class Menu extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), true);
+                gs.changeState("single");
             }
         });
         startMultiplayerButton.setAction(new AbstractAction() {

@@ -4,6 +4,8 @@ import java.awt.Point;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
+import java.io.IOException;
+import java.util.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.File;
@@ -12,14 +14,18 @@ import java.io.IOException;
 public class GameState{
 	
 	//Size of game screen
-	//Dimension SCREEN_SIZE = new Dimension(600,400);
-	
+
+	Online online = new OnlineImplementation();
+	WaitingRoom waitingRoom = null;
+	OnlineMove onlineMove = null;
+	Integer onlineId = 0;
+
 	//game grid
 	ArrayList<Hexagon> grid = new ArrayList<>();
 	ArrayList<BorderR> border = new ArrayList<>();
 	
 	//Hexagon constants
-	int numberOfHexagons =4;
+	int numberOfHexagons =3;
 
 	// Variables for hexagon placement
 	double radius=(0.5773502717*(600-150))/(numberOfHexagons+1);
@@ -37,7 +43,7 @@ public class GameState{
 
 	//Start point for grid
 	Point startPoint = new Point((int) radius+50,(int) radius+50);
-	
+
 	// JPanel, which includes the different screens
 	JPanel cards = new JPanel(new CardLayout());
 
@@ -88,6 +94,17 @@ public class GameState{
 	// Linked list containing moves made
 	LinkedList<Integer> q = new LinkedList<>();
 
+	public void changeState(String state) {
+		
+		if(state.equals("single"))
+			playerState=State.SINGLEPLAYER;
+		else if(state.equals("multiplayer")) {
+			playerState=State.MULTIPLAYER;
+		}
+		else if (state.equals("online")) {
+			playerState=State.ONLINE;
+		}
+	}
 	//change player turn
 	public void nextTurn() {
 		switch(playerState) {
@@ -159,14 +176,14 @@ public class GameState{
 		ArrayList<Integer> seen = new ArrayList<>();
 		//Loop over hele griddet, for at finde alle clusters
 		for(Hexagon v : this.grid) {
-			// Tjekker om den givne hexagon er den givne spillers farve 
+			// Tjekker om den givne hexagon er den givne spillers farve
 			// eller om den allerede er en del af en cluster, i så fald skip!
 			if (v.color != p || seen.contains(v.id)) {
 				continue;
 			}
 
 			ArrayList<Integer> cluster = new ArrayList<>();
-			
+
 			// Standard BFS ting...
 			boolean visited[] = new boolean[numberOfHexagons*numberOfHexagons];
 			LinkedList<Integer> queue = new LinkedList<Integer>();
@@ -237,13 +254,13 @@ public class GameState{
 		players.remove(players.size());
 	}
 
+
 	public void startGame(int numberOfHexagons, boolean singlePlayer){
 		this.paneTColor = players.get(0).color;
 		this.paneTurnString = players.get(0).name;
 		this.singlePlayer = singlePlayer;
 		updateNumberOfHexagons(numberOfHexagons);
 		Panel panel = new Panel(this);
-		
 		
 		
 		cards.add(panel, "PANEL");
@@ -271,7 +288,7 @@ public class GameState{
 					grid.get(Integer.parseInt(move)).clicked = true;
 					nextTurn();
 					break;
-				case Player2: 
+				case Player2:
 					grid.get(Integer.parseInt(move)).color = players.get(1).color;
 					grid.get(Integer.parseInt(move)).clicked = true;
 					nextTurn();
@@ -285,6 +302,17 @@ public class GameState{
 
 	}
 
+	public void setOnline(Online online) {
+		this.online = online;
+	}
+
+	public void joinGame(String ip) throws IOException {
+		online.start(false, ip);
+		//gameSpace = new RemoteSpace("tcp://" + ip + ":9001/game?keep");
+		this.host = false;
+		this.playerState = GameState.State.ONLINE;
+		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this);
+	
 
 	public String randomBackground(){
 		String[] files = new File("res/background").list();
@@ -294,6 +322,12 @@ public class GameState{
 		return s;
 	}
 
+	public void hostGame(String ip) {
+		online.start(true, ip);
+		playerState = GameState.State.ONLINE;
+		host = true;
+		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this);
+	}
 
 	public void setOnline(Online online) {
 		this.online = online;
@@ -313,6 +347,32 @@ public class GameState{
 		host = true;
 		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this);
 	}
+
+	public void startWaitingRoom() throws InterruptedException {
+		waitingRoom = new WaitingRoom(this);
+		Thread playersThread = new Thread(waitingRoom);
+        playersThread.start();
+	}
+	public void startOnlineMove() throws InterruptedException {
+		onlineMove = new OnlineMove(this);
+		Thread moveThread = new Thread(onlineMove);
+		moveThread.start();
+	}
+	public void startOnlineGame(int startPlayer) throws InterruptedException {
+		players = online.getPlayers();
+		CardLayout cl = (CardLayout)cards.getLayout();
+		paneTurnString = players.get(startPlayer).name;
+		paneTColor = players.get(startPlayer).color;
+		updateNumberOfHexagons(numberOfHexagons);
+		whosTurn = onlineId == startPlayer ? GameState.Turn.values()[startPlayer] : GameState.Turn.ONLINE_PLAYER;
+		startOnlineMove();
+		Panel panel = new Panel(this);
+		onlineMove.subscribe(panel);
+		cards.add(panel);
+		cl.next(cards);
+		cards.remove(0);
+	}
+}
 
 	public void startWaitingRoom() throws InterruptedException {
 		waitingRoom = new WaitingRoom(this);

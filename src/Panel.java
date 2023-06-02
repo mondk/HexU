@@ -132,7 +132,6 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	         public void mouseClicked(MouseEvent e) {
 	        	for(Hexagon h : gs.grid) {
 	 				if(h.getPolygon().contains(e.getPoint())&&!h.clicked) {
-	 					gs.grid.get(h.id).clicked=true;
 
 						gs.q.add(h.id);
 
@@ -140,9 +139,10 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 
 	 					switch(gs.whosTurn) {
 	 					case Player1:
+							gs.grid.get(h.id).clicked=true;
 	 						h.color=gs.players.get(0).color;
 	 						gs.nextTurn();
-	 						
+	 						gs.online.makeMove(h.id,gs.onlineId);
 	 						System.out.println(gs.players.get(0).name + " clicked on hexagon: "+h.id+" score: "+h.score);
 							won = gs.winingState(gs.startP1, gs.players.get(0).color, gs.winP1);
 							
@@ -163,8 +163,10 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	 						paneT.setText(gs.paneTurnString);
 	 						break;
 	 					case Player2:
+							gs.grid.get(h.id).clicked=true;
 	 						h.color=gs.players.get(1).color;
 	 						gs.nextTurn();
+							gs.online.makeMove(h.id,gs.onlineId);
 	 						System.out.println(gs.players.get(1).name + " clicked on hexagon: "+h.id+" score: "+h.score);
 							won = gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2);
 							//System.out.println(won);

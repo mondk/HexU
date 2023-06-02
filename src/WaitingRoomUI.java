@@ -13,16 +13,16 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
 
             gameState.startWaitingRoom();
 
-            gameState.waitingRoom.subscribe(this);
 
-            PlayerSettings ownName = new PlayerSettings(gs, gameState.waitingRoom.getThisPlayer());
+            PlayerSettings ownName = new PlayerSettings(gs, gameState.onlineId);
+            System.out.println(gameState.players);
             JPanel names = new JPanel();
             names.setLayout(new GridLayout(0,1));
-            for(Map.Entry<Integer,String> player : gameState.waitingRoom.getPlayers().entrySet()){
+            for(Map.Entry<Integer,Player> player : gameState.players.entrySet()){
                 if(Objects.equals(player.getKey(), gameState.waitingRoom.getThisPlayer())) continue;
                 JPanel newPlayer = new JPanel();
-                JLabel newPlayerName = new JLabel(player.getValue());
-                ColorButton colorButton = new ColorButton(gs.players.get(player.getKey()).color,null);
+                JLabel newPlayerName = new JLabel(player.getValue().name);
+                ColorButton colorButton = new ColorButton(player.getValue().color,null);
                 newPlayer.add(newPlayerName, player.getKey());
                 colorButton.setEnabled(false);
                 newPlayer.add(colorButton);
@@ -41,7 +41,8 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
 
                 @Override
                 public void changedUpdate(DocumentEvent documentEvent) {
-                    gameState.waitingRoom.updateName(ownName.getName());
+                    gameState.players.get(gameState.onlineId).name = ownName.getName();
+                    gameState.online.changePlayer(gameState.onlineId, gameState.players.get(gameState.onlineId));
                 }
             });
             names.add(ownName.getPlayerCards());
@@ -93,9 +94,12 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
             CardLayout cl = (CardLayout)gs.cards.getLayout();
             cl.next(gs.cards);
 
+            gameState.waitingRoom.subscribe(this);
+
         } catch (Exception e){
             throw new RuntimeException(e);
         }
+
     }
 
     @Override
@@ -115,7 +119,7 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
     }
 
     @Override
-    public void nameChanged(Integer id, String name, Color color){
+    public void playerChanged(Integer id, Player player){
         JPanel names = (JPanel)getComponent(1);
         try{
             System.out.println("removed id " + id);
@@ -123,13 +127,8 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
         } catch (Exception ignored){}
         System.out.println("id=" + id);
         JPanel newPlayer = new JPanel();
-        JLabel newPlayerName = new JLabel(name);
-        try {
-            gs.players.get(id).color = color;
-        } catch (IndexOutOfBoundsException e) {
-            gs.players.put(id, new Player("Player" + id, color));
-        }
-        ColorButton colorButton = new ColorButton(gs.players.get(id).color,null);
+        JLabel newPlayerName = new JLabel(player.name);
+        ColorButton colorButton = new ColorButton(player.color,null);
         newPlayer.add(newPlayerName);
         newPlayer.add(colorButton);
         names.add(newPlayer, (int)id);

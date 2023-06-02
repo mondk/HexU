@@ -21,31 +21,38 @@ class WaitingRoomTest {
         gs.hostGame("127.0.0.1");
         String player1NewName = "Jonas";
         Color player1NewColor = new Color(10,10,10);
-        gs.waitingRoom.updateName(player1NewName);
-        gs.waitingRoom.updateColor(player1NewColor);
+        Player newPlayer1 = new Player(player1NewName, player1NewColor);
+        gs.online.changePlayer(gs.onlineId, newPlayer1);
         gs2.joinGame("127.0.0.1");
-        assertEquals(player1NewName, gs2.onlinePlayers.get(gs.onlineId));
+        assertEquals(player1NewName, gs2.players.get(gs.onlineId).name);
         assertEquals(player1NewColor, gs2.players.get(gs.onlineId).color);
     }
     @Test
     public void updateNameAfterJoinTest() throws InterruptedException, IOException {
         gs.hostGame("127.0.0.1");
         gs2.joinGame("127.0.0.1");
-        gs.waitingRoom.updateName("Jonas");
-        gs2.waitingRoom.updateName("Wentzlau");
+        String newPlayer1Name = "Jonas";
+        Player newPlayer1 = new Player(newPlayer1Name, gs.players.get(0).color);
+        gs.online.changePlayer(gs.onlineId, newPlayer1);
+        String newPlayer2Name = "Wentzlau";
+        Player newPlayer2 = new Player(newPlayer2Name, gs2.players.get(1).color);
+        gs2.online.changePlayer(gs2.onlineId, newPlayer2);
+
         // Wait a while for sync
         Thread.sleep(10);
-        assertEquals("Jonas", gs2.onlinePlayers.get(gs.onlineId));
-        assertEquals("Wentzlau", gs.onlinePlayers.get(gs2.onlineId));
+        assertEquals(newPlayer1Name, gs2.players.get(gs.onlineId).name);
+        assertEquals(newPlayer2Name, gs.players.get(gs2.onlineId).name);
     }
     @Test
     public void updateColourAfterJoinTest() throws IOException, InterruptedException {
         gs.joinGame("127.0.0.1");
         gs2.joinGame("127.0.0.1");
         Color player1Color = new Color(20,20,20);
+        Player newPlayer1 = new Player(gs.players.get(0).name, player1Color);
         Color player2Color = new Color(20,30,40);
-        gs.waitingRoom.updateColor(player1Color);
-        gs2.waitingRoom.updateColor(player2Color);
+        Player newPlayer2 = new Player(gs2.players.get(1).name, player2Color);
+        gs.online.changePlayer(gs.onlineId, newPlayer1);
+        gs2.online.changePlayer(gs2.onlineId, newPlayer2);
         // Wait a while for sync
         Thread.sleep(10);
         assertEquals(player1Color, gs2.players.get(gs.onlineId).color);

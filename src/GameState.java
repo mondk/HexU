@@ -18,11 +18,12 @@ public class GameState{
 	
 	//Size of game screen
 
-	Space gameSpace = null;
+	//Space gameSpace = null;
+	Online online = new OnlineImplementation();
 	WaitingRoom waitingRoom = null;
 	OnlineMove onlineMove = null;
 	Integer onlineId = 0;
-	HashMapIntegerString onlinePlayers = new HashMapIntegerString();
+	//HashMapIntegerString onlinePlayers = new HashMapIntegerString();
 
 	//game grid
 	ArrayList<Hexagon> grid = new ArrayList<>();
@@ -295,19 +296,23 @@ public class GameState{
 
 	}
 
-	public void setGameSpace(Space gameSpace) {
-		this.gameSpace = gameSpace;
+	public void setOnline(Online online) {
+		this.online = online;
 	}
 
 	public void joinGame(String ip) throws IOException {
-		gameSpace = new RemoteSpace("tcp://" + ip + ":9001/game?keep");
+		online.start(false, ip);
+		//gameSpace = new RemoteSpace("tcp://" + ip + ":9001/game?keep");
 		this.host = false;
 		this.playerState = GameState.State.ONLINE;
 		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this);
 	}
 
 	public void hostGame(String ip) {
+		online.start(true, ip);
+		/*
 		SpaceRepository repository = new SpaceRepository();
+
 		gameSpace = new SequentialSpace();
 		repository.add("game",gameSpace);
 		repository.addGate("tcp://" + ip + ":9001/?keep");
@@ -317,6 +322,7 @@ public class GameState{
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
+		 */
 		playerState = GameState.State.ONLINE;
 		host = true;
 		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this);

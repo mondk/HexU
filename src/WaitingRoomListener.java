@@ -1,7 +1,7 @@
 import java.awt.*;
 
 public interface WaitingRoomListener {
-	void nameChanged(Integer id, String name, Color color);
+	void playerChanged(Integer id, Player player);
 	void numberOfHexagonsChanged(Integer numberOfHexagons);
 	void playerLeft(Integer id);
 }

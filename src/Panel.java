@@ -28,8 +28,8 @@ import javax.swing.JButton;
 
 
 
-public class Panel extends JPanel implements Runnable, MoveListener{
-
+public class Panel extends JPanel implements Runnable{
+	
 	private GameState gs;
 	private Image image;
 	private Graphics graphics;	
@@ -46,12 +46,13 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	boolean start =true;
 	int dialogbutton;
 	ImageIcon reMatchIcon = new ImageIcon("res/rematch.png");  //  <a target="_blank" href="https://icons8.com/icon/PT3001yzoXgN/match">Match</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
-
-
-
+	boolean singlePlayer;
+	
+	
 	public Panel(GameState gs) {
 		this.gs=gs;
 		this.img = new ImageIcon(gs.randomBackground());
+		this.singlePlayer=gs.singlePlayer;
 		this.setFocusable(true);
 		this.setPreferredSize(gs.SCREEN_SIZE);
 		createGrid();
@@ -90,7 +91,6 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				gs.grid.get(hex).clicked = true;
 				gs.grid.get(hex).color = gs.paneTColor;
 				gs.q.add(hex);
-				gs.online.makeMove(hex,gs.onlineId);
 				ArrayList<ArrayList<Integer>> won = new ArrayList<>();
 				switch(gs.whosTurn){
 					case Player1:
@@ -99,20 +99,25 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 							repaint();
 							JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(0).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 							if (dialogbutton == JOptionPane.YES_OPTION) {
-								reset(0);
+								gs.resetGame();
+								paneT.setText(gs.players.get(0).name);
+								paneT.setBackground(gs.players.get(0).color);
+								
 							}else {
 								remove(dialogbutton);
+								
 							}
 						}
 					case Player2:
 						won = gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2);
-						if (won.get(0).get(0)==1 && gs.host) {
+						if (won.get(0).get(0)==1) {
 							repaint();
 							JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(1).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 							if (dialogbutton == JOptionPane.YES_OPTION) {
 								gs.resetGame();
 								paneT.setText(gs.players.get(1).name);
 								paneT.setBackground(gs.players.get(1).color);
+								
 							}else {
 								remove(dialogbutton);
 							}
@@ -151,8 +156,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	         public void mouseClicked(MouseEvent e) {
 	        	for(Hexagon h : gs.grid) {
 	 				if(h.getPolygon().contains(e.getPoint())&&!h.clicked) {
-
-
+	 					
 	 					//this bit handles sound effects
 	 					try {
 							playSound("src/mixkit-twig-breaking-2945.wav");
@@ -163,27 +167,39 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-
-
+	 					
+	 					gs.grid.get(h.id).clicked=true;
+	 					
 						gs.q.add(h.id);
 
 						ArrayList<ArrayList<Integer>> won = new ArrayList<>();
 
 	 					switch(gs.whosTurn) {
 	 					case Player1:
-							gs.grid.get(h.id).clicked=true;
 	 						h.color=gs.players.get(0).color;
 	 						gs.nextTurn();
-	 						gs.online.makeMove(h.id,gs.onlineId);
+	 						
 	 						System.out.println(gs.players.get(0).name + " clicked on hexagon: "+h.id+" score: "+h.score);
 							won = gs.winingState(gs.startP1, gs.players.get(0).color, gs.winP1);
 							
 							
 	 						if (won.get(0).get(0)==1) {
+	 							
+	 							try {
+									playSound("src/mixkit-ethereal-fairy-win-sound-2019.wav");
+								} catch (LineUnavailableException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
 	 							repaint();
 	 							JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(0).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 	 		 					if (dialogbutton == JOptionPane.YES_OPTION) {
-									reset(0);
+	 		 						gs.resetGame();
+	 		 						paneT.setText(gs.players.get(0).name);
+									paneT.setBackground(gs.players.get(0).color);
 	 		 						break;
 	 		 					}else {
 	 		 						remove(dialogbutton);
@@ -193,18 +209,29 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	 						paneT.setText(gs.paneTurnString);
 	 						break;
 	 					case Player2:
-							gs.grid.get(h.id).clicked=true;
 	 						h.color=gs.players.get(1).color;
 	 						gs.nextTurn();
-							gs.online.makeMove(h.id,gs.onlineId);
 	 						System.out.println(gs.players.get(1).name + " clicked on hexagon: "+h.id+" score: "+h.score);
 							won = gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2);
 							//System.out.println(won);
-	 						if (won.get(0).get(0)==1 && gs.host) {
+	 						if (won.get(0).get(0)==1) {
+	 							
+	 							try {
+									playSound("src/mixkit-ethereal-fairy-win-sound-2019.wav");
+								} catch (LineUnavailableException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+	 							
 	 							repaint();
 	 							JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(1).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 	 							if (dialogbutton == JOptionPane.YES_OPTION) {
-									 reset(1);
+	 		 						gs.resetGame();
+	 		 						paneT.setText(gs.players.get(0).name);
+									paneT.setBackground(gs.players.get(0).color);
 	 		 						break;
 	 		 					}else {
 	 		 						remove(dialogbutton);
@@ -225,6 +252,9 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		gameThread.start();
 	}
 
+	
+	
+
 	protected void playSound(String soundFile) throws LineUnavailableException, IOException {
 		// TODO Auto-generated method stub
 		try {
@@ -239,7 +269,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
-
+		
 	}
 
 	@Override
@@ -256,6 +286,59 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				checkMouseHover(MouseInfo.getPointerInfo().getLocation());
 				repaint();
 				delta--;
+				switch(gs.whosTurn) {
+				
+				case AI:
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					int[] move = ai.nextMove(ai.gridToMatrix(gs.grid,gs.numberOfHexagons), gs.players.get(1).color.toString());
+					//this bit handles sound effects
+					try {
+					playSound("src/converted_mixkit-water-sci-fi-bleep-902.wav");
+				} catch (LineUnavailableException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				int hex = move[0]*gs.numberOfHexagons+move[1];
+				gs.grid.get(hex).clicked = true;
+				gs.grid.get(hex).color = gs.paneTColor;
+				gs.q.add(hex);
+				gs.nextTurn();
+				
+				ArrayList<ArrayList<Integer>> won = new ArrayList<>();
+				
+				won = gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2);
+				if (won.get(0).get(0)==1) {
+					try {
+						playSound("src/mixkit-funny-fail-low-tone-2876.wav");
+					} catch (LineUnavailableException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					repaint();
+					JOptionPane.showConfirmDialog(null, "Sorry! " + gs.players.get(0).name + " you lost...\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
+					if (dialogbutton == JOptionPane.YES_OPTION) {
+						gs.resetGame();
+						paneT.setText(gs.players.get(0).name);
+						paneT.setBackground(gs.players.get(0).color);
+						
+					}else {
+						remove(dialogbutton);
+					}
+				}
+					break;
+				
+				}
 
 			}
 		}
@@ -412,11 +495,11 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 			g.fillPolygon(t.getPolygon());
 		}
 		for(Hexagon h:gs.grid) {
-			g.setColor(h.color);
-			g.fillPolygon(h.getPolygon());
-			g.setColor(Color.BLUE);
-			g.drawPolygon(h.getPolygon());
-		}
+			   g.setColor(h.color);
+	       	   g.fillPolygon(h.getPolygon());
+	       	   g.setColor(Color.BLUE);
+	       	   g.drawPolygon(h.getPolygon());
+			}
 
 		
 
@@ -424,37 +507,6 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	
 	
 
-	@Override
-	public void performedMove(int moveId, int playerId) throws InterruptedException {
-		gs.grid.get(moveId).clicked=true;
-		gs.q.add(moveId);
-		System.out.println(playerId);
-		gs.grid.get(moveId).color= gs.players.get(playerId).color;
-		gs.nextTurn();
-		paneT.setBackground(gs.paneTColor);
-		paneT.setText(gs.paneTurnString);
 
-		ArrayList<ArrayList<Integer>> won = gs.winingState(gs.startP2, gs.players.get(playerId).color, gs.winP2);
-		//System.out.println(won);
-		if (won.get(0).get(0)==1 && gs.host) {
-			repaint();
-			JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(1).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
-			if (dialogbutton == JOptionPane.YES_OPTION) {
-				reset(0);
-			}else {
-				remove(dialogbutton);
-			}
-		}
-		repaint();
-	}
 
-	@Override
-	public void reset(int id) {
-		gs.resetGame();
-		paneT.setText(gs.players.get(id).name);
-		paneT.setBackground(gs.players.get(id).color);
-		if(gs.onlineMove == null) return;
-		if(gs.host) gs.onlineMove.resetGame(id);
-		else gs.whosTurn = GameState.Turn.ONLINE_PLAYER;
-	}
 }

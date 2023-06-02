@@ -1,7 +1,7 @@
-mode: false
-hexes: 12
+mode: true
+hexes: 4
 P1: Player 1
 CP1: -20561
 P2: Player 2
 CP2: -16711936
-moves: []
+moves: [7]

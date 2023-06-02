@@ -25,9 +25,9 @@ public interface Online {
 
 	void makeMove(int moveId, Integer onlineId);
 
-	void resetGame(Integer onlineId);
+	void resetGame(Integer onlineId, Integer startingPlayer);
 
 	Map.Entry<Integer, Integer> getMove(Integer onlineId);
 
-	boolean getReset(Integer onlineId);
+	Integer getReset(Integer onlineId);
 }

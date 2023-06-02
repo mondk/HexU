@@ -19,8 +19,8 @@ public class OnlineMove implements Runnable{
         gs.online.makeMove(moveId, gs.onlineId);
     }
 
-    public void resetGame() {
-        gs.online.resetGame(gs.onlineId);
+    public void resetGame(Integer startingPlayer) {
+        gs.online.resetGame(gs.onlineId, startingPlayer);
     }
 
     @Override
@@ -34,8 +34,8 @@ public class OnlineMove implements Runnable{
                     }
                 }
 
-                boolean reset = gs.online.getReset(gs.onlineId);
-                if(reset){
+                Integer reset = gs.online.getReset(gs.onlineId);
+                if(reset != null){
                     for (MoveListener listener : moveListeners){
                         listener.reset(0);
                     }

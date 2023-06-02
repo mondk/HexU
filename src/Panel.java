@@ -455,7 +455,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		paneT.setText(gs.players.get(id).name);
 		paneT.setBackground(gs.players.get(id).color);
 		if(gs.onlineMove == null) return;
-		if(gs.host && gs.onlineMove != null)gs.onlineMove.resetGame();
+		if(gs.host) gs.onlineMove.resetGame(id);
 		else gs.whosTurn = GameState.Turn.ONLINE_PLAYER;
 	}
 }

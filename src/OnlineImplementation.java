@@ -170,11 +170,11 @@ public class OnlineImplementation implements Online{
 	}
 
 	@Override
-	public void resetGame(Integer onlineId) {
+	public void resetGame(Integer onlineId, Integer startingPlayer) {
 		try {
 			for (Map.Entry<Integer, Player> player : getPlayers().entrySet()) {
 				if (Objects.equals(onlineId, player.getKey())) continue;
-				space.put(player.getKey(), RESET_GAME_IDENTIFIER);
+				space.put(player.getKey(), RESET_GAME_IDENTIFIER, startingPlayer);
 			}
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
@@ -192,11 +192,12 @@ public class OnlineImplementation implements Online{
 	}
 
 	@Override
-	public boolean getReset(Integer onlineId) {
+	public Integer getReset(Integer onlineId) {
 		try {
-			return space.getp(new ActualField(onlineId), new ActualField(RESET_GAME_IDENTIFIER)) != null;
+			Object[] reset = space.getp(new ActualField(onlineId), new ActualField(RESET_GAME_IDENTIFIER), new FormalField(Integer.class));
+			return reset != null ? (Integer)reset[2] : null;
 		} catch (InterruptedException e) {
-			return false;
+			return null;
 		}
 	}
 }

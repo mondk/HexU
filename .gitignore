@@ -1,4 +1,5 @@
 /bin/
 /src/*.class
 
+res/saves.txt
 /target/

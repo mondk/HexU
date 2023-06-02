@@ -122,16 +122,9 @@ public class Menu extends JPanel {
                         else if (data[0].equals("moves")){
                             gs.load = data[1].substring(1, data[1].length()-1).split(", ");
                         }
-                        
                     }
                     Reader.close();
-                    gs.paneTurnString = gs.players.get(0).name;
-                    gs.paneTColor=gs.players.get(0).color;
-                    Panel panel = new Panel(gs);
-                    gs.cards.add(panel, "PANEL");
-                    CardLayout cl = (CardLayout)gs.cards.getLayout();
-                    cl.next(gs.cards);
-                    gs.cards.remove(0);
+                    gs.startGame(gs.numberOfHexagons, gs.singlePlayer);
                 }
                 catch (FileNotFoundException e) {
                     System.out.println("An error has occurred.");

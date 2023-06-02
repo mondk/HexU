@@ -8,12 +8,20 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
+
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Arrays;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
@@ -34,9 +42,11 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	private AI ai;
 	JButton undo = new JButton("Undo");
 	JButton generate = new JButton("Generate move");
-	boolean start =false;
+	boolean start =true;
 	int dialogbutton;
 	ImageIcon reMatchIcon = new ImageIcon("res/rematch.png");  //  <a target="_blank" href="https://icons8.com/icon/PT3001yzoXgN/match">Match</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+
+
 
 	public Panel(GameState gs) {
 		this.gs=gs;
@@ -63,6 +73,16 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 					case Player2:
 						move = ai.nextMove(ai.gridToMatrix(gs.grid,gs.numberOfHexagons), gs.players.get(1).color.toString());
 						break;
+				}
+				//this bit handles sound effects
+					try {
+					playSound("src/converted_mixkit-water-sci-fi-bleep-902.wav");
+				} catch (LineUnavailableException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 				int hex = move[0]*gs.numberOfHexagons+move[1];
 				gs.grid.get(hex).clicked = true;
@@ -133,6 +153,19 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	        	for(Hexagon h : gs.grid) {
 	 				if(h.getPolygon().contains(e.getPoint())&&!h.clicked) {
 
+
+	 					//this bit handles sound effects
+	 					try {
+							playSound("src/mixkit-twig-breaking-2945.wav");
+						} catch (LineUnavailableException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+
+
 						gs.q.add(h.id);
 
 						ArrayList<ArrayList<Integer>> won = new ArrayList<>();
@@ -195,6 +228,23 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	       });
 		Thread gameThread = new Thread(this);
 		gameThread.start();
+	}
+
+	protected void playSound(String soundFile) throws LineUnavailableException, IOException {
+		// TODO Auto-generated method stub
+		try {
+	        File file = new File(soundFile);
+	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
+	        Clip clip = AudioSystem.getClip();
+	        clip.open(audioInputStream);
+	        clip.start();
+	    } catch (LineUnavailableException e) {
+	        e.printStackTrace();
+	        // Handle the exception (e.g., display an error message)
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
 	}
 
 	@Override
@@ -350,6 +400,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		gs.border.add(new BorderR(gs.players.get(1).color, x3 , y3)); //left
 		gs.border.add(new BorderR(gs.players.get(1).color, x4 , y4)); //right
 	
+		gs.fillLoadMoves(gs.load);
 		gs.fillWinStateArrays();
 	}
 	

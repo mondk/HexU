@@ -20,16 +20,16 @@ public class AI {
 
 	public  int[] nextMove(String[][] matrix, String player) {
 		//System.out.println("\nSTART LOL"+player+"\n");
-		int[] move = minimax(matrix,player,4, true);
+		int[] move = minimax(matrix,player,4, true,Integer.MIN_VALUE,Integer.MAX_VALUE);
 		//System.out.println("best move :"+move[1]+" ; "+move[2]);
-
+		
 		return new int[] {move[1],move[2]};
 	}
 
-	public int[] minimax(String[][] matrix, String player,int depth, boolean maximizing_player) {
-
+	public int[] minimax(String[][] matrix, String player,int depth, boolean maximizing_player,int alpha, int beta) {
+	
 	    if (depth == 0) {
-
+	    	
 	    	return new int[] {(int) evalMatrix(matrix, player),-1,-1};
 	        
 	    }
@@ -39,46 +39,59 @@ public class AI {
 	        int[] best_move = new int[] {-1,-1};
 	        String currentPlayer = player;
 	        String nextPlayer = nextTurn(player);
-
+	        int alpha_ = alpha;
+	        int beta_=beta;
 	        for (int[] move : getNullElements(matrix)) {
 	        	
-
+	        	
 	        	//System.out.println("\ncurrent move :"+move[0]+" ; "+move[1]+"\n");
-
+	        
 	        	String[][] matrix_new=makeMove(move,currentPlayer,matrix);
-
+	        	
 	        	if(depth==4) {
 	        		if(evalMatrix(matrix_new, player)==Double.MAX_VALUE) {
 		        		return new int[] {-1, move[0],move[1]};
 		        	}
 	        	}
-	            int[] eval = minimax(matrix_new,nextPlayer, depth - 1, false);
+	            int[] eval = minimax(matrix_new,nextPlayer, depth - 1, false,alpha_ ,beta_);
 				//System.out.println("eval score : "+eval[0]);
 	            if (eval[0] > max_eval) {
-	            	//System.out.println("inner score : "+eval[0]);
+
+	            	System.out.println("inner score : "+eval[0]);
+
 	                max_eval = eval[0];
 	                best_move = move;
 
 	            }
+	            alpha_=Math.max(alpha_, max_eval);
+	            if(beta_<=alpha_&&gs.numberOfHexagons>5) {
+	            	return new int[] {max_eval, best_move[0],best_move[1]};
+	            }
 	            //System.out.println("best move inner :"+best_move[0]+" ; "+best_move[1]);
 	        }
 	        return new int[] {max_eval, best_move[0],best_move[1]};
-
+	        
 	    } else {
 	    	int min_eval = Integer.MAX_VALUE;
 	        int[] best_move = new int[] {-1,-1};
 	        String currentPlayer = player;
 	        String nextPlayer = nextTurn(player);
+	        int alpha_ = alpha;
+	        int beta_=beta;
 
 	        for (int[] move : getNullElements(matrix)) {
-
+	    
 	        	String[][] matrix_new=makeMove(move,currentPlayer,matrix);
-
-	            int[] eval = minimax(matrix_new,nextPlayer, depth - 1, true);
+	        	
+	            int[] eval = minimax(matrix_new,nextPlayer, depth - 1, true,alpha_,beta_);
 				
 	            if ( min_eval > eval[0]) {
 	                min_eval = eval[0];
 	                best_move = move;
+	            }
+	            beta_=Math.min(beta_, min_eval);
+	            if(beta_<=alpha_&&gs.numberOfHexagons>5) {
+	            	return new int[] {min_eval, best_move[0],best_move[1]};
 	            }
 	        }
 	        return new int[] {min_eval, best_move[0],best_move[1]};
@@ -96,15 +109,15 @@ public class AI {
 	}
 
 	public static String nextTurn(String player) {
-
+		
 		if(player.equals(player1)) {
 			return player2;
 		}
 		else if(player.equals(player2))
 			return player1;
-		else
+		else 
 			return null;
-
+		
 	}
 
 	public static String[][] gridToMatrix(ArrayList<Hexagon> grid, int numberofHex){
@@ -135,6 +148,7 @@ public class AI {
 				}
 			}
 		}
+
 		return validMoves;
 	}
 
@@ -150,7 +164,7 @@ public class AI {
 	public double evalMatrix(String[][] matrix, String Player){
 		ArrayList<Integer> seen = new ArrayList<>();
 
-		double finalScore = 0.0;
+		double finalScore = 0.0;	
 		double sum = 0;
 		for (int i = 0; i < gs.numberOfHexagons; i++) {
 			for (int j = 0; j < gs.numberOfHexagons; j++) {
@@ -165,7 +179,7 @@ public class AI {
 					visited[v] = true;
 					queue.add(v);
 					cluster.add(v);
-
+					
 					while (queue.size()!=0) {
 						int inter = queue.poll();
 						Iterator<Integer> k = gs.grid.get(inter).adj.listIterator();
@@ -178,8 +192,8 @@ public class AI {
 									seen.add(n);
 									cluster.add(n);
 									if (!Collections.disjoint(cluster, gs.startP1) && !Collections.disjoint(cluster,gs.winP1)){
-
-
+											
+					
 										return Double.MAX_VALUE;
 									}
 								}
@@ -212,7 +226,7 @@ public class AI {
 				}
 				//System.out.println("sum chehck");
 				//System.out.println(sum);
-				sum = sum*(1+((cluster.size()-1)*0.25))*(1+(axis_counter*0.55));
+				sum = sum*(1+((cluster.size()-1)*0.25))*(1+(axis_counter*0.65));
 				//System.out.println(sum);
 			}
 			finalScore += sum;

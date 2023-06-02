@@ -264,7 +264,7 @@ public class GameState{
 		this.paneTColor = players.get(0).color;
 		this.paneTurnString = players.get(0).name;
 		this.singlePlayer = singlePlayer;
-		this.numberOfHexagons = numberOfHexagons;
+		updateNumberOfHexagons(numberOfHexagons);
 		Panel panel = new Panel(this);
 		cards.add(panel, "PANEL");
 		CardLayout cl = (CardLayout)cards.getLayout();

@@ -1,7 +1,3 @@
-import org.jspace.ActualField;
-import org.jspace.FormalField;
-
-import java.awt.*;
 import java.util.*;
 
 public class WaitingRoom implements Runnable {

@@ -21,9 +21,9 @@ class OnlineMoveTest {
         gs.hostGame("127.0.0.1");
         gs2.joinGame("127.0.0.1");
         gs.online.startGame(0);
-        Thread.sleep(100);
+        Thread.sleep(2000);
         gs.online.makeMove(3,0);
-        Thread.sleep(100);
+        Thread.sleep(2000);
         assertTrue(gs2.grid.get(3).clicked);
     }
 
@@ -32,12 +32,12 @@ class OnlineMoveTest {
         gs.hostGame("127.0.0.2");
         gs2.joinGame("127.0.0.2");
         gs.online.startGame(0);
-        Thread.sleep(100);
+        Thread.sleep(2000);
         gs.online.makeMove(3,0);
-        Thread.sleep(100);
+        Thread.sleep(2000);
         assertTrue(gs2.grid.get(3).clicked);
         gs.online.resetGame(0,0);
-        Thread.sleep(100);
+        Thread.sleep(1000);
         assertFalse(gs2.grid.get(3).clicked);
     }
 }

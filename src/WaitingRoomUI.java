@@ -14,7 +14,6 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
             gameState.startWaitingRoom();
 
             PlayerSettings ownName = new PlayerSettings(gs, gameState.onlineId);
-            System.out.println("The list of players is " + gameState.players);
             JPanel names = new JPanel();
             names.setLayout(new GridLayout(0,1));
             for(Map.Entry<Integer,Player> player : gameState.players.entrySet()){
@@ -41,8 +40,6 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
                 @Override
                 public void changedUpdate(DocumentEvent documentEvent) {
                     gameState.players.get(gameState.onlineId).name = ownName.getName();
-                    System.out.println("The changed name is " + ownName.getName());
-                    System.out.println("The new internal name is " + gameState.players.get(gameState.onlineId).name);
                     gameState.online.changePlayer(gameState.onlineId, gameState.players.get(gameState.onlineId));
                 }
             });
@@ -133,10 +130,8 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
     public void playerChanged(Integer id, Player player){
         JPanel names = (JPanel)getComponent(1);
         try{
-            System.out.println("removed id " + id);
             names.remove(id);
         } catch (Exception ignored){}
-        System.out.println("id=" + id);
         JPanel newPlayer = new JPanel();
         JLabel newPlayerName = new JLabel(player.name);
         ColorButton colorButton = new ColorButton(player.color,null);

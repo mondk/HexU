@@ -6,7 +6,6 @@ import java.util.*;
 import java.util.List;
 
 public class OnlineImplementation implements Online{
-	private boolean host;
 	private Space space;
 	//private int id;
 	public final String PLAYERS_LIST_IDENTIFIER = "ALL_PLAYERS";
@@ -23,14 +22,12 @@ public class OnlineImplementation implements Online{
 
 	@Override
 	public void start(boolean host, String ip) {
-		this.host = host;
 		if(host){
 			SpaceRepository repository = new SpaceRepository();
 			space = new SequentialSpace();
 			repository.add("game",space);
 			repository.addGate("tcp://" + ip + ":9001/?keep");
 			try {
-				//space.put("Player1Name", name.getText());
 				space.put(PLAYERS_LIST_IDENTIFIER,new HashMapIntegerString());
 			} catch (InterruptedException e) {
 				throw new RuntimeException(e);
@@ -42,7 +39,6 @@ public class OnlineImplementation implements Online{
 				throw new RuntimeException(e);
 			}
 		}
-		System.out.println(space);
 	}
 
 	@Override
@@ -64,12 +60,9 @@ public class OnlineImplementation implements Online{
 		try {
 			space.getp(new ActualField(PLAYER_IDENTIFIER), new ActualField(onlineId), new FormalField(String.class), new FormalField(Integer.class));
 			space.put(PLAYER_IDENTIFIER, onlineId, player.name, player.color.getRGB());
-			System.out.println("Changing player to " + onlineId + " " + player.name + " " + player.color.getRGB());
-			System.out.println("The list if players is " + getPlayers());
 			for(Integer otherPlayer : getPlayers().keySet()) {
 				if(onlineId.equals(otherPlayer)) continue;
 				space.put(PLAYER_CHANGED_IDENTIFIER, onlineId, otherPlayer);
-				System.out.println("Changed name for " + otherPlayer);
 			}
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
@@ -118,7 +111,6 @@ public class OnlineImplementation implements Online{
 	public Integer getInitialNumberOfHexagons(int standardValue) {
 		try {
 			Object[] value = space.queryp(new ActualField(NUMBER_OF_HEXAGONS_IDENTIFIER), new FormalField(Integer.class));
-			System.out.println(value);
 			return value != null ? (Integer) value[1] : standardValue;
 		} catch (InterruptedException e) {
 			return standardValue;
@@ -139,7 +131,6 @@ public class OnlineImplementation implements Online{
 	public Map.Entry<Integer,Player> getNewPlayer(Integer onlineId) {
 		try {
 			Object[] newPlayer = space.getp(new ActualField(PLAYER_CHANGED_IDENTIFIER), new FormalField(Integer.class), new ActualField(onlineId));
-			if(newPlayer != null)System.out.println("The new player is " + newPlayer);
 			return newPlayer != null ? new AbstractMap.SimpleEntry<Integer,Player>((Integer)newPlayer[1], getPlayers().get((Integer)newPlayer[1])) : null;
 		} catch (InterruptedException e) {
 			return null;
@@ -172,7 +163,6 @@ public class OnlineImplementation implements Online{
 			for (Map.Entry<Integer, Player> player : getPlayers().entrySet()) {
 				if (Objects.equals(onlineId, player.getKey())) continue;
 				space.put(MOVE_IDENTIFIER, player.getKey(), onlineId, moveId);
-				System.out.println("Put a move for " + player.getKey());
 			}
 		} catch (InterruptedException e) {
 
@@ -185,7 +175,6 @@ public class OnlineImplementation implements Online{
 			for (Map.Entry<Integer, Player> player : getPlayers().entrySet()) {
 				if (Objects.equals(onlineId, player.getKey())) continue;
 				space.put(player.getKey(), RESET_GAME_IDENTIFIER);
-				System.out.println("Put a move for " + player.getKey());
 			}
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);

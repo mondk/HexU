@@ -1,4 +1,4 @@
 public interface MoveListener {
-    void performedMove(int playerId, int moveId) throws InterruptedException;
+    void performedMove(int moveId, int playerId) throws InterruptedException;
     void reset(int id) throws InterruptedException;
 }

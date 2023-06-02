@@ -21,6 +21,7 @@ public class WaitingRoom implements Runnable {
         //gameState.players = (HashMapIntegerString) gameState.online.get(new ActualField(PLAYERS_LIST_IDENTIFIER), new FormalField(HashMapIntegerString.class))[1];
         gameState.players = gameState.online.getPlayers();
         gameState.onlineId = gameState.players.size();
+        gameState.updateNumberOfHexagons(gameState.online.getInitialNumberOfHexagons(gameState.numberOfHexagons));
         gameState.addPlayer();
         this.thisPlayer = gameState.onlineId;
         /*
@@ -142,7 +143,7 @@ public class WaitingRoom implements Runnable {
         while(true){
             try {
                 //gameState.players = (HashMapIntegerString) gameState.gameSpace.query(new ActualField(PLAYERS_LIST_IDENTIFIER), new FormalField(HashMapIntegerString.class))[1];
-                gameState.players = gameState.online.getPlayers();
+                //gameState.players = gameState.online.getPlayers();
                 //Object[] numberOfHexagons = gameState.gameSpace.getp(new ActualField(thisPlayer),new ActualField(NUMBER_OF_HEXAGONS_IDENTIFIER), new FormalField(Integer.class));
                 Integer numberOfHexagonsChanged = gameState.online.numberOfHexagonsChanged(gameState.onlineId);
                 if(numberOfHexagonsChanged != null && !(0 == thisPlayer)){
@@ -154,6 +155,9 @@ public class WaitingRoom implements Runnable {
                 //Player newName = gameState.gameSpace.getp(new ActualField(thisPlayer), new ActualField(NEW_NAME_IDENTIFIER), new FormalField(Integer.class), new FormalField(String.class), new FormalField(Integer.class));
                 Map.Entry<Integer,Player> newPlayer = gameState.online.getNewPlayer(gameState.onlineId);
                 if(newPlayer != null) {
+                    gameState.players.put(newPlayer.getKey(), newPlayer.getValue());
+                    System.out.println(newPlayer.getValue().name);
+                    System.out.println("The players with the new player is " + gameState.players);
                     for(WaitingRoomListener waitingRoomListener : waitingRoomListeners) {
                         waitingRoomListener.playerChanged(newPlayer.getKey(), newPlayer.getValue());
                     }

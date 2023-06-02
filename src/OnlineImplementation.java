@@ -8,11 +8,12 @@ import java.util.List;
 public class OnlineImplementation implements Online{
 	private boolean host;
 	private Space space;
-	private int id;
+	//private int id;
 	public final String PLAYERS_LIST_IDENTIFIER = "ALL_PLAYERS";
 	private final String PLAYER_CHANGED_IDENTIFIER = "PLAYER_CHANGED";
 	private final String START_GAME_IDENTIFIER = "START_GAME";
 	private final String NUMBER_OF_HEXAGONS_IDENTIFIER = "NUMBER_OF_HEXAGONS";
+	private final String NUMBER_OF_HEXAGONS_CHANGED_IDENTIFIER = "NUMBER_OF_HEXAGONS_CHANGED";
 	private final String PLAYER_LEFT_IDENTIFIER = "LEAVE_GAME";
 	private final String PLAYER_IDENTIFIER = "PLAYER";
 	private final String MOVE_IDENTIFIER = "MOVE";
@@ -59,12 +60,16 @@ public class OnlineImplementation implements Online{
 	}
 
 	@Override
-	public void changePlayer(Integer id, Player player) {
+	public void changePlayer(Integer onlineId, Player player) {
 		try {
-			space.getp(new ActualField(PLAYER_IDENTIFIER), new ActualField(id), new FormalField(String.class), new FormalField(Integer.class));
-			space.put(PLAYER_IDENTIFIER, id, player.name, player.color.getRGB());
+			space.getp(new ActualField(PLAYER_IDENTIFIER), new ActualField(onlineId), new FormalField(String.class), new FormalField(Integer.class));
+			space.put(PLAYER_IDENTIFIER, onlineId, player.name, player.color.getRGB());
+			System.out.println("Changing player to " + onlineId + " " + player.name + " " + player.color.getRGB());
+			System.out.println("The list if players is " + getPlayers());
 			for(Integer otherPlayer : getPlayers().keySet()) {
-				space.put(PLAYER_CHANGED_IDENTIFIER, id, otherPlayer);
+				if(onlineId.equals(otherPlayer)) continue;
+				space.put(PLAYER_CHANGED_IDENTIFIER, onlineId, otherPlayer);
+				System.out.println("Changed name for " + otherPlayer);
 			}
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
@@ -85,20 +90,22 @@ public class OnlineImplementation implements Online{
 
 	@Override
 	public void updateNumberOfHexagons(int numberOfHexagons) {
-		HashMap<Integer, Player> players = getPlayers();
-		for(Map.Entry<Integer,Player> player : players.entrySet()){
-			try {
-				space.put(player.getKey(), NUMBER_OF_HEXAGONS_IDENTIFIER , numberOfHexagons);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
+		try {
+			space.getp(new ActualField(NUMBER_OF_HEXAGONS_IDENTIFIER), new FormalField(Integer.class));
+			space.put(NUMBER_OF_HEXAGONS_IDENTIFIER, numberOfHexagons);
+			HashMap<Integer, Player> players = getPlayers();
+			for(Map.Entry<Integer,Player> player : players.entrySet()){
+				space.put(player.getKey(), NUMBER_OF_HEXAGONS_CHANGED_IDENTIFIER , numberOfHexagons);
 			}
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
 	@Override
 	public void disconnect(Integer onlineId) {
 		try {
-			space.getp(new ActualField(PLAYER_IDENTIFIER), new ActualField(id), new FormalField(String.class), new FormalField(Integer.class));
+			space.getp(new ActualField(PLAYER_IDENTIFIER), new ActualField(onlineId), new FormalField(String.class), new FormalField(Integer.class));
 			for(Map.Entry<Integer,Player> player : getPlayers().entrySet()){
 				space.put(PLAYER_LEFT_IDENTIFIER, onlineId, player.getKey());
 			}
@@ -108,9 +115,20 @@ public class OnlineImplementation implements Online{
 	}
 
 	@Override
+	public Integer getInitialNumberOfHexagons(int standardValue) {
+		try {
+			Object[] value = space.queryp(new ActualField(NUMBER_OF_HEXAGONS_IDENTIFIER), new FormalField(Integer.class));
+			System.out.println(value);
+			return value != null ? (Integer) value[1] : standardValue;
+		} catch (InterruptedException e) {
+			return standardValue;
+		}
+	}
+
+	@Override
 	public Integer numberOfHexagonsChanged(Integer onlineId) {
 		try {
-			Object[] value = space.getp(new ActualField(onlineId),new ActualField(NUMBER_OF_HEXAGONS_IDENTIFIER), new FormalField(Integer.class));
+			Object[] value = space.getp(new ActualField(onlineId),new ActualField(NUMBER_OF_HEXAGONS_CHANGED_IDENTIFIER), new FormalField(Integer.class));
 			return value != null ? (Integer)value[2] : null;
 		} catch (InterruptedException e) {
 			return null;
@@ -118,9 +136,10 @@ public class OnlineImplementation implements Online{
 	}
 
 	@Override
-	public Map.Entry<Integer,Player> getNewPlayer(int id) {
+	public Map.Entry<Integer,Player> getNewPlayer(Integer onlineId) {
 		try {
-			Object[] newPlayer = space.getp(new ActualField(PLAYER_CHANGED_IDENTIFIER), new FormalField(Integer.class), new ActualField(id));
+			Object[] newPlayer = space.getp(new ActualField(PLAYER_CHANGED_IDENTIFIER), new FormalField(Integer.class), new ActualField(onlineId));
+			if(newPlayer != null)System.out.println("The new player is " + newPlayer);
 			return newPlayer != null ? new AbstractMap.SimpleEntry<Integer,Player>((Integer)newPlayer[1], getPlayers().get((Integer)newPlayer[1])) : null;
 		} catch (InterruptedException e) {
 			return null;

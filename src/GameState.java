@@ -339,6 +339,7 @@ public class GameState{
 		moveThread.start();
 	}
 	public void startOnlineGame(int startPlayer) throws InterruptedException {
+		players = online.getPlayers();
 		CardLayout cl = (CardLayout)cards.getLayout();
 		paneTurnString = players.get(startPlayer).name;
 		paneTColor = players.get(startPlayer).color;

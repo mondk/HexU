@@ -11,6 +11,7 @@ public class PlayerSettings extends JPanel {
     private JButton confirmPColor;
     private ColorPicker colorPicker;
     private ColorButton playerColor;
+    private DocumentListener documentListener;
     public PlayerSettings(GameState gs, int id) {
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         setPreferredSize(new Dimension(275, 30));
@@ -29,7 +30,7 @@ public class PlayerSettings extends JPanel {
                 playerColor.setColor(colorPicker.getColor());
             }
         });
-        player.getDocument().addDocumentListener(new DocumentListener() {
+        documentListener = new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent documentEvent) {
                 changedUpdate(documentEvent);
@@ -42,9 +43,12 @@ public class PlayerSettings extends JPanel {
 
             @Override
             public void changedUpdate(DocumentEvent documentEvent) {
-                gs.players.get(id).name = player.getText();
+                try {
+                    gs.players.get(id).name = player.getText();
+                } catch (Exception ignored) {}
             }
-        });
+        };
+        player.getDocument().addDocumentListener(documentListener);
         confirmPColor.setText("Confirm");
         colorMenu.add(colorPicker);
         colorMenu.add(confirmPColor);
@@ -59,11 +63,27 @@ public class PlayerSettings extends JPanel {
         return player.getText();
     }
 
+    public Color getColor(){
+        return colorPicker.getColor();
+    }
+
+    public ColorButton getColorButton(){
+        return playerColor;
+    }
+
     public JPanel getPlayerCards() {
         return playerCards;
     }
 
     public JTextField getPlayerTextField(){
         return player;
+    }
+    public void changeConfirmAction(AbstractAction action){
+        confirmPColor.setAction(action);
+        confirmPColor.setText("Confirm");
+    }
+    public void changeDocumentListener(DocumentListener documentListener){
+        player.getDocument().removeDocumentListener(this.documentListener);
+        player.getDocument().addDocumentListener(documentListener);
     }
 }

@@ -6,17 +6,18 @@ public interface Online {
 
 	HashMap<Integer,Player> getPlayers();
 
-	void changePlayer(Integer id, Player player);
+	void changePlayer(Integer onlineId, Player player);
 
 	void startGame(int startingPlayer);
 
 	void updateNumberOfHexagons(int numberOfHexagons);
 
 	void disconnect(Integer onlineId);
+	Integer getInitialNumberOfHexagons(int standardValue);
 
 	Integer numberOfHexagonsChanged(Integer onlineId);
 
-	Map.Entry<Integer,Player> getNewPlayer(int id);
+	Map.Entry<Integer,Player> getNewPlayer(Integer onlineId);
 
 	Integer getPlayerLeft(Integer onlineId);
 

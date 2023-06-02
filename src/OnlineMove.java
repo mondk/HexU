@@ -9,7 +9,7 @@ public class OnlineMove implements Runnable{
     ArrayList<MoveListener> moveListeners = new ArrayList<>();
     public OnlineMove(GameState gs){
         this.gs = gs;
-        System.out.println("This id is: " + gs.onlineId);
+        System.out.println("This id is: " + gs.players);
     }
 
     public void subscribe(MoveListener newListener){
@@ -49,6 +49,7 @@ public class OnlineMove implements Runnable{
                 //Object[] move = gs.gameSpace.getp(new ActualField("move"),new ActualField(gs.onlineId), new FormalField(Integer.class), new FormalField(Integer.class));
 
                 if(move != null) {
+                    System.out.println("Got a move " + move);
                     for (MoveListener listener : moveListeners) {
                         listener.performedMove(move.getValue(), move.getKey());
                     }

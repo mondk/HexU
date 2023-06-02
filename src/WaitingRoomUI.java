@@ -13,9 +13,8 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
 
             gameState.startWaitingRoom();
 
-
             PlayerSettings ownName = new PlayerSettings(gs, gameState.onlineId);
-            System.out.println(gameState.players);
+            System.out.println("The list of players is " + gameState.players);
             JPanel names = new JPanel();
             names.setLayout(new GridLayout(0,1));
             for(Map.Entry<Integer,Player> player : gameState.players.entrySet()){
@@ -28,7 +27,7 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
                 newPlayer.add(colorButton);
                 names.add(newPlayer, (int)player.getKey());
             }
-            ownName.getPlayerTextField().getDocument().addDocumentListener(new DocumentListener() {
+            ownName.changeDocumentListener(new DocumentListener() {
                 @Override
                 public void insertUpdate(DocumentEvent documentEvent) {
                     changedUpdate(documentEvent);
@@ -42,7 +41,19 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
                 @Override
                 public void changedUpdate(DocumentEvent documentEvent) {
                     gameState.players.get(gameState.onlineId).name = ownName.getName();
+                    System.out.println("The changed name is " + ownName.getName());
+                    System.out.println("The new internal name is " + gameState.players.get(gameState.onlineId).name);
                     gameState.online.changePlayer(gameState.onlineId, gameState.players.get(gameState.onlineId));
+                }
+            });
+            ownName.changeConfirmAction(new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    gs.players.get(gameState.onlineId).color = ownName.getColor();
+                    CardLayout cl = (CardLayout) ownName.getPlayerCards().getLayout();
+                    cl.next(ownName.getPlayerCards());
+                    ownName.getColorButton().setColor(ownName.getColor());
+                    gs.online.changePlayer(gs.onlineId, gs.players.get(gameState.onlineId));
                 }
             });
             names.add(ownName.getPlayerCards());

@@ -45,7 +45,7 @@ class WaitingRoomTest {
     }
     @Test
     public void updateColourAfterJoinTest() throws IOException, InterruptedException {
-        gs.joinGame("127.0.0.1");
+        gs.hostGame("127.0.0.1");
         gs2.joinGame("127.0.0.1");
         Color player1Color = new Color(20,20,20);
         Player newPlayer1 = new Player(gs.players.get(0).name, player1Color);

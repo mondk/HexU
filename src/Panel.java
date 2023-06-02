@@ -382,9 +382,10 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	
 
 	@Override
-	public void performedMove(int playerId, int moveId) throws InterruptedException {
+	public void performedMove(int moveId, int playerId) throws InterruptedException {
 		gs.grid.get(moveId).clicked=true;
 		gs.q.add(moveId);
+		System.out.println(playerId);
 		gs.grid.get(moveId).color= gs.players.get(playerId).color;
 		gs.nextTurn();
 		paneT.setBackground(gs.paneTColor);
@@ -401,6 +402,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				remove(dialogbutton);
 			}
 		}
+		repaint();
 	}
 
 	@Override

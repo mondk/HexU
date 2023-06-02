@@ -51,10 +51,7 @@ public class GameState{
 	boolean singlePlayer = false;
 	boolean host = true;
 	State playerState = State.MULTIPLAYER;
-	Online online = new OnlineImplementation();
-	WaitingRoom waitingRoom = null;
-	OnlineMove onlineMove = null;
-	Integer onlineId = 0;
+
 
 	String[] load = {};
 
@@ -302,18 +299,6 @@ public class GameState{
 
 	}
 
-	public void setOnline(Online online) {
-		this.online = online;
-	}
-
-	public void joinGame(String ip) throws IOException {
-		online.start(false, ip);
-		//gameSpace = new RemoteSpace("tcp://" + ip + ":9001/game?keep");
-		this.host = false;
-		this.playerState = GameState.State.ONLINE;
-		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this);
-	
-
 	public String randomBackground(){
 		String[] files = new File("res/background").list();
 		int x = 1+(int)(Math.random()*(files.length));
@@ -341,38 +326,6 @@ public class GameState{
 		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this);
 	}
 
-	public void hostGame(String ip) {
-		online.start(true, ip);
-		playerState = GameState.State.ONLINE;
-		host = true;
-		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this);
-	}
-
-	public void startWaitingRoom() throws InterruptedException {
-		waitingRoom = new WaitingRoom(this);
-		Thread playersThread = new Thread(waitingRoom);
-        playersThread.start();
-	}
-	public void startOnlineMove() throws InterruptedException {
-		onlineMove = new OnlineMove(this);
-		Thread moveThread = new Thread(onlineMove);
-		moveThread.start();
-	}
-	public void startOnlineGame(int startPlayer) throws InterruptedException {
-		players = online.getPlayers();
-		CardLayout cl = (CardLayout)cards.getLayout();
-		paneTurnString = players.get(startPlayer).name;
-		paneTColor = players.get(startPlayer).color;
-		updateNumberOfHexagons(numberOfHexagons);
-		whosTurn = onlineId == startPlayer ? GameState.Turn.values()[startPlayer] : GameState.Turn.ONLINE_PLAYER;
-		startOnlineMove();
-		Panel panel = new Panel(this);
-		onlineMove.subscribe(panel);
-		cards.add(panel);
-		cl.next(cards);
-		cards.remove(0);
-	}
-}
 
 	public void startWaitingRoom() throws InterruptedException {
 		waitingRoom = new WaitingRoom(this);

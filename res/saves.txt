@@ -1,7 +1,7 @@
 mode: false
-hexes: 5
-P1: jONAS
-CP1: -13631744
-P2: Wentzlau
-CP2: -2031361
-moves: [7, 11, 12]
+hexes: 12
+P1: Player 1
+CP1: -20561
+P2: Player 2
+CP2: -16711936
+moves: []

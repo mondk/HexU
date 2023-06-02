@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class Yest {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		GameState gs = new GameState();
 	
 		//Panel panel = new Panel(gs);
@@ -42,6 +42,9 @@ public class Yest {
 				} catch(IOException IOe) {
 					System.out.println(IOe);
 				}
+				try{
+					gs.waitingRoom.disconnect();
+				} catch (Exception e) {}
 				System.exit(0);
 			}
 		});

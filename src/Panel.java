@@ -28,8 +28,8 @@ import javax.swing.JButton;
 
 
 
-public class Panel extends JPanel implements Runnable{
-	
+public class Panel extends JPanel implements Runnable, MoveListener{
+
 	private GameState gs;
 	private Image image;
 	private Graphics graphics;	
@@ -46,9 +46,9 @@ public class Panel extends JPanel implements Runnable{
 	boolean start =true;
 	int dialogbutton;
 	ImageIcon reMatchIcon = new ImageIcon("res/rematch.png");  //  <a target="_blank" href="https://icons8.com/icon/PT3001yzoXgN/match">Match</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
-	
-	
-	
+
+
+
 	public Panel(GameState gs) {
 		this.gs=gs;
 		this.img = new ImageIcon(gs.randomBackground());
@@ -90,6 +90,7 @@ public class Panel extends JPanel implements Runnable{
 				gs.grid.get(hex).clicked = true;
 				gs.grid.get(hex).color = gs.paneTColor;
 				gs.q.add(hex);
+				gs.online.makeMove(hex,gs.onlineId);
 				ArrayList<ArrayList<Integer>> won = new ArrayList<>();
 				switch(gs.whosTurn){
 					case Player1:
@@ -98,24 +99,20 @@ public class Panel extends JPanel implements Runnable{
 							repaint();
 							JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(0).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 							if (dialogbutton == JOptionPane.YES_OPTION) {
-								gs.resetGame();
-								paneT.setText(gs.players.get(0).name);
-								paneT.setBackground(gs.players.get(0).color);
-								
+								reset(0);
 							}else {
 								remove(dialogbutton);
 							}
 						}
 					case Player2:
 						won = gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2);
-						if (won.get(0).get(0)==1) {
+						if (won.get(0).get(0)==1 && gs.host) {
 							repaint();
 							JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(1).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 							if (dialogbutton == JOptionPane.YES_OPTION) {
 								gs.resetGame();
 								paneT.setText(gs.players.get(1).name);
 								paneT.setBackground(gs.players.get(1).color);
-								
 							}else {
 								remove(dialogbutton);
 							}
@@ -154,7 +151,8 @@ public class Panel extends JPanel implements Runnable{
 	         public void mouseClicked(MouseEvent e) {
 	        	for(Hexagon h : gs.grid) {
 	 				if(h.getPolygon().contains(e.getPoint())&&!h.clicked) {
-	 					
+
+
 	 					//this bit handles sound effects
 	 					try {
 							playSound("src/mixkit-twig-breaking-2945.wav");
@@ -165,18 +163,18 @@ public class Panel extends JPanel implements Runnable{
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-	 					
-	 					gs.grid.get(h.id).clicked=true;
-	 					
+
+
 						gs.q.add(h.id);
 
 						ArrayList<ArrayList<Integer>> won = new ArrayList<>();
 
 	 					switch(gs.whosTurn) {
 	 					case Player1:
+							gs.grid.get(h.id).clicked=true;
 	 						h.color=gs.players.get(0).color;
 	 						gs.nextTurn();
-	 						
+	 						gs.online.makeMove(h.id,gs.onlineId);
 	 						System.out.println(gs.players.get(0).name + " clicked on hexagon: "+h.id+" score: "+h.score);
 							won = gs.winingState(gs.startP1, gs.players.get(0).color, gs.winP1);
 							
@@ -185,9 +183,7 @@ public class Panel extends JPanel implements Runnable{
 	 							repaint();
 	 							JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(0).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 	 		 					if (dialogbutton == JOptionPane.YES_OPTION) {
-	 		 						gs.resetGame();
-	 		 						paneT.setText(gs.players.get(0).name);
-									paneT.setBackground(gs.players.get(0).color);
+									reset(0);
 	 		 						break;
 	 		 					}else {
 	 		 						remove(dialogbutton);
@@ -197,18 +193,18 @@ public class Panel extends JPanel implements Runnable{
 	 						paneT.setText(gs.paneTurnString);
 	 						break;
 	 					case Player2:
+							gs.grid.get(h.id).clicked=true;
 	 						h.color=gs.players.get(1).color;
 	 						gs.nextTurn();
+							gs.online.makeMove(h.id,gs.onlineId);
 	 						System.out.println(gs.players.get(1).name + " clicked on hexagon: "+h.id+" score: "+h.score);
 							won = gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2);
 							//System.out.println(won);
-	 						if (won.get(0).get(0)==1) {
+	 						if (won.get(0).get(0)==1 && gs.host) {
 	 							repaint();
 	 							JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(1).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 	 							if (dialogbutton == JOptionPane.YES_OPTION) {
-	 		 						gs.resetGame();
-	 		 						paneT.setText(gs.players.get(0).name);
-									paneT.setBackground(gs.players.get(0).color);
+									 reset(1);
 	 		 						break;
 	 		 					}else {
 	 		 						remove(dialogbutton);
@@ -243,7 +239,7 @@ public class Panel extends JPanel implements Runnable{
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
-		
+
 	}
 
 	@Override
@@ -416,18 +412,49 @@ public class Panel extends JPanel implements Runnable{
 			g.fillPolygon(t.getPolygon());
 		}
 		for(Hexagon h:gs.grid) {
-			   g.setColor(h.color);
-	       	   g.fillPolygon(h.getPolygon());
-	       	   g.setColor(Color.BLUE);
-	       	   g.drawPolygon(h.getPolygon());
-			}
-		
+			g.setColor(h.color);
+			g.fillPolygon(h.getPolygon());
+			g.setColor(Color.BLUE);
+			g.drawPolygon(h.getPolygon());
+		}
+
 		
 
 	}
 	
 	
 
+	@Override
+	public void performedMove(int moveId, int playerId) throws InterruptedException {
+		gs.grid.get(moveId).clicked=true;
+		gs.q.add(moveId);
+		System.out.println(playerId);
+		gs.grid.get(moveId).color= gs.players.get(playerId).color;
+		gs.nextTurn();
+		paneT.setBackground(gs.paneTColor);
+		paneT.setText(gs.paneTurnString);
 
+		ArrayList<ArrayList<Integer>> won = gs.winingState(gs.startP2, gs.players.get(playerId).color, gs.winP2);
+		//System.out.println(won);
+		if (won.get(0).get(0)==1 && gs.host) {
+			repaint();
+			JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(1).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
+			if (dialogbutton == JOptionPane.YES_OPTION) {
+				reset(0);
+			}else {
+				remove(dialogbutton);
+			}
+		}
+		repaint();
+	}
 
+	@Override
+	public void reset(int id) {
+		gs.resetGame();
+		paneT.setText(gs.players.get(id).name);
+		paneT.setBackground(gs.players.get(id).color);
+		if(gs.onlineMove == null) return;
+		if(gs.host) gs.onlineMove.resetGame(id);
+		else gs.whosTurn = GameState.Turn.ONLINE_PLAYER;
+	}
 }

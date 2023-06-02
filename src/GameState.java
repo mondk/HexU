@@ -18,7 +18,7 @@ public class GameState{
 	ArrayList<BorderR> border = new ArrayList<>();
 	
 	//Hexagon constants
-	int numberOfHexagons =4;
+	int numberOfHexagons =3;
 
 	// Variables for hexagon placement
 	double radius=(0.5773502717*(600-150))/(numberOfHexagons+1);
@@ -26,11 +26,9 @@ public class GameState{
 	int xOffSet= 100- (int) (radius*2);
 	
 	//Size of game screen depending on number of hexagones and radius
-	int widthScreen = (numberOfHexagons*(int)Math.round(radius))+(int)Math.round(shift)+400;
-	int heightScreen = (numberOfHexagons*(int)Math.round(radius))+(int)Math.round(shift)+200;
-
-	Dimension SCREEN_SIZE = new Dimension(widthScreen,heightScreen);
-
+	Dimension SCREEN_SIZE = new Dimension(1900,1000);
+	
+	
 
 	HashMap<Integer,Player> players = new HashMap<>();
 
@@ -216,6 +214,7 @@ public class GameState{
 	public void removePlayer(){
 		players.remove(players.size());
 	}
+
 
 	public void startGame(int numberOfHexagons, boolean singlePlayer){
 		this.paneTColor = players.get(0).color;

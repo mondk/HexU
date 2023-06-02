@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.File;
+import java.io.IOException;
 
 public class GameState{
 	
@@ -15,7 +16,6 @@ public class GameState{
 	
 	//game grid
 	ArrayList<Hexagon> grid = new ArrayList<>();
-	//ArrayList<Triangle> border = new ArrayList<>();
 	ArrayList<BorderR> border = new ArrayList<>();
 	
 	//Hexagon constants
@@ -30,14 +30,10 @@ public class GameState{
 	int widthScreen = (numberOfHexagons*(int)Math.round(radius))+(int)Math.round(shift)+400;
 	int heightScreen = (numberOfHexagons*(int)Math.round(radius))+(int)Math.round(shift)+200;
 
-	Dimension SCREEN_SIZE = new Dimension(widthScreen,heightScreen);
-
+	Dimension SCREEN_SIZE = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
+	
 
 	HashMap<Integer,Player> players = new HashMap<>();
-
-	// Player names
-	//String player1Name = "Player 1";
-	//String player2Name = "Player 2";
 
 	//Start point for grid
 	Point startPoint = new Point((int) radius+50,(int) radius+50);
@@ -45,22 +41,19 @@ public class GameState{
 	// JPanel, which includes the different screens
 	JPanel cards = new JPanel(new CardLayout());
 
-	// String for background image
-	String s = randomBackground();
-
 	//Playerstate
 	boolean singlePlayer = false;
-	//Color colorP1 = Color.pink;
-	//Color colorP2 = Color.green;
-	// Color colorP1 = Color.decode("#d032f0");
-	// Color colorP2 = Color.decode("#247324");
+	boolean host = true;
+	State playerState = State.MULTIPLAYER;
+	Online online = new OnlineImplementation();
+	WaitingRoom waitingRoom = null;
+	OnlineMove onlineMove = null;
+	Integer onlineId = 0;
 
 	String[] load = {};
 
 	//Show which player turn it is
 	Turn whosTurn = Turn.Player1;
-	//String paneTurnString = player1Name;
-	//Color paneTColor = colorP1;
 	String paneTurnString;
 	Color paneTColor;
 
@@ -71,10 +64,17 @@ public class GameState{
 		paneTColor = players.get(0).color;
 	}
 
+	public enum State{
+		SINGLEPLAYER,
+		MULTIPLAYER,
+		ONLINE
+	}
+
 	public enum Turn{
 		Player1,
 		Player2,
-		AI
+		AI,
+		ONLINE_PLAYER
 	}
 
 	//Lists containing start arrays for players
@@ -90,30 +90,47 @@ public class GameState{
 
 	//change player turn
 	public void nextTurn() {
-		if(singlePlayer) {
-			if(whosTurn.equals(Turn.Player1)) {
-				whosTurn = Turn.AI;
-				paneTurnString = "AI";
-				paneTColor = players.get(1).color;
-			}
-			else {
-				whosTurn = Turn.Player1;
-				paneTurnString = players.get(0).name;
-				paneTColor = players.get(0).color;
-			}
-		}
-		//Multiplayer
-		else {
-			if(whosTurn.equals(Turn.Player1)) {
-				whosTurn = Turn.Player2;
-				paneTurnString = players.get(1).name;
-				paneTColor = players.get(1).color;
-			}
-			else {
-				whosTurn = Turn.Player1;
-				paneTurnString = players.get(0).name;
-				paneTColor = players.get(0).color;
-			}
+		switch(playerState) {
+			case SINGLEPLAYER:
+				if(whosTurn.equals(Turn.Player1)) {
+					whosTurn = Turn.AI;
+					paneTurnString = "AI";
+					paneTColor = players.get(1).color;
+				}
+				else {
+					whosTurn = Turn.Player1;
+					paneTurnString = players.get(0).name;
+					paneTColor = players.get(0).color;
+				}
+				break;
+			//Multiplayer
+			case MULTIPLAYER:
+				if(whosTurn.equals(Turn.Player1)) {
+					whosTurn = Turn.Player2;
+					paneTurnString = players.get(1).name;
+					paneTColor = players.get(1).color;
+				}
+				else {
+					whosTurn = Turn.Player1;
+					paneTurnString = players.get(0).name;
+					paneTColor = players.get(0).color;
+				}
+				break;
+			case ONLINE:
+				if(whosTurn.equals(Turn.Player1)){
+					whosTurn = Turn.ONLINE_PLAYER;
+					paneTurnString = players.get(1).name;
+					paneTColor = players.get(1).color;
+				} else if(whosTurn.equals(Turn.Player2)){
+					whosTurn = Turn.ONLINE_PLAYER;
+					paneTurnString = players.get(0).name;
+					paneTColor = players.get(0).color;
+				} else {
+					whosTurn = host ? Turn.Player1 : Turn.Player2;
+					paneTurnString = host ? players.get(0).name : players.get(1).name;
+					paneTColor = host ? players.get(0).color : players.get(1).color;
+				}
+				break;
 		}
 	}
 
@@ -237,6 +254,13 @@ public class GameState{
 		
 	}
 
+	public void returnToMenu(){
+		Menu panel = new Menu(this);
+		cards.add(panel, "MENU");
+		CardLayout cl = (CardLayout)cards.getLayout();
+		cl.next(cards);
+		cards.remove(0);
+	}
 
 	public void fillLoadMoves(String[] moves){
 		try{
@@ -264,7 +288,7 @@ public class GameState{
 
 	public String randomBackground(){
 		String[] files = new File("res/background").list();
-		int x = 1+(int)(Math.random()*(files.length-1));
+		int x = 1+(int)(Math.random()*(files.length));
 		String s = "res/background/" + files[x];
 		System.out.println(s);
 		return s;

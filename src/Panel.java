@@ -28,12 +28,13 @@ import javax.swing.JButton;
 
 
 
-public class Panel extends JPanel implements Runnable{
+public class Panel extends JPanel implements Runnable, MoveListener{
 	
 	private GameState gs;
 	private Image image;
 	private Graphics graphics;	
 	private ImageIcon img;						//TextFrame for player turn
+	private ImageIcon hexImg;
 	Point hexCenter1;
 	Point hexCenter2;
 	Point hexCenter3;
@@ -202,7 +203,7 @@ public class Panel extends JPanel implements Runnable{
 									paneT.setBackground(gs.players.get(0).color);
 	 		 						break;
 	 		 					}else {
-	 		 						remove(dialogbutton);
+									gs.returnToMenu();
 	 		 					}
 	 						}
 	 						paneT.setBackground(gs.paneTColor);
@@ -235,7 +236,6 @@ public class Panel extends JPanel implements Runnable{
 	 		 						break;
 	 		 					}else {
 	 		 						remove(dialogbutton);
-
 	 		 					}
 	 						}
 	 						paneT.setBackground(gs.paneTColor);
@@ -247,7 +247,7 @@ public class Panel extends JPanel implements Runnable{
 	 				}
 	 			}
 	          }                
-	       });
+	    	});
 		Thread gameThread = new Thread(this);
 		gameThread.start();
 	}
@@ -497,13 +497,54 @@ public class Panel extends JPanel implements Runnable{
 		for(Hexagon h:gs.grid) {
 			   g.setColor(h.color);
 	       	   g.fillPolygon(h.getPolygon());
+			   //g.drawImage(this.hexImg.getImage(), (int)(h.getCenter().getX()-gs.radius*2), (int)(h.getCenter().getY()-gs.radius*2), (int)(gs.radius*2), (int)(gs.radius*2), null);
 	       	   g.setColor(Color.BLUE);
 	       	   g.drawPolygon(h.getPolygon());
-			}
-
+			   if (h.clicked){
+					int red = h.color.getRed();
+					int blue = h.color.getBlue();
+					int green = h.color.getGreen();
+					g.setColor(new Color((int)(red+(255-red)*0.45), (int)(green+(255-green)*0.45), (int)(blue+(255-blue)*0.45)));
+					g.fillPolygon(h.getPolygonInner());
+			   }
+		}
+	}
+		
 		
 
-	}
+			@Override
+			public void performedMove(int moveId, int playerId) throws InterruptedException {
+				gs.grid.get(moveId).clicked=true;
+				gs.q.add(moveId);
+				System.out.println(playerId);
+				gs.grid.get(moveId).color= gs.players.get(playerId).color;
+				gs.nextTurn();
+				paneT.setBackground(gs.paneTColor);
+				paneT.setText(gs.paneTurnString);
+		
+				ArrayList<ArrayList<Integer>> won = gs.winingState(gs.startP2, gs.players.get(playerId).color, gs.winP2);
+				//System.out.println(won);
+				if (won.get(0).get(0)==1 && gs.host) {
+					repaint();
+					JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(1).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
+					if (dialogbutton == JOptionPane.YES_OPTION) {
+						reset(0);
+					}else {
+						remove(dialogbutton);
+					}
+				}
+				repaint();
+			}
+		
+			@Override
+			public void reset(int id) {
+				gs.resetGame();
+				paneT.setText(gs.players.get(id).name);
+				paneT.setBackground(gs.players.get(id).color);
+				if(gs.onlineMove == null) return;
+				if(gs.host) gs.onlineMove.resetGame(id);
+				else gs.whosTurn = GameState.Turn.ONLINE_PLAYER;
+			}
 	
 	
 

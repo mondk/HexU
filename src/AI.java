@@ -57,7 +57,7 @@ public class AI {
 				//System.out.println("eval score : "+eval[0]);
 	            if (eval[0] > max_eval) {
 
-	            	System.out.println("inner score : "+eval[0]);
+	            	//System.out.println("inner score : "+eval[0]);
 
 	                max_eval = eval[0];
 	                best_move = move;

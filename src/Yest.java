@@ -7,6 +7,7 @@ import java.awt.event.WindowEvent;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Map;
 
 public class Yest {
 
@@ -33,10 +34,14 @@ public class Yest {
 					else 
 						saveWriter.write("mode: " + "false");
 					saveWriter.write("\nhexes: " + gs.numberOfHexagons);
-					saveWriter.write("\nP1: " + gs.players.get(0).name);
-					saveWriter.write("\nCP1: " + String.valueOf(gs.players.get(0).color.getRGB()));
-					saveWriter.write("\nP2: " + gs.players.get(1).name);
-					saveWriter.write("\nCP2: " + String.valueOf(gs.players.get(1).color.getRGB()));
+					for (Map.Entry<Integer,Player> player : gs.players.entrySet()){
+						saveWriter.write("\nP"+player.getKey()+": " + player.getValue().name);
+						saveWriter.write("\nP"+player.getKey()+"C: " + String.valueOf(player.getValue().color.getRGB()));
+					}
+					// saveWriter.write("\nP1: " + gs.players.get(0).name);
+					// saveWriter.write("\nCP1: " + String.valueOf(gs.players.get(0).color.getRGB()));
+					// saveWriter.write("\nP2: " + gs.players.get(1).name);
+					// saveWriter.write("\nCP2: " + String.valueOf(gs.players.get(1).color.getRGB()));
 					saveWriter.write("\nmoves: " + gs.q.toString());
 					saveWriter.close();
 				} catch(IOException IOe) {

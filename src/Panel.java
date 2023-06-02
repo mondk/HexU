@@ -348,6 +348,7 @@ public class Panel extends JPanel implements Runnable{
 		gs.border.add(new BorderR(gs.players.get(1).color, x3 , y3)); //left
 		gs.border.add(new BorderR(gs.players.get(1).color, x4 , y4)); //right
 	
+		gs.fillLoadMoves(gs.load);
 		gs.fillWinStateArrays();
 	}
 	

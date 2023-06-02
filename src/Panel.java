@@ -8,12 +8,20 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
+
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Arrays;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
@@ -37,7 +45,9 @@ public class Panel extends JPanel implements Runnable{
 	boolean start =true;
 	int dialogbutton;
 	ImageIcon reMatchIcon = new ImageIcon("res/rematch.png");  //  <a target="_blank" href="https://icons8.com/icon/PT3001yzoXgN/match">Match</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
-
+	
+	
+	
 	public Panel(GameState gs) {
 		this.gs=gs;
 		this.setFocusable(true);
@@ -132,8 +142,20 @@ public class Panel extends JPanel implements Runnable{
 	         public void mouseClicked(MouseEvent e) {
 	        	for(Hexagon h : gs.grid) {
 	 				if(h.getPolygon().contains(e.getPoint())&&!h.clicked) {
+	 					
+	 					//this bit handles sound effects
+	 					try {
+							playSound("src/mixkit-twig-breaking-2945.wav");
+						} catch (LineUnavailableException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+	 					
 	 					gs.grid.get(h.id).clicked=true;
-
+	 					
 						gs.q.add(h.id);
 
 						ArrayList<ArrayList<Integer>> won = new ArrayList<>();
@@ -193,6 +215,20 @@ public class Panel extends JPanel implements Runnable{
 	       });
 		Thread gameThread = new Thread(this);
 		gameThread.start();
+	}
+
+	protected void playSound(String soundFile) throws LineUnavailableException, IOException {
+		// TODO Auto-generated method stub
+		try {
+            File file = new File(soundFile);
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+		
 	}
 
 	@Override

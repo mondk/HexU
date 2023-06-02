@@ -103,7 +103,7 @@ public class Panel extends JPanel implements Runnable{
 								
 							}else {
 								remove(dialogbutton);
-								close();
+								
 							}
 						}
 					case Player2:
@@ -251,11 +251,7 @@ public class Panel extends JPanel implements Runnable{
 	}
 
 	
-	protected void close() {
-		// TODO Auto-generated method stub
-		this.close();
-	}
-
+	
 
 	protected void playSound(String soundFile) throws LineUnavailableException, IOException {
 		// TODO Auto-generated method stub

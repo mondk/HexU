@@ -32,7 +32,8 @@ public class Panel extends JPanel implements Runnable{
 	
 	private GameState gs;
 	private Image image;
-	private Graphics graphics;							//TextFrame for player turn
+	private Graphics graphics;	
+	private ImageIcon img;						//TextFrame for player turn
 	Point hexCenter1;
 	Point hexCenter2;
 	Point hexCenter3;
@@ -50,6 +51,7 @@ public class Panel extends JPanel implements Runnable{
 	
 	public Panel(GameState gs) {
 		this.gs=gs;
+		this.img = new ImageIcon(gs.randomBackground());
 		this.setFocusable(true);
 		this.setPreferredSize(gs.SCREEN_SIZE);
 		createGrid();
@@ -403,15 +405,12 @@ public class Panel extends JPanel implements Runnable{
 	
 	@Override
 	public void paintComponent(Graphics g) {
-		image = createImage(getWidth(),getHeight());
-		graphics = image.getGraphics();
-		draw(graphics);
-		g.drawImage(image,0,0,this);
-		
+		super.paintComponent(g);
+		g.drawImage(this.img.getImage(),0,0, this.getWidth(), this.getHeight(), this);
+		draw(g);
 	}
 	
 	public void draw(Graphics g) {
-		
 		for (BorderR t : gs.border){
 			g.setColor(t.color);
 			g.fillPolygon(t.getPolygon());
@@ -422,7 +421,7 @@ public class Panel extends JPanel implements Runnable{
 	       	   g.setColor(Color.BLUE);
 	       	   g.drawPolygon(h.getPolygon());
 			}
-
+		
 		
 
 	}

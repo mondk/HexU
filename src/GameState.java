@@ -6,6 +6,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.ArrayList;
+import java.io.File;
 
 public class GameState{
 	
@@ -44,6 +45,8 @@ public class GameState{
 	// JPanel, which includes the different screens
 	JPanel cards = new JPanel(new CardLayout());
 
+	// String for background image
+	String s = randomBackground();
 
 	//Playerstate
 	boolean singlePlayer = false;
@@ -251,6 +254,14 @@ public class GameState{
 			System.out.println("No moves loaded");
 		}
 
+	}
+
+	public String randomBackground(){
+		String[] files = new File("res/background").list();
+		int x = 1+(int)(Math.random()*(files.length-1));
+		String s = "res/background/" + files[x];
+		System.out.println(s);
+		return s;
 	}
 }
 

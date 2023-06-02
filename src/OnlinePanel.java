@@ -5,7 +5,6 @@ import java.io.IOException;
 
 public class OnlinePanel extends JPanel {
     OnlinePanel(GameState gs){
-        PlayerSettings playerSettings = new PlayerSettings(gs, gs.onlineId);
         TextField ip = new TextField("127.0.0.1");
         JButton join = new JButton();
         JButton host = new JButton();
@@ -27,7 +26,7 @@ public class OnlinePanel extends JPanel {
         });
         join.setText("Join game");
         host.setText("Host game");
-        add(playerSettings.getPlayerCards());
+        //add(playerSettings.getPlayerCards());
         add(ip);
         add(join);
         add(host);

@@ -1,4 +1,4 @@
-mode: false
+mode: true
 hexes: 4
 P1: Player 1
 CP1: -20561

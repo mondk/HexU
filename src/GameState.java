@@ -223,10 +223,15 @@ public class GameState{
 		this.singlePlayer = singlePlayer;
 		updateNumberOfHexagons(numberOfHexagons);
 		Panel panel = new Panel(this);
+		
+		
+		
 		cards.add(panel, "PANEL");
 		CardLayout cl = (CardLayout)cards.getLayout();
 		cl.next(cards);
 		cards.remove(0);
+		
+		
 	}
 
 

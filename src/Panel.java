@@ -74,6 +74,16 @@ public class Panel extends JPanel implements Runnable{
 						move = ai.nextMove(ai.gridToMatrix(gs.grid,gs.numberOfHexagons), gs.players.get(1).color.toString());
 						break;
 				}
+				//this bit handles sound effects
+					try {
+					playSound("src/converted_mixkit-water-sci-fi-bleep-902.wav");
+				} catch (LineUnavailableException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				int hex = move[0]*gs.numberOfHexagons+move[1];
 				gs.grid.get(hex).clicked = true;
 				gs.grid.get(hex).color = gs.paneTColor;
@@ -220,14 +230,17 @@ public class Panel extends JPanel implements Runnable{
 	protected void playSound(String soundFile) throws LineUnavailableException, IOException {
 		// TODO Auto-generated method stub
 		try {
-            File file = new File(soundFile);
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioInputStream);
-            clip.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+	        File file = new File(soundFile);
+	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
+	        Clip clip = AudioSystem.getClip();
+	        clip.open(audioInputStream);
+	        clip.start();
+	    } catch (LineUnavailableException e) {
+	        e.printStackTrace();
+	        // Handle the exception (e.g., display an error message)
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 		
 	}
 

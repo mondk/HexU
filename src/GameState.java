@@ -1,8 +1,3 @@
-import org.jspace.RemoteSpace;
-import org.jspace.SequentialSpace;
-import org.jspace.Space;
-import org.jspace.SpaceRepository;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -18,12 +13,10 @@ public class GameState{
 	
 	//Size of game screen
 
-	//Space gameSpace = null;
 	Online online = new OnlineImplementation();
 	WaitingRoom waitingRoom = null;
 	OnlineMove onlineMove = null;
 	Integer onlineId = 0;
-	//HashMapIntegerString onlinePlayers = new HashMapIntegerString();
 
 	//game grid
 	ArrayList<Hexagon> grid = new ArrayList<>();
@@ -45,10 +38,6 @@ public class GameState{
 
 	HashMap<Integer,Player> players = new HashMap<>();
 
-	// Player names
-	//String player1Name = "Player 1";
-	//String player2Name = "Player 2";
-
 	//Start point for grid
 	Point startPoint = new Point((int) radius+50,(int) radius+50);
 
@@ -61,20 +50,10 @@ public class GameState{
 	boolean host = true;
 	State playerState = State.MULTIPLAYER;
 
-	//ArrayList<Color> playerColors = new ArrayList<>(Arrays.asList(Color.decode("#d032f0"), Color.decode("#247324")));
-	//Color colorP1 = Color.decode("#d032f0");
-	//Color colorP2 = Color.decode("#247324");
-	//Color colorP1 = Color.pink;
-	//Color colorP2 = Color.green;
-	// Color colorP1 = Color.decode("#d032f0");
-	// Color colorP2 = Color.decode("#247324");
-
 	String[] load = {};
 
 	//Show which player turn it is
 	Turn whosTurn = Turn.Player1;
-	//String paneTurnString = player1Name;
-	//Color paneTColor = colorP1;
 	String paneTurnString;
 	Color paneTColor;
 
@@ -309,19 +288,6 @@ public class GameState{
 
 	public void hostGame(String ip) {
 		online.start(true, ip);
-		/*
-		SpaceRepository repository = new SpaceRepository();
-
-		gameSpace = new SequentialSpace();
-		repository.add("game",gameSpace);
-		repository.addGate("tcp://" + ip + ":9001/?keep");
-		try {
-			//space.put("Player1Name", name.getText());
-			gameSpace.put(WaitingRoom.PLAYERS_LIST_IDENTIFIER,new HashMapIntegerString());
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
-		 */
 		playerState = GameState.State.ONLINE;
 		host = true;
 		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this);

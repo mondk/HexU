@@ -81,7 +81,11 @@ public class Menu extends JPanel {
         startOnlineButton.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                System.out.println("Not yet implemented");
+                OnlinePanel op = new OnlinePanel(gs);
+                gs.cards.add(op);
+                CardLayout cl = (CardLayout)gs.cards.getLayout();
+                cl.next(gs.cards);
+                gs.cards.remove(0);
             }
         });
 

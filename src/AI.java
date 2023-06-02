@@ -61,7 +61,7 @@ public class AI {
 
 	                max_eval = eval[0];
 	                best_move = move;
-	                
+
 	            }
 	            alpha_=Math.max(alpha_, max_eval);
 	            if(beta_<=alpha_&&gs.numberOfHexagons>5) {
@@ -78,7 +78,7 @@ public class AI {
 	        String nextPlayer = nextTurn(player);
 	        int alpha_ = alpha;
 	        int beta_=beta;
-	        
+
 	        for (int[] move : getNullElements(matrix)) {
 	    
 	        	String[][] matrix_new=makeMove(move,currentPlayer,matrix);

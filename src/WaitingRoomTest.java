@@ -29,8 +29,8 @@ class WaitingRoomTest {
     }
     @Test
     public void updateNameAfterJoinTest() throws InterruptedException, IOException {
-        gs.hostGame("127.0.0.1");
-        gs2.joinGame("127.0.0.1");
+        gs.hostGame("127.0.0.2");
+        gs2.joinGame("127.0.0.2");
         String newPlayer1Name = "Jonas";
         Player newPlayer1 = new Player(newPlayer1Name, gs.players.get(0).color);
         gs.online.changePlayer(gs.onlineId, newPlayer1);
@@ -45,8 +45,8 @@ class WaitingRoomTest {
     }
     @Test
     public void updateColourAfterJoinTest() throws IOException, InterruptedException {
-        gs.hostGame("127.0.0.1");
-        gs2.joinGame("127.0.0.1");
+        gs.hostGame("127.0.0.3");
+        gs2.joinGame("127.0.0.3");
         Color player1Color = new Color(20,20,20);
         Player newPlayer1 = new Player(gs.players.get(0).name, player1Color);
         Color player2Color = new Color(20,30,40);

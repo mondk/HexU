@@ -4,21 +4,27 @@ import java.awt.Point;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
+import java.io.IOException;
+import java.util.*;
 import java.util.List;
 import java.util.ArrayList;
 
 public class GameState{
 	
 	//Size of game screen
-	//Dimension SCREEN_SIZE = new Dimension(600,400);
-	
+
+	Online online = new OnlineImplementation();
+	WaitingRoom waitingRoom = null;
+	OnlineMove onlineMove = null;
+	Integer onlineId = 0;
+
 	//game grid
 	ArrayList<Hexagon> grid = new ArrayList<>();
 	//ArrayList<Triangle> border = new ArrayList<>();
 	ArrayList<BorderR> border = new ArrayList<>();
 	
 	//Hexagon constants
-	int numberOfHexagons =4;
+	int numberOfHexagons =3;
 
 	// Variables for hexagon placement
 	double radius=(0.5773502717*(600-150))/(numberOfHexagons+1);
@@ -26,38 +32,28 @@ public class GameState{
 	int xOffSet= 100- (int) (radius*2);
 	
 	//Size of game screen depending on number of hexagones and radius
-	int widthScreen = (numberOfHexagons*(int)Math.round(radius))+(int)Math.round(shift)+400;
-	int heightScreen = (numberOfHexagons*(int)Math.round(radius))+(int)Math.round(shift)+200;
-
-	Dimension SCREEN_SIZE = new Dimension(widthScreen,heightScreen);
-
+	Dimension SCREEN_SIZE = new Dimension(1900,1000);
+	
+	
 
 	HashMap<Integer,Player> players = new HashMap<>();
 
-	// Player names
-	//String player1Name = "Player 1";
-	//String player2Name = "Player 2";
-
 	//Start point for grid
 	Point startPoint = new Point((int) radius+50,(int) radius+50);
-	
+
 	// JPanel, which includes the different screens
 	JPanel cards = new JPanel(new CardLayout());
 
 
 	//Playerstate
 	boolean singlePlayer = false;
-	//Color colorP1 = Color.pink;
-	//Color colorP2 = Color.green;
-	// Color colorP1 = Color.decode("#d032f0");
-	// Color colorP2 = Color.decode("#247324");
+	boolean host = true;
+	State playerState = State.MULTIPLAYER;
 
 	String[] load = {};
 
 	//Show which player turn it is
 	Turn whosTurn = Turn.Player1;
-	//String paneTurnString = player1Name;
-	//Color paneTColor = colorP1;
 	String paneTurnString;
 	Color paneTColor;
 
@@ -68,10 +64,17 @@ public class GameState{
 		paneTColor = players.get(0).color;
 	}
 
+	public enum State{
+		SINGLEPLAYER,
+		MULTIPLAYER,
+		ONLINE
+	}
+
 	public enum Turn{
 		Player1,
 		Player2,
-		AI
+		AI,
+		ONLINE_PLAYER
 	}
 
 	//Lists containing start arrays for players
@@ -85,32 +88,60 @@ public class GameState{
 	// Linked list containing moves made
 	LinkedList<Integer> q = new LinkedList<>();
 
+	public void changeState(String state) {
+		
+		if(state.equals("single"))
+			playerState=State.SINGLEPLAYER;
+		else if(state.equals("multiplayer")) {
+			playerState=State.MULTIPLAYER;
+		}
+		else if (state.equals("online")) {
+			playerState=State.ONLINE;
+		}
+	}
 	//change player turn
 	public void nextTurn() {
-		if(singlePlayer) {
-			if(whosTurn.equals(Turn.Player1)) {
-				whosTurn = Turn.AI;
-				paneTurnString = "AI";
-				paneTColor = players.get(1).color;
-			}
-			else {
-				whosTurn = Turn.Player1;
-				paneTurnString = players.get(0).name;
-				paneTColor = players.get(0).color;
-			}
-		}
-		//Multiplayer
-		else {
-			if(whosTurn.equals(Turn.Player1)) {
-				whosTurn = Turn.Player2;
-				paneTurnString = players.get(1).name;
-				paneTColor = players.get(1).color;
-			}
-			else {
-				whosTurn = Turn.Player1;
-				paneTurnString = players.get(0).name;
-				paneTColor = players.get(0).color;
-			}
+		switch(playerState) {
+			case SINGLEPLAYER:
+				if(whosTurn.equals(Turn.Player1)) {
+					whosTurn = Turn.AI;
+					paneTurnString = "AI";
+					paneTColor = players.get(1).color;
+				}
+				else {
+					whosTurn = Turn.Player1;
+					paneTurnString = players.get(0).name;
+					paneTColor = players.get(0).color;
+				}
+				break;
+			//Multiplayer
+			case MULTIPLAYER:
+				if(whosTurn.equals(Turn.Player1)) {
+					whosTurn = Turn.Player2;
+					paneTurnString = players.get(1).name;
+					paneTColor = players.get(1).color;
+				}
+				else {
+					whosTurn = Turn.Player1;
+					paneTurnString = players.get(0).name;
+					paneTColor = players.get(0).color;
+				}
+				break;
+			case ONLINE:
+				if(whosTurn.equals(Turn.Player1)){
+					whosTurn = Turn.ONLINE_PLAYER;
+					paneTurnString = players.get(1).name;
+					paneTColor = players.get(1).color;
+				} else if(whosTurn.equals(Turn.Player2)){
+					whosTurn = Turn.ONLINE_PLAYER;
+					paneTurnString = players.get(0).name;
+					paneTColor = players.get(0).color;
+				} else {
+					whosTurn = host ? Turn.Player1 : Turn.Player2;
+					paneTurnString = host ? players.get(0).name : players.get(1).name;
+					paneTColor = host ? players.get(0).color : players.get(1).color;
+				}
+				break;
 		}
 	}
 
@@ -139,14 +170,14 @@ public class GameState{
 		ArrayList<Integer> seen = new ArrayList<>();
 		//Loop over hele griddet, for at finde alle clusters
 		for(Hexagon v : this.grid) {
-			// Tjekker om den givne hexagon er den givne spillers farve 
+			// Tjekker om den givne hexagon er den givne spillers farve
 			// eller om den allerede er en del af en cluster, i så fald skip!
 			if (v.color != p || seen.contains(v.id)) {
 				continue;
 			}
 
 			ArrayList<Integer> cluster = new ArrayList<>();
-			
+
 			// Standard BFS ting...
 			boolean visited[] = new boolean[numberOfHexagons*numberOfHexagons];
 			LinkedList<Integer> queue = new LinkedList<Integer>();
@@ -217,13 +248,13 @@ public class GameState{
 		players.remove(players.size());
 	}
 
+
 	public void startGame(int numberOfHexagons, boolean singlePlayer){
 		this.paneTColor = players.get(0).color;
 		this.paneTurnString = players.get(0).name;
 		this.singlePlayer = singlePlayer;
 		updateNumberOfHexagons(numberOfHexagons);
 		Panel panel = new Panel(this);
-		
 		
 		
 		cards.add(panel, "PANEL");
@@ -244,7 +275,7 @@ public class GameState{
 					grid.get(Integer.parseInt(move)).clicked = true;
 					nextTurn();
 					break;
-				case Player2: 
+				case Player2:
 					grid.get(Integer.parseInt(move)).color = players.get(1).color;
 					grid.get(Integer.parseInt(move)).clicked = true;
 					nextTurn();
@@ -257,5 +288,48 @@ public class GameState{
 		}
 
 	}
-}
 
+	public void setOnline(Online online) {
+		this.online = online;
+	}
+
+	public void joinGame(String ip) throws IOException {
+		online.start(false, ip);
+		//gameSpace = new RemoteSpace("tcp://" + ip + ":9001/game?keep");
+		this.host = false;
+		this.playerState = GameState.State.ONLINE;
+		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this);
+	}
+
+	public void hostGame(String ip) {
+		online.start(true, ip);
+		playerState = GameState.State.ONLINE;
+		host = true;
+		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this);
+	}
+
+	public void startWaitingRoom() throws InterruptedException {
+		waitingRoom = new WaitingRoom(this);
+		Thread playersThread = new Thread(waitingRoom);
+        playersThread.start();
+	}
+	public void startOnlineMove() throws InterruptedException {
+		onlineMove = new OnlineMove(this);
+		Thread moveThread = new Thread(onlineMove);
+		moveThread.start();
+	}
+	public void startOnlineGame(int startPlayer) throws InterruptedException {
+		players = online.getPlayers();
+		CardLayout cl = (CardLayout)cards.getLayout();
+		paneTurnString = players.get(startPlayer).name;
+		paneTColor = players.get(startPlayer).color;
+		updateNumberOfHexagons(numberOfHexagons);
+		whosTurn = onlineId == startPlayer ? GameState.Turn.values()[startPlayer] : GameState.Turn.ONLINE_PLAYER;
+		startOnlineMove();
+		Panel panel = new Panel(this);
+		onlineMove.subscribe(panel);
+		cards.add(panel);
+		cl.next(cards);
+		cards.remove(0);
+	}
+}

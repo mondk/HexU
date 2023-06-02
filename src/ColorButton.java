@@ -19,7 +19,6 @@ public class ColorButton extends JPanel {
         this.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
-                System.out.println("Clicked on button");
                 CardLayout cl = (CardLayout)cards.getLayout();
                 cl.next(cards);
             }

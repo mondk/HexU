@@ -223,6 +223,10 @@ public class GameState{
 		whosTurn = Turn.Player1;
 		paneTColor = players.get(0).color;
 		paneTurnString = players.get(0).name;
+		startP1.clear();
+		winP1.clear();
+		startP2.clear();
+		winP2.clear();
 		q.clear();
 		for (Hexagon h : grid) {
 			h.color = Color.gray;

@@ -4,8 +4,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class Menu extends JPanel {
-
+    ImageIcon img = new ImageIcon("res/background/space.jpg");
     Menu(GameState gs) {
+        
         // Field where you set amount of hexagons
         JPanel numberOfHexagons = new JPanel();
         numberOfHexagons.setLayout(new GridLayout(0,1));
@@ -13,6 +14,8 @@ public class Menu extends JPanel {
         JTextField numberOfHexagonsTextField = new JTextField("" + gs.numberOfHexagons);
         numberOfHexagons.add(numberOfHexagonsLabel);
         numberOfHexagons.add(numberOfHexagonsTextField);
+        numberOfHexagons.setOpaque(true);
+        numberOfHexagons.setBackground(new Color(0,0,0,80));
         //setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         setPreferredSize(gs.SCREEN_SIZE);
 
@@ -23,6 +26,8 @@ public class Menu extends JPanel {
         JButton continueLastGame = new JButton("Continue where you left off");
         JPanel buttons = new JPanel();
         buttons.setLayout(new BoxLayout(buttons,BoxLayout.PAGE_AXIS));
+        buttons.setOpaque(true);
+        buttons.setBackground(new Color(0,0,0,0));
         buttons.add(startComputerGameButton);
         buttons.add(startMultiplayerButton);
         buttons.add(startOnlineButton);
@@ -31,10 +36,14 @@ public class Menu extends JPanel {
         // Player Names
         JPanel playerNames = new JPanel();
         playerNames.setLayout(new GridLayout(0,1));
+        playerNames.setOpaque(true);
+        playerNames.setBackground(new Color(0,0,0,0));;
 
         // Add/Remove player buttons
         JPanel changePlayersButtons = new JPanel();
         changePlayersButtons.setLayout(new GridLayout(1,0));
+        changePlayersButtons.setOpaque(true);
+        changePlayersButtons.setBackground(new Color(0,0,0,0));;
         JButton removePlayer = new JButton();
         removePlayer.setAction(new AbstractAction() {
             @Override
@@ -58,6 +67,8 @@ public class Menu extends JPanel {
         namesAndButtons.setLayout(new GridLayout(0,1));
         namesAndButtons.add(playerNames);
         namesAndButtons.add(changePlayersButtons);
+        namesAndButtons.setOpaque(true);
+        namesAndButtons.setBackground(new Color(0,0,0,0));;
 
 
         addPlayer(gs, playerNames);
@@ -112,4 +123,11 @@ public class Menu extends JPanel {
         playerNames.remove(playerNames.getComponentCount()-1);
         playerNames.updateUI();
     }
+
+    @Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+        g.drawImage(this.img.getImage(),0,0, this.getWidth(), this.getHeight(), this);
+	}
+
 }

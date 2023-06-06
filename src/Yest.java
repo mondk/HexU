@@ -2,6 +2,7 @@ import java.awt.Color;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -27,30 +28,29 @@ public class Yest {
 		frame.addWindowListener(new WindowAdapter(){
 			@Override
 			public void windowClosing(WindowEvent windowEvent){
-				try{
-					FileWriter saveWriter = new FileWriter("res/saves.txt");
-					if (gs.singlePlayer)
-						saveWriter.write("mode: " + "true");
-					else 
-						saveWriter.write("mode: " + "false");
-					saveWriter.write("\nhexes: " + gs.numberOfHexagons);
-					for (Map.Entry<Integer,Player> player : gs.players.entrySet()){
-						saveWriter.write("\nP"+player.getKey()+": " + player.getValue().name);
-						saveWriter.write("\nP"+player.getKey()+"C: " + String.valueOf(player.getValue().color.getRGB()));
+				if (!gs.returnPS().equals("online")){
+					try{
+						FileWriter saveWriter = new FileWriter("res/saves.txt");
+						if (gs.singlePlayer)
+							saveWriter.write("mode: " + "true: " + gs.returnPS());
+						else 
+							saveWriter.write("mode: " + "false: " + gs.returnPS());
+						saveWriter.write("\nhexes: " + gs.numberOfHexagons);
+						for (Map.Entry<Integer,Player> player : gs.players.entrySet()){
+							System.out.println(""+player.getKey() + " " + player.getValue().name);
+							saveWriter.write("\nP"+player.getKey()+": " + player.getValue().name);
+							saveWriter.write("\nP"+player.getKey()+"C: " + String.valueOf(player.getValue().color.getRGB()));
+						}
+						saveWriter.write("\nmoves: " + gs.q.toString());
+						saveWriter.close();
+					} catch(IOException IOe) {
+						System.out.println(IOe);
 					}
-					// saveWriter.write("\nP1: " + gs.players.get(0).name);
-					// saveWriter.write("\nCP1: " + String.valueOf(gs.players.get(0).color.getRGB()));
-					// saveWriter.write("\nP2: " + gs.players.get(1).name);
-					// saveWriter.write("\nCP2: " + String.valueOf(gs.players.get(1).color.getRGB()));
-					saveWriter.write("\nmoves: " + gs.q.toString());
-					saveWriter.close();
-				} catch(IOException IOe) {
-					System.out.println(IOe);
+					try{
+						gs.waitingRoom.disconnect();
+					} catch (Exception e) {}
+					System.exit(0);
 				}
-				try{
-					gs.waitingRoom.disconnect();
-				} catch (Exception e) {}
-				System.exit(0);
 			}
 		});
 		frame.setBackground(Color.decode("#244b73"));

@@ -1,7 +1,7 @@
-mode: false
+mode: true: single
 hexes: 3
-P0: Player 0
-P0C: -14336
-P1: Player 1
-P1C: -14810881
-moves: [4, 3, 6, 7, 0, 1, 2, 5, 8]
+P0: Player 1
+P0C: -20561
+P1: Player 2
+P1C: -16711936
+moves: [0, 4]

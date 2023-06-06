@@ -81,13 +81,11 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				//this bit handles sound effects
 				try {
 					playSound("src/converted_mixkit-water-sci-fi-bleep-902.wav");
-				} catch (LineUnavailableException e1) {
+				} catch (LineUnavailableException | IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				} 
+
 				int hex = move[0]*gs.numberOfHexagons+move[1];
 				gs.grid.get(hex).clicked = true;
 				gs.grid.get(hex).color = gs.paneTColor;
@@ -103,7 +101,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 							if (dialogbutton == JOptionPane.YES_OPTION) {
 								reset(0);
 							}else {
-								remove(dialogbutton);
+								gs.returnToMenu();;
 							}
 						}
 					case Player2:
@@ -116,7 +114,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 								paneT.setText(gs.players.get(1).name);
 								paneT.setBackground(gs.players.get(1).color);
 							}else {
-								remove(dialogbutton);
+								gs.returnToMenu();;
 							}
 						}
 
@@ -490,7 +488,6 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		for(Hexagon h:gs.grid) {
 			g.setColor(h.color);
 			g.fillPolygon(h.getPolygon());
-			//g.drawImage(this.hexImg.getImage(), (int)(h.getCenter().getX()-gs.radius*2), (int)(h.getCenter().getY()-gs.radius*2), (int)(gs.radius*2), (int)(gs.radius*2), null);
 			g.setColor(Color.BLUE);
 			g.drawPolygon(h.getPolygon());
 			if (h.clicked){

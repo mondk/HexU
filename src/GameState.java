@@ -65,6 +65,7 @@ public class GameState{
 		players.put(1, new Player("Player 2", Color.green));
 		paneTurnString = players.get(0).name;
 		paneTColor = players.get(0).color;
+		
 	}
 
 	public enum State{
@@ -259,18 +260,15 @@ public class GameState{
 		updateNumberOfHexagons(numberOfHexagons);
 		Panel panel = new Panel(this);
 		
-		
 		cards.add(panel, "PANEL");
 		CardLayout cl = (CardLayout)cards.getLayout();
 		cl.next(cards);
 		cards.remove(0);
-		
-		
 	}
 
 	public void returnToMenu(){
-		Menu panel = new Menu(this);
-		cards.add(panel, "MENU");
+		Menu mpanel = new Menu(this);
+		cards.add(mpanel, "MENU2");
 		CardLayout cl = (CardLayout)cards.getLayout();
 		cl.next(cards);
 		cards.remove(0);
@@ -278,20 +276,33 @@ public class GameState{
 
 	public void fillLoadMoves(String[] moves){
 		try{
-			for (String move : moves) {
-				switch(whosTurn){
-				case Player1:
-					grid.get(Integer.parseInt(move)).color = players.get(0).color;
-					grid.get(Integer.parseInt(move)).clicked = true;
-					nextTurn();
+			switch(playerState){
+				case SINGLEPLAYER:
+					for (int i = 0; i<moves.length; i++){
+						grid.get(Integer.parseInt(moves[i])).color = players.get(i%2).color;
+						grid.get(Integer.parseInt(moves[i])).clicked = true;
+						q.add(Integer.parseInt(moves[i]));
+					}
 					break;
-				case Player2:
-					grid.get(Integer.parseInt(move)).color = players.get(1).color;
-					grid.get(Integer.parseInt(move)).clicked = true;
-					nextTurn();
+				case MULTIPLAYER:
+					for (String move : moves) {
+						switch(whosTurn){
+							case Player1:
+								grid.get(Integer.parseInt(move)).color = players.get(0).color;
+								grid.get(Integer.parseInt(move)).clicked = true;
+								nextTurn();
+								break;
+							case Player2:
+								grid.get(Integer.parseInt(move)).color = players.get(1).color;
+								grid.get(Integer.parseInt(move)).clicked = true;
+								nextTurn();
+								break;
+							}
+							q.add(Integer.parseInt(move));
+					}
 					break;
-				}
-				q.add(Integer.parseInt(move));
+				case ONLINE:
+					break;
 			}
 		} catch (Exception null_error){
 			System.out.println("No moves loaded");
@@ -302,9 +313,7 @@ public class GameState{
 	public String randomBackground(){
 		String[] files = new File("res/background").list();
 		int x = 1+(int)(Math.random()*(files.length));
-		String s = "res/background/" + files[x];
-		System.out.println(s);
-		return s;
+		return "res/background/" + files[x];
 	}
 
 	public void hostGame(String ip) {
@@ -350,5 +359,21 @@ public class GameState{
 		cards.add(panel);
 		cl.next(cards);
 		cards.remove(0);
+	}
+
+	public String returnPS(){
+		String state = "";
+		switch(playerState){
+			case SINGLEPLAYER:
+				state = "single";
+				break;
+			case MULTIPLAYER:
+				state = "multiplayer";
+				break;
+			case ONLINE:
+				state = "online";
+				break;
+		}
+		return state;
 	}
 }

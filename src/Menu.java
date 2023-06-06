@@ -105,20 +105,21 @@ public class Menu extends JPanel {
                                 gs.singlePlayer = false;
                             else 
                                 gs.singlePlayer = true;
+                            gs.changeState(data[2]); 
                         }
                         else if (data[0].equals("hexes")){
                             gs.updateNumberOfHexagons(Integer.parseInt(data[1]));
                         }
-                        else if (data[0].equals("P1")){
+                        else if (data[0].equals("P0")){
                             gs.players.get(0).name = data[1];
                         }
-                        else if (data[0].equals("CP1")){
+                        else if (data[0].equals("CP0")){
                             gs.players.get(0).color = new Color(Integer.parseInt(data[1]));
                         }
-                        else if (data[0].equals("P2")){
+                        else if (data[0].equals("P1")){
                             gs.players.get(1).name = data[1];
                         }
-                        else if (data[0].equals("CP2")){
+                        else if (data[0].equals("CP1")){
                             gs.players.get(1).color = new Color(Integer.parseInt(data[1]));
                         }
                         else if (data[0].equals("moves")){
@@ -144,7 +145,6 @@ public class Menu extends JPanel {
     }
 
     private void addPlayer(GameState gs, JPanel playerNames){
-        gs.addPlayer();
         playerNames.add(new PlayerSettings(gs, playerNames.getComponentCount()).getPlayerCards());
         playerNames.updateUI();
     }

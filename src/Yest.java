@@ -37,7 +37,6 @@ public class Yest {
 							saveWriter.write("mode: " + "false: " + gs.returnPS());
 						saveWriter.write("\nhexes: " + gs.numberOfHexagons);
 						for (Map.Entry<Integer,Player> player : gs.players.entrySet()){
-							System.out.println(""+player.getKey() + " " + player.getValue().name);
 							saveWriter.write("\nP"+player.getKey()+": " + player.getValue().name);
 							saveWriter.write("\nP"+player.getKey()+"C: " + String.valueOf(player.getValue().color.getRGB()));
 						}

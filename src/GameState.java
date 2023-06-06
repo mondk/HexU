@@ -267,8 +267,8 @@ public class GameState{
 	}
 
 	public void returnToMenu(){
-		Menu mpanel = new Menu(this);
-		cards.add(mpanel, "MENU2");
+		Menu menu  = new Menu(this);
+		cards.add(menu, "MENU2");
 		CardLayout cl = (CardLayout)cards.getLayout();
 		cl.next(cards);
 		cards.remove(0);

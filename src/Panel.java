@@ -97,10 +97,11 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 						won = gs.winingState(gs.startP1, gs.players.get(0).color, gs.winP1);
 						if (won.get(0).get(0)==1) {
 							repaint();
-							JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(0).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
+							dialogbutton = JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(0).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 							if (dialogbutton == JOptionPane.YES_OPTION) {
 								reset(0);
-							}else {
+							}else if (dialogbutton == JOptionPane.NO_OPTION){
+								reset(0);
 								gs.returnToMenu();;
 							}
 						}
@@ -108,13 +109,14 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 						won = gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2);
 						if (won.get(0).get(0)==1 && gs.host) {
 							repaint();
-							JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(1).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
+							dialogbutton = JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(1).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 							if (dialogbutton == JOptionPane.YES_OPTION) {
-								gs.resetGame();
-								paneT.setText(gs.players.get(1).name);
-								paneT.setBackground(gs.players.get(1).color);
-							}else {
-								gs.returnToMenu();;
+								reset(0);
+								break;
+							}else if (dialogbutton == JOptionPane.NO_OPTION){
+								reset(0);
+								gs.returnToMenu();
+								break;
 							}
 						}
 
@@ -203,12 +205,14 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 										e1.printStackTrace();
 									}
 									repaint();
-									JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(0).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
+									dialogbutton = JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(0).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 									if (dialogbutton == JOptionPane.YES_OPTION) {
 										reset(0);
 										break;
-									}else {
+									}else if (dialogbutton == JOptionPane.NO_OPTION) {
+										reset(0);
 										gs.returnToMenu();
+										break;
 									}
 								}
 								paneT.setBackground(gs.paneTColor);
@@ -235,13 +239,14 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 									}
 
 									repaint();
-									JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(1).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
+									dialogbutton = JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(1).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 									if (dialogbutton == JOptionPane.YES_OPTION) {
 										reset(1);
 										break;
-									}else {
-										remove(dialogbutton);
-
+									}else if (dialogbutton == JOptionPane.NO_OPTION) {
+										reset(0);
+										gs.returnToMenu();
+										break;
 									}
 								}
 								paneT.setBackground(gs.paneTColor);
@@ -331,14 +336,15 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 								e.printStackTrace();
 							}
 							repaint();
-							JOptionPane.showConfirmDialog(null, "Sorry! " + gs.players.get(0).name + " you lost...\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
+							dialogbutton = JOptionPane.showConfirmDialog(null, "Sorry! " + gs.players.get(0).name + " you lost...\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 							if (dialogbutton == JOptionPane.YES_OPTION) {
-								gs.resetGame();
+								reset(0);
 								paneT.setText(gs.players.get(0).name);
 								paneT.setBackground(gs.players.get(0).color);
 
-							}else {
-								remove(dialogbutton);
+							}else if (dialogbutton == JOptionPane.NO_OPTION){
+								reset(0);
+								gs.returnToMenu();
 							}
 						}
 						break;

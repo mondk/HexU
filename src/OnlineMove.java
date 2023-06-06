@@ -15,8 +15,10 @@ public class OnlineMove implements Runnable{
         moveListeners.remove(newListener);
     }
 
-    public void makeMove(int moveId) throws InterruptedException {
-        gs.online.makeMove(moveId, gs.onlineId);
+    public void makeMove(int moveId) {
+        if(gs.whosTurn != GameState.Turn.ONLINE_PLAYER) {
+            gs.online.makeMove(moveId, gs.onlineId);
+        }
     }
 
     public void resetGame(Integer startingPlayer) {

@@ -258,6 +258,7 @@ public class GameState{
 		this.paneTurnString = players.get(0).name;
 		this.singlePlayer = singlePlayer;
 		updateNumberOfHexagons(numberOfHexagons);
+		this.playerState = singlePlayer ? State.SINGLEPLAYER : State.MULTIPLAYER;
 		Panel panel = new Panel(this);
 		
 		cards.add(panel, "PANEL");

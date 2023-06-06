@@ -31,10 +31,7 @@ import javax.swing.JButton;
 public class Panel extends JPanel implements Runnable, MoveListener{
 
 	private GameState gs;
-	private Image image;
-	private Graphics graphics;
 	private ImageIcon img;						//TextFrame for player turn
-	private ImageIcon hexImg;
 	Point hexCenter1;
 	Point hexCenter2;
 	Point hexCenter3;

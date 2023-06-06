@@ -4,4 +4,4 @@ P0: Player 1
 P0C: -20561
 P1: Player 2
 P1C: -16711936
-moves: [4, 1, 2, 0]
+moves: []

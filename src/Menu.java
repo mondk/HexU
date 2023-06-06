@@ -2,9 +2,6 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
 
 public class Menu extends JPanel {
 
@@ -94,45 +91,8 @@ public class Menu extends JPanel {
         continueLastGame.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent){
-                try {
-                    File Obj = new File("res/saves.txt");
-                    Scanner Reader = new Scanner(Obj);
-                    while (Reader.hasNextLine()) {
-                        String[] data = Reader.nextLine().split(": ");
-                        //System.out.println(data[0].toString()+ " " + data[1].toString());
-                        if (data[0].equals("mode")){
-                            if (data[1].equals("false"))
-                                gs.singlePlayer = false;
-                            else 
-                                gs.singlePlayer = true;
-                            gs.changeState(data[2]); 
-                        }
-                        else if (data[0].equals("hexes")){
-                            gs.updateNumberOfHexagons(Integer.parseInt(data[1]));
-                        }
-                        else if (data[0].equals("P0")){
-                            gs.players.get(0).name = data[1];
-                        }
-                        else if (data[0].equals("CP0")){
-                            gs.players.get(0).color = new Color(Integer.parseInt(data[1]));
-                        }
-                        else if (data[0].equals("P1")){
-                            gs.players.get(1).name = data[1];
-                        }
-                        else if (data[0].equals("CP1")){
-                            gs.players.get(1).color = new Color(Integer.parseInt(data[1]));
-                        }
-                        else if (data[0].equals("moves")){
-                            gs.load = data[1].substring(1, data[1].length()-1).split(", ");
-                        }
-                    }
-                    Reader.close();
-                    gs.startGame(gs.numberOfHexagons, gs.singlePlayer);
-                }
-                catch (FileNotFoundException e) {
-                    System.out.println("An error has occurred.");
-                    e.printStackTrace();
-                }
+                gs.loadFile();
+                gs.startGame(gs.numberOfHexagons, gs.singlePlayer);
             }
         });        
         startComputerGameButton.setText("Start Game against Computer");

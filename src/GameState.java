@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class GameState{
@@ -84,10 +85,8 @@ public class GameState{
 	//Lists containing start arrays for players
 	List<Integer> startP1 = new ArrayList<>();
 	List<Integer> startP2 = new ArrayList<>();
-	List<Integer> startAI = new ArrayList<>();
 	List<Integer> winP1 = new ArrayList<>();
 	List<Integer> winP2 = new ArrayList<>();
-	List<Integer> winAI = new ArrayList<>();
 
 	// Linked list containing moves made
 	LinkedList<Integer> q = new LinkedList<>();
@@ -258,6 +257,7 @@ public class GameState{
 		this.paneTurnString = players.get(0).name;
 		this.singlePlayer = singlePlayer;
 		updateNumberOfHexagons(numberOfHexagons);
+		this.whosTurn=Turn.Player1;
 		this.playerState = singlePlayer ? State.SINGLEPLAYER : State.MULTIPLAYER;
 		Panel panel = new Panel(this);
 		
@@ -313,7 +313,7 @@ public class GameState{
 
 	public String randomBackground(){
 		String[] files = new File("res/background").list();
-		int x = 1+(int)(Math.random()*(files.length));
+		int x = 1+(int)(Math.random()*(files.length-1));
 		return "res/background/" + files[x];
 	}
 
@@ -377,4 +377,45 @@ public class GameState{
 		}
 		return state;
 	}
+
+	public void loadFile(){
+		try {
+			File Obj = new File("res/saves.txt");
+			Scanner Reader = new Scanner(Obj);
+			while (Reader.hasNextLine()) {
+				String[] data = Reader.nextLine().split(": ");
+				//System.out.println(data[0].toString()+ " " + data[1].toString());
+				if (data[0].equals("mode")){
+					if (data[1].equals("false"))
+						singlePlayer = false;
+					else 
+						singlePlayer = true;
+					changeState(data[2]); 
+				}
+				else if (data[0].equals("hexes")){
+					updateNumberOfHexagons(Integer.parseInt(data[1]));
+				}
+				else if (data[0].equals("P0")){
+					players.get(0).name = data[1];
+				}
+				else if (data[0].equals("CP0")){
+					players.get(0).color = new Color(Integer.parseInt(data[1]));
+				}
+				else if (data[0].equals("P1")){
+					players.get(1).name = data[1];
+				}
+				else if (data[0].equals("CP1")){
+					players.get(1).color = new Color(Integer.parseInt(data[1]));
+				}
+				else if (data[0].equals("moves")){
+					load = data[1].substring(1, data[1].length()-1).split(", ");
+				}
+			}
+			Reader.close();	
+		}
+		catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
 }
+

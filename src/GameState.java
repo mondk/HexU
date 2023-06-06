@@ -53,7 +53,7 @@ public class GameState{
 	boolean host = true;
 	State playerState = State.MULTIPLAYER;
 
-
+	// list for moves when loading saved game
 	String[] load = {};
 
 	//Show which player turn it is
@@ -259,6 +259,12 @@ public class GameState{
 		updateNumberOfHexagons(numberOfHexagons);
 		this.whosTurn=Turn.Player1;
 		this.playerState = singlePlayer ? State.SINGLEPLAYER : State.MULTIPLAYER;
+		for (int i = 0; i<border.size(); i++){
+			if (i<2)
+				border.get(i).changeColor(players.get(0).color);
+			else
+				border.get(i).changeColor(players.get(1).color);
+		}
 		Panel panel = new Panel(this);
 		
 		cards.add(panel, "PANEL");

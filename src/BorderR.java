@@ -28,4 +28,8 @@ public class BorderR extends JPanel {
     public Polygon getPolygon() {
         return this.rectangle;
     }
+
+    public void changeColor(Color c){
+        this.color = c;
+    }
 }

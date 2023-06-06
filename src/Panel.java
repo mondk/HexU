@@ -32,10 +32,6 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 
 	private GameState gs;
 	private ImageIcon img;						//TextFrame for player turn
-	Point hexCenter1;
-	Point hexCenter2;
-	Point hexCenter3;
-	Point hexCenter4;
 	JTextPane paneT = new JTextPane();
 	JTextPane winPane = new JTextPane();
 	private AI ai;
@@ -53,7 +49,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		this.singlePlayer=gs.singlePlayer;
 		this.setFocusable(true);
 		this.setPreferredSize(gs.SCREEN_SIZE);
-		createGrid();
+		gs.createGrid();
 		this.ai = new AI(gs);
 
 
@@ -369,125 +365,6 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				h.color=Color.gray;
 			}
 		}
-	}
-
-	public void createGrid() {
-		if (!gs.grid.isEmpty())
-			return;
-		int id=0;
-		int scoreI =0;
-
-		for(int i =0;i<gs.numberOfHexagons;i++) {
-			int scoreJ =0;
-			if(i==gs.numberOfHexagons/2) {
-
-			}
-			else if(i>gs.numberOfHexagons/2) {
-				scoreI--;
-			}
-			else {
-				scoreI++;
-			}
-			for(int j =0;j<gs.numberOfHexagons;j++) {
-				Hexagon h1 = new Hexagon(new Point((int) (gs.startPoint.x+gs.shift*j+i*gs.shift*Math.cos(60*(Math.PI/180))),(int) (gs.startPoint.y+i*gs.shift*Math.sin(60*(Math.PI/180)))),gs.radius,id);
-				if(j==gs.numberOfHexagons/2) {
-
-				}
-				else if(j>gs.numberOfHexagons/2) {
-					scoreJ--;
-				}
-				else {
-					scoreJ++;
-				}
-				h1.score=scoreI+scoreJ;
-
-				gs.grid.add( h1);
-				id++;
-				int hex = i*gs.numberOfHexagons+j;
-
-				if (i==0 && j==0) {														//First hexagon
-					gs.grid.get(hex).adj.add(1);
-					gs.grid.get(hex).adj.add(gs.numberOfHexagons);
-					hexCenter1 = gs.grid.get(hex).getCenter();
-				}
-				else if (i==gs.numberOfHexagons-1 && j ==gs.numberOfHexagons-1) {		//Last Hexagon
-					gs.grid.get(hex).adj.add(hex-1);
-					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons);
-					hexCenter3 = gs.grid.get(hex).getCenter();
-				}
-				else if(i==0 & j==gs.numberOfHexagons-1) {								//Last hexagon first row
-					gs.grid.get(hex).adj.add(hex-1);
-					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons);
-					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons-1);
-					hexCenter2 = gs.grid.get(hex).getCenter();
-				}
-				else if (i == gs.numberOfHexagons-1 && j ==0) {							//First hexagon last row
-					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons);
-					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons+1);
-					gs.grid.get(hex).adj.add(hex+1);
-					hexCenter4 = gs.grid.get(hex).getCenter();
-				}
-				else if (i==0) {														//Rest of first row
-					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons);;
-					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons-1);
-					gs.grid.get(hex).adj.add(hex+1);
-					gs.grid.get(hex).adj.add(hex-1);
-				}
-				else if (i==gs.numberOfHexagons-1) {									//Rest of last row
-					gs.grid.get(hex).adj.add(hex-1);
-					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons);
-					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons+1);
-					gs.grid.get(hex).adj.add(hex+1);
-				}
-				else if (j==0) {														//Rest of first column
-					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons);
-					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons+1);
-					gs.grid.get(hex).adj.add(hex+1);
-					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons);
-				}
-				else if(j==gs.numberOfHexagons-1) {										//Rest of last column
-					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons);
-					gs.grid.get(hex).adj.add(hex-1);
-					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons-1);
-					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons);
-				}
-				else {																	//Everything in between
-					gs.grid.get(hex).adj.add(hex-1);
-					gs.grid.get(hex).adj.add(hex+1);
-					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons);
-					gs.grid.get(hex).adj.add(hex-gs.numberOfHexagons+1);
-					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons);
-					gs.grid.get(hex).adj.add(hex+gs.numberOfHexagons-1);
-				}
-			}
-		}
-
-		//Colors for borders, indicating players sides
-		int xp1 = (int) Math.round(hexCenter1.getX());
-		int xp2 = (int) Math.round(hexCenter2.getX());
-		int xp3 = (int) Math.round(hexCenter3.getX());
-		int xp4 = (int) Math.round(hexCenter4.getX());
-		int yp1 = (int) Math.round(hexCenter1.getY());
-		int yp2 = (int) Math.round(hexCenter2.getY());
-		int yp3 = (int) Math.round(hexCenter3.getY());
-		int yp4 = (int) Math.round(hexCenter4.getY());
-		//int rInt = (int) Math.round(gs.radius*1.5);
-		int[] x1= {xp1-(int) Math.round(gs.radius)+3,xp2-(int) Math.round(gs.radius*0.75)-3,xp2-(int) Math.round(gs.radius*0.75)-3,xp1-(int) Math.round(gs.radius)+3};
-		int[] x2= {xp3-(int) Math.round(gs.radius*0.75)-3,xp4-(int) Math.round(gs.radius)+3,xp4-(int) Math.round(gs.radius)+3,xp3-(int) Math.round(gs.radius*0.75)-3};
-		int[] x3= {xp1-(int) Math.round(gs.radius*1.75),xp1-(int) Math.round(gs.radius),xp4-(int) Math.round(gs.radius),xp4-(int) Math.round(gs.radius*1.75)};
-		int[] x4= {xp2-(int) Math.round(gs.radius),xp2,xp3,xp3-(int) Math.round(gs.radius)};
-		int[] y1= {yp1-(int) Math.round(gs.radius*1.5)+2,yp2-(int) Math.round(gs.radius*1.5)+2,yp2,yp1};
-		int[] y2= {yp3,yp4,yp4+(int) Math.round(gs.radius*0.5),yp3+(int) Math.round(gs.radius*0.5)};
-		int[] y3= {yp1,yp1,yp4,yp4};
-		int[] y4= {yp2-(int) Math.round(gs.radius),yp2-(int) Math.round(gs.radius),yp3-(int) Math.round(gs.radius),yp3-(int) Math.round(gs.radius)};
-
-		gs.border.add(new BorderR(gs.players.get(0).color, x1 , y1)); //top
-		gs.border.add(new BorderR(gs.players.get(0).color, x2 , y2)); //buttom
-		gs.border.add(new BorderR(gs.players.get(1).color, x3 , y3)); //left
-		gs.border.add(new BorderR(gs.players.get(1).color, x4 , y4)); //right
-
-		gs.fillLoadMoves(gs.load);
-		gs.fillWinStateArrays();
 	}
 
 	@Override

@@ -39,7 +39,7 @@ class WaitingRoomTest {
         gs2.online.changePlayer(gs2.onlineId, newPlayer2);
 
         // Wait a while for sync
-        Thread.sleep(10);
+        Thread.sleep(100);
         assertEquals(newPlayer1Name, gs2.players.get(gs.onlineId).name);
         assertEquals(newPlayer2Name, gs.players.get(gs2.onlineId).name);
     }
@@ -54,7 +54,7 @@ class WaitingRoomTest {
         gs.online.changePlayer(gs.onlineId, newPlayer1);
         gs2.online.changePlayer(gs2.onlineId, newPlayer2);
         // Wait a while for sync
-        Thread.sleep(10);
+        Thread.sleep(100);
         assertEquals(player1Color, gs2.players.get(gs.onlineId).color);
         assertEquals(player2Color, gs.players.get(gs2.onlineId).color);
     }

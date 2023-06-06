@@ -130,13 +130,25 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 			@Override
 			public void actionPerformed(ActionEvent e){
 				try{
-					int inter = gs.q.pollLast();
-					gs.grid.get(inter).color = Color.gray;
-					gs.grid.get(inter).clicked = false;
-					gs.nextTurn();
-					paneT.setText(gs.paneTurnString);
-					paneT.setBackground(gs.paneTColor);
-					repaint();
+					if (gs.returnPS().equals("single")){
+						int inter = gs.q.pollLast();
+						gs.grid.get(inter).color = Color.gray;
+						gs.grid.get(inter).clicked = false;
+						int inter2 = gs.q.pollLast();
+						gs.grid.get(inter2).color = Color.gray;
+						gs.grid.get(inter2).clicked = false;
+						paneT.setText(gs.paneTurnString);
+						paneT.setBackground(gs.paneTColor);
+						repaint();
+					} else{
+						int inter = gs.q.pollLast();
+						gs.grid.get(inter).color = Color.gray;
+						gs.grid.get(inter).clicked = false;
+						gs.nextTurn();
+						paneT.setText(gs.paneTurnString);
+						paneT.setBackground(gs.paneTColor);
+						repaint();
+					}
 				} catch (Exception null_error){
 					System.out.println("There are no more moves to undo:\n\t"+null_error);
 				}
@@ -302,6 +314,8 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 						gs.grid.get(hex).color = gs.paneTColor;
 						gs.q.add(hex);
 						gs.nextTurn();
+						paneT.setBackground(gs.paneTColor);
+						paneT.setText(gs.paneTurnString);
 
 						ArrayList<ArrayList<Integer>> won = new ArrayList<>();
 

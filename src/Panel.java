@@ -92,7 +92,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 							repaint();
 							dialogbutton = JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(0).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 							if (dialogbutton == JOptionPane.YES_OPTION) {
-								reset(0);
+								reset(1);
 							}else if (dialogbutton == JOptionPane.NO_OPTION){
 								reset(0);
 								gs.returnToMenu();;
@@ -104,7 +104,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 							repaint();
 							dialogbutton = JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(1).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 							if (dialogbutton == JOptionPane.YES_OPTION) {
-								reset(0);
+								reset(1);
 								break;
 							}else if (dialogbutton == JOptionPane.NO_OPTION){
 								reset(0);
@@ -200,7 +200,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 									repaint();
 									dialogbutton = JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(0).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 									if (dialogbutton == JOptionPane.YES_OPTION) {
-										reset(0);
+										reset(1);
 										break;
 									}else if (dialogbutton == JOptionPane.NO_OPTION) {
 										reset(0);
@@ -331,7 +331,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 							repaint();
 							dialogbutton = JOptionPane.showConfirmDialog(null, "Sorry! " + gs.players.get(0).name + " you lost...\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 							if (dialogbutton == JOptionPane.YES_OPTION) {
-								reset(0);
+								reset(1);
 								paneT.setText(gs.players.get(0).name);
 								paneT.setBackground(gs.players.get(0).color);
 
@@ -409,7 +409,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 			repaint();
 			JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(1).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 			if (dialogbutton == JOptionPane.YES_OPTION) {
-				reset(0);
+				reset(1);
 			}else {
 				remove(dialogbutton);
 			}
@@ -419,7 +419,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 
 	@Override
 	public void reset(int id) {
-		gs.resetGame();
+		gs.resetGame(id);
 		paneT.setText(gs.players.get(id).name);
 		paneT.setBackground(gs.players.get(id).color);
 		if(gs.onlineMove == null) return;

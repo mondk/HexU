@@ -293,18 +293,13 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 						try {
 							Thread.sleep(1000);
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						int[] move = ai.nextMove(ai.gridToMatrix(gs.grid,gs.numberOfHexagons), gs.players.get(1).color.toString());
 						//this bit handles sound effects
 						try {
 							playSound("src/converted_mixkit-water-sci-fi-bleep-902.wav");
-						} catch (LineUnavailableException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
+						} catch (LineUnavailableException | IOException e1) {
 							e1.printStackTrace();
 						}
 						int hex = move[0]*gs.numberOfHexagons+move[1];
@@ -416,14 +411,15 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		}
 		repaint();
 	}
-
 	@Override
 	public void reset(int id) {
 		gs.resetGame(id);
-		paneT.setText(gs.players.get(id).name);
-		paneT.setBackground(gs.players.get(id).color);
+		paneT.setText(gs.players.get(0).name);
+		paneT.setBackground(gs.players.get(0).color);
 		if(gs.onlineMove == null) return;
-		if(gs.host) gs.onlineMove.resetGame(id);
+		if(gs.host) gs.onlineMove.resetGame(0);
 		else gs.whosTurn = GameState.Turn.ONLINE_PLAYER;
 	}
+
+
 }

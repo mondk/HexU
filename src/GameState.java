@@ -14,8 +14,7 @@ import java.io.IOException;
 
 public class GameState{
 	
-	//Size of game screen
-
+	//Variables for setting up online multiplayer
 	Online online = new OnlineImplementation();
 	WaitingRoom waitingRoom = null;
 	OnlineMove onlineMove = null;
@@ -82,12 +81,14 @@ public class GameState{
 		
 	}
 
+	// States fro gamemode
 	public enum State{
 		SINGLEPLAYER,
 		MULTIPLAYER,
 		ONLINE
 	}
 
+	// States for whos turn it is
 	public enum Turn{
 		Player1,
 		Player2,
@@ -105,7 +106,7 @@ public class GameState{
 	LinkedList<Integer> q = new LinkedList<>();
 
 	public void changeState(String state) {
-		
+		// Input is a string to which game mode is changes to
 		if(state.equals("single"))
 			playerState=State.SINGLEPLAYER;
 		else if(state.equals("multiplayer")) {
@@ -162,6 +163,7 @@ public class GameState{
 	}
 
 	public void fillWinStateArrays() {
+		// Fiils out the arrays, that contain the borders, for fast acces when finding wnning state
 		for (Hexagon hexes: grid.subList(0, numberOfHexagons)){
 			startP1.add(hexes.id);
 		}
@@ -177,6 +179,8 @@ public class GameState{
 	}
 
 	public ArrayList<ArrayList<Integer>> winingState(List<Integer> s, Color p, List<Integer> win) {
+		// input "s" and "win" are the arrays that hold the borders of a given player, 
+		// and the input "p" is the color that needs comparison
 		ArrayList<ArrayList<Integer>> result = new ArrayList<>(2);
 		result.add(new ArrayList<>());
 		ArrayList<ArrayList<Integer>> pCluster = new ArrayList<>();

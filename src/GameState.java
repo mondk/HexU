@@ -32,22 +32,31 @@ public class GameState{
 	//Hexagon constants
 	int numberOfHexagons =3;
 
+	/* 
 	// Variables for hexagon placement
 	double radius=(0.5773502717*(600-150))/(numberOfHexagons+1);
 	double shift = 2*radius*0.8660254;
 	int xOffSet= 100- (int) (radius*2);
-	
+	*/
 	//Size of game screen depending on number of hexagones and radius
-	int widthScreen = (numberOfHexagons*(int)Math.round(radius))+(int)Math.round(shift)+400;
-	int heightScreen = (numberOfHexagons*(int)Math.round(radius))+(int)Math.round(shift)+200;
+	//int widthScreen = (numberOfHexagons*(int)Math.round(radius))+(int)Math.round(shift)+400;
+	//int heightScreen = (numberOfHexagons*(int)Math.round(radius))+(int)Math.round(shift)+200;
 
 	Dimension SCREEN_SIZE = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
+
+	double screenWidth = SCREEN_SIZE.getWidth();
+	double screenHeight = SCREEN_SIZE.getHeight();
+	// Variables for hexagon placement
+	double radius=(0.5773502717*(screenWidth-(screenWidth*0.5)))/(numberOfHexagons+1);
+	double shift = 2*radius*0.8660254;
+	int xOffSet= 100- (int) (radius*2);
+	
 	
 
 	HashMap<Integer,Player> players = new HashMap<>();
 
 	//Start point for grid
-	Point startPoint = new Point((int) radius+50,(int) radius+50);
+	Point startPoint = new Point((int) radius+100,(int) radius+50);
 
 	// JPanel, which includes the different screens
 	JPanel cards = new JPanel(new CardLayout());
@@ -248,7 +257,7 @@ public class GameState{
 
 	public void updateNumberOfHexagons(int numberOfHexagons){
 		this.numberOfHexagons = numberOfHexagons;
-		this.radius=(0.5773502717*(600-150))/(numberOfHexagons+1);
+		this.radius=(0.5773502717*(screenWidth-(screenWidth*0.5)))/(numberOfHexagons+1);
 		this.shift = 2*radius*0.8660254;
 	}
 
@@ -542,8 +551,8 @@ public class GameState{
 		//int rInt = (int) Math.round(gs.radius*1.5);
 		int[] x1= {xp1,xp2,xp2,xp1};
 		int[] x2= {xp3,xp4,xp4,xp3};
-		int[] x3= {xp1-(int) Math.round(radius*0.9),xp1,xp4,xp4-(int) Math.round(radius*0.9)};
-		int[] x4= {xp2,xp2+(int) Math.round(radius*0.9),xp3+(int) Math.round(radius*0.9),xp3};
+		int[] x3= {xp1-(int) Math.round(radius*0.88)+1,xp1,xp4,xp4-(int) Math.round(radius*0.88)};
+		int[] x4= {xp2,xp2+(int) Math.round(radius*0.88),xp3+(int) Math.round(radius*0.88)-1,xp3};
 		int[] y1= {yp1-(int) Math.round(radius),yp2-(int) Math.round(radius),yp2,yp1};
 		int[] y2= {yp3,yp4,yp4+(int) Math.round(radius),yp3+(int) Math.round(radius)};
 		int[] y3= {yp1+(int) Math.round(radius*0.5),yp1+(int) Math.round(radius*0.5),yp4+(int) Math.round(radius*0.5),yp4+(int) Math.round(radius*0.5)};

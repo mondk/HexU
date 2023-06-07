@@ -45,11 +45,9 @@ public class Yest {
 					} catch(IOException IOe) {
 						System.out.println(IOe);
 					}
-					try{
-						gs.waitingRoom.disconnect();
-					} catch (Exception e) {}
-					System.exit(0);
 				}
+				if (gs.waitingRoom != null)gs.waitingRoom.disconnect();
+				System.exit(0);
 			}
 		});
 		frame.setBackground(Color.decode("#244b73"));

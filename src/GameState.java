@@ -271,7 +271,7 @@ public class GameState{
 	}
 
 	public void removePlayer(){
-		players.remove(players.size());
+		players.remove(players.size()-1);
 	}
 
 
@@ -293,10 +293,12 @@ public class GameState{
 	}
 
 	public void returnToMenu(){
+		waitingRoom = null;
+		onlineMove = null;
 		Menu menu  = new Menu(this);
 		cards.add(menu, "MENU2");
 		CardLayout cl = (CardLayout)cards.getLayout();
-		cl.next(cards);
+		cl.show(cards, "MENU2");
 		cards.remove(0);
 	}
 
@@ -380,6 +382,8 @@ public class GameState{
 		updateNumberOfHexagons(numberOfHexagons);
 		whosTurn = onlineId == startPlayer ? GameState.Turn.values()[startPlayer] : GameState.Turn.ONLINE_PLAYER;
 		startOnlineMove();
+		border = new ArrayList<>();
+		grid = new ArrayList<>();
 		Panel panel = new Panel(this);
 		onlineMove.subscribe(panel);
 		cards.add(panel);

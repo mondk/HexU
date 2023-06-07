@@ -37,7 +37,8 @@ public class WaitingRoom implements Runnable {
         gameState.online.changePlayer(id, player);
     }
 
-    public void disconnect() throws InterruptedException {
+    public void disconnect() {
+        gameState.returnToMenu();
         gameState.online.disconnect(gameState.onlineId);
     }
 
@@ -62,7 +63,12 @@ public class WaitingRoom implements Runnable {
 
                 Integer playerLeft = gameState.online.getPlayerLeft(gameState.onlineId);
                 if(playerLeft != null) {
-                    if(playerLeft < thisPlayer){
+                    System.out.println("The player who left was " + playerLeft);
+                    if (playerLeft == 0){
+                        disconnect();
+                        return;
+                    }
+                    else if(playerLeft < thisPlayer){
                         gameState.onlineId--;
                     }
                     for(WaitingRoomListener waitingRoomListener : waitingRoomListeners) {

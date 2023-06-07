@@ -64,8 +64,20 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
 
             add(numberOfHexagons,0);
             add(names, 1);
-            JButton startButton = new JButton("StartGame");
-            add(startButton);
+            JPanel buttons = new JPanel();
+            buttons.setLayout(new GridLayout(0,1));
+            JButton startButton = new JButton("Start Game");
+            JButton leaveButton = new JButton("Leave Room");
+            leaveButton.setAction(new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    gameState.waitingRoom.disconnect();
+                }
+            });
+            leaveButton.setText("Leave Room");
+            buttons.add(startButton);
+            buttons.add(leaveButton);
+            add(buttons);
             if(!gs.host){
                 startButton.setEnabled(false);
                 numberOfHexagonsTextField.setEnabled(false);

@@ -48,6 +48,7 @@ public class Menu extends JPanel {
         removePlayer.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                gs.removePlayer();
                 removePlayer(gs, playerNames);
             }
         });
@@ -56,6 +57,7 @@ public class Menu extends JPanel {
         addPlayer.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                gs.addPlayer();
                 addPlayer(gs, playerNames);
             }
         });
@@ -85,6 +87,9 @@ public class Menu extends JPanel {
         startMultiplayerButton.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                if(gs.players.size() != 2){
+                    System.out.println("You can only play with 2 players");
+                }
                 gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), false);
             }
         });

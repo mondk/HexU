@@ -439,8 +439,12 @@ public class GameState{
 		for(int i =0;i<numberOfHexagons;i++) {
 			int scoreJ =0;
 			if(i==numberOfHexagons/2) {
-
+				scoreI=numberOfHexagons/2;
 			}
+			if(i==0||i==numberOfHexagons-1) {
+				scoreI=0;
+			}
+			
 			else if(i>numberOfHexagons/2) {
 				scoreI--;
 			}
@@ -449,9 +453,14 @@ public class GameState{
 			}
 			for(int j =0;j<numberOfHexagons;j++) {
 				Hexagon h1 = new Hexagon(new Point((int) (startPoint.x+shift*j+i*shift*Math.cos(60*(Math.PI/180))),(int) (startPoint.y+i*shift*Math.sin(60*(Math.PI/180)))),radius,id);
+				
 				if(j==numberOfHexagons/2) {
-
+					scoreJ=numberOfHexagons/2;
 				}
+				if(j==0||j==numberOfHexagons-1) {
+					scoreJ=0;
+				}
+				
 				else if(j>numberOfHexagons/2) {
 					scoreJ--;
 				}

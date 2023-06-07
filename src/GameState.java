@@ -546,5 +546,13 @@ public class GameState{
 		fillLoadMoves(load);
 		fillWinStateArrays();
 	}
+
+	public Color calcTint(Color c){
+		int red = c.getRed();
+		int blue = c.getBlue();
+		int green = c.getGreen();
+		double coef = 0.45;
+		return new Color((int)(red+(255-red)*coef), (int)(green+(255-green)*coef), (int)(blue+(255-blue)*coef));
+	}
 }
 

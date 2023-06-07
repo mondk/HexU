@@ -385,10 +385,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 			g.setColor(Color.BLUE);
 			g.drawPolygon(h.getPolygon());
 			if (h.clicked){
-				int red = h.color.getRed();
-				int blue = h.color.getBlue();
-				int green = h.color.getGreen();
-				g.setColor(new Color((int)(red+(255-red)*0.45), (int)(green+(255-green)*0.45), (int)(blue+(255-blue)*0.45)));
+				g.setColor(gs.calcTint(h.color));
 				g.fillPolygon(h.getPolygonInner());
 			}
 		}

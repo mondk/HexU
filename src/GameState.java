@@ -529,14 +529,14 @@ public class GameState{
 		int yp3 = (int) Math.round(hexCenter3.getY());
 		int yp4 = (int) Math.round(hexCenter4.getY());
 		//int rInt = (int) Math.round(gs.radius*1.5);
-		int[] x1= {xp1-(int) Math.round(radius)+3,xp2-(int) Math.round(radius*0.75)-3,xp2-(int) Math.round(radius*0.75)-3,xp1-(int) Math.round(radius)+3};
-		int[] x2= {xp3-(int) Math.round(radius*0.75)-3,xp4-(int) Math.round(radius)+3,xp4-(int) Math.round(radius)+3,xp3-(int) Math.round(radius*0.75)-3};
-		int[] x3= {xp1-(int) Math.round(radius*1.75),xp1-(int) Math.round(radius),xp4-(int) Math.round(radius),xp4-(int) Math.round(radius*1.75)};
-		int[] x4= {xp2-(int) Math.round(radius),xp2,xp3,xp3-(int) Math.round(radius)};
-		int[] y1= {yp1-(int) Math.round(radius*1.5)+2,yp2-(int) Math.round(radius*1.5)+2,yp2,yp1};
-		int[] y2= {yp3,yp4,yp4+(int) Math.round(radius*0.5),yp3+(int) Math.round(radius*0.5)};
-		int[] y3= {yp1,yp1,yp4,yp4};
-		int[] y4= {yp2-(int) Math.round(radius),yp2-(int) Math.round(radius),yp3-(int) Math.round(radius),yp3-(int) Math.round(radius)};
+		int[] x1= {xp1,xp2,xp2,xp1};
+		int[] x2= {xp3,xp4,xp4,xp3};
+		int[] x3= {xp1-(int) Math.round(radius*0.9),xp1,xp4,xp4-(int) Math.round(radius*0.9)};
+		int[] x4= {xp2,xp2+(int) Math.round(radius*0.9),xp3+(int) Math.round(radius*0.9),xp3};
+		int[] y1= {yp1-(int) Math.round(radius),yp2-(int) Math.round(radius),yp2,yp1};
+		int[] y2= {yp3,yp4,yp4+(int) Math.round(radius),yp3+(int) Math.round(radius)};
+		int[] y3= {yp1+(int) Math.round(radius*0.5),yp1+(int) Math.round(radius*0.5),yp4+(int) Math.round(radius*0.5),yp4+(int) Math.round(radius*0.5)};
+		int[] y4= {yp2-(int) Math.round(radius*0.5),yp2-(int) Math.round(radius*0.5),yp3-(int) Math.round(radius*0.5),yp3-(int) Math.round(radius*0.5)};
 
 		border.add(new BorderR(players.get(0).color, x1 , y1)); //top
 		border.add(new BorderR(players.get(0).color, x2 , y2)); //buttom
@@ -555,4 +555,3 @@ public class GameState{
 		return new Color((int)(red+(255-red)*coef), (int)(green+(255-green)*coef), (int)(blue+(255-blue)*coef));
 	}
 }
-

@@ -63,8 +63,8 @@ public class Hexagon extends JPanel implements Cloneable{
 			return Integer.toString(this.id);
 		}
 		public Point getCenter() {
-			int centerX = (int) (center.getX() + (Math.cos(30 * Math.PI / 180) * radius));
-			int centerY = (int) (center.getY() + (Math.sin(30 * Math.PI / 180) * radius));
+			int centerX = (int) (center.getX());
+			int centerY = (int) (center.getY());
 			return new Point(centerX, centerY);
 		}
 		@Override

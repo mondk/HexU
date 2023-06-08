@@ -31,20 +31,11 @@ public class GameState{
 	//Hexagon constants
 	int numberOfHexagons =3;
 
-	/* 
-	// Variables for hexagon placement
-	double radius=(0.5773502717*(600-150))/(numberOfHexagons+1);
-	double shift = 2*radius*0.8660254;
-	int xOffSet= 100- (int) (radius*2);
-	*/
-	//Size of game screen depending on number of hexagones and radius
-	//int widthScreen = (numberOfHexagons*(int)Math.round(radius))+(int)Math.round(shift)+400;
-	//int heightScreen = (numberOfHexagons*(int)Math.round(radius))+(int)Math.round(shift)+200;
 
 	Dimension SCREEN_SIZE = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
 
 	double screenWidth = SCREEN_SIZE.getWidth();
-	double screenHeight = SCREEN_SIZE.getHeight();
+	
 	// Variables for hexagon placement
 	double radius=(0.5773502717*(screenWidth-(screenWidth*0.5)))/(numberOfHexagons+1);
 	double shift = 2*radius*0.8660254;
@@ -261,7 +252,8 @@ public class GameState{
 
 	public void updateNumberOfHexagons(int numberOfHexagons){
 		this.numberOfHexagons = numberOfHexagons;
-		this.radius=(0.5773502717*(screenWidth-(screenWidth*0.5)))/(numberOfHexagons+1);
+		//double nhDouble = numberOfHexagons;
+		this.radius=((0.03906+(-0.01679/9)*(numberOfHexagons-3))*screenWidth);
 		this.shift = 2*radius*0.8660254;
 	}
 

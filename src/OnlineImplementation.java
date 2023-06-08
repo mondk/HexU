@@ -7,6 +7,7 @@ import java.util.List;
 
 public class OnlineImplementation implements Online{
 	private Space space;
+	SpaceRepository repository;
 	//private int id;
 	public final String PLAYERS_LIST_IDENTIFIER = "ALL_PLAYERS";
 	private final String PLAYER_CHANGED_IDENTIFIER = "PLAYER_CHANGED";
@@ -23,7 +24,7 @@ public class OnlineImplementation implements Online{
 	@Override
 	public void start(boolean host, String ip) {
 		if(host){
-			SpaceRepository repository = new SpaceRepository();
+			repository = new SpaceRepository();
 			space = new SequentialSpace();
 			repository.add("game",space);
 			repository.addGate("tcp://" + ip + ":9001/?keep");
@@ -101,6 +102,12 @@ public class OnlineImplementation implements Online{
 			space.getp(new ActualField(PLAYER_IDENTIFIER), new ActualField(onlineId), new FormalField(String.class), new FormalField(Integer.class));
 			for(Map.Entry<Integer,Player> player : getPlayers().entrySet()){
 				space.put(PLAYER_LEFT_IDENTIFIER, onlineId, player.getKey());
+			}
+			while(repository != null) {
+				if (getPlayers().size() == 0){
+					repository.closeGates();
+					break;
+				}
 			}
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);

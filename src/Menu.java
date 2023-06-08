@@ -48,6 +48,7 @@ public class Menu extends JPanel {
         removePlayer.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                gs.removePlayer();
                 removePlayer(gs, playerNames);
             }
         });
@@ -56,6 +57,7 @@ public class Menu extends JPanel {
         addPlayer.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                gs.addPlayer();
                 addPlayer(gs, playerNames);
             }
         });
@@ -85,6 +87,9 @@ public class Menu extends JPanel {
         startMultiplayerButton.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                if(gs.players.size() != 2){
+                    System.out.println("You can only play with 2 players");
+                }
                 gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), false);
             }
         });
@@ -105,7 +110,7 @@ public class Menu extends JPanel {
                 gs.loadFile();
                 gs.startGame(gs.numberOfHexagons, gs.singlePlayer);
             }
-        });        
+        });
         startComputerGameButton.setText("Start Game against Computer");
         startMultiplayerButton.setText("Start Multiplayer Game");
         startOnlineButton.setText("Start Online Game");
@@ -116,7 +121,12 @@ public class Menu extends JPanel {
     }
 
     private void addPlayer(GameState gs, JPanel playerNames){
-        playerNames.add(new PlayerSettings(gs, playerNames.getComponentCount()).getPlayerCards());
+        try {
+            playerNames.add(new PlayerSettings(gs.players.get(playerNames.getComponentCount())).getPlayerCards());
+        } catch (Exception e) {
+            gs.addPlayer();
+            playerNames.add(new PlayerSettings(gs.players.get(playerNames.getComponentCount())).getPlayerCards());
+        }
         playerNames.updateUI();
     }
     private void removePlayer(GameState gs, JPanel playerNames){

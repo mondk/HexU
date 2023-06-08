@@ -58,4 +58,26 @@ class WaitingRoomTest {
         assertEquals(player1Color, gs2.players.get(gs.onlineId).color);
         assertEquals(player2Color, gs.players.get(gs2.onlineId).color);
     }
+    @Test
+    public void reconnectAfterDisconnectTest() throws IOException, InterruptedException {
+        gs.hostGame("127.0.0.4");
+        gs2.joinGame("127.0.0.4");
+        Color player1Color = new Color(20,20,20);
+        Player newPlayer1 = new Player(gs.players.get(0).name, player1Color);
+        Color player2Color = new Color(20,30,40);
+        Player newPlayer2 = new Player(gs2.players.get(1).name, player2Color);
+        gs.online.changePlayer(gs.onlineId, newPlayer1);
+        gs2.online.changePlayer(gs2.onlineId, newPlayer2);
+        // Wait a while for sync
+        Thread.sleep(100);
+        assertEquals(player1Color, gs2.players.get(gs.onlineId).color);
+        assertEquals(player2Color, gs.players.get(gs2.onlineId).color);
+        gs.disconnectFromOnline();
+        Thread.sleep(100);
+        gs2.hostGame("127.0.0.4");
+        gs.joinGame("127.0.0.4");
+        Thread.sleep(100);
+        assertEquals(gs.players.get(gs2.onlineId).color, gs2.players.get(gs.onlineId).color);
+        assertEquals(gs2.players.get(gs.onlineId).color, gs.players.get(gs2.onlineId).color);
+    }
 }

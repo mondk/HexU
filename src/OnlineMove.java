@@ -27,7 +27,7 @@ public class OnlineMove implements Runnable{
 
     @Override
     public void run() {
-        while(true){
+        while(!gs.moveThread.isInterrupted()){
             try {
                 Map.Entry<Integer, Integer> move = gs.online.getMove(gs.onlineId);
                 if(move != null) {
@@ -42,8 +42,13 @@ public class OnlineMove implements Runnable{
                         listener.reset(0);
                     }
                 }
+                Integer playerLeft = gs.online.getPlayerLeft(gs.onlineId);
+                if(playerLeft != null) {
+                    gs.disconnectFromOnline();
+                    return;
+                }
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                return;
             }
         }
     }

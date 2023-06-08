@@ -58,4 +58,15 @@ class OnlineMoveTest {
         assertEquals(gs.grid.get(3).color,Color.gray);
         assertNotEquals(gs.grid.get(3).color,gs2.players.get(1).color);
     }
+    @Test
+    public void playerLeavesTest() throws InterruptedException, IOException {
+        gs.hostGame("127.0.0.4");
+        gs2.joinGame("127.0.0.4");
+        gs.online.startGame(0);
+        Thread.sleep(2000);
+        assertNotNull(gs.onlineMove);
+        gs2.disconnectFromOnline();
+        Thread.sleep(2000);
+        assertNull(gs.onlineMove);
+    }
 }

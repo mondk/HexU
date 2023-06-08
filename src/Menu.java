@@ -110,7 +110,7 @@ public class Menu extends JPanel {
                 gs.loadFile();
                 gs.startGame(gs.numberOfHexagons, gs.singlePlayer);
             }
-        });        
+        });
         startComputerGameButton.setText("Start Game against Computer");
         startMultiplayerButton.setText("Start Multiplayer Game");
         startOnlineButton.setText("Start Online Game");
@@ -121,7 +121,12 @@ public class Menu extends JPanel {
     }
 
     private void addPlayer(GameState gs, JPanel playerNames){
-        playerNames.add(new PlayerSettings(gs, playerNames.getComponentCount()).getPlayerCards());
+        try {
+            playerNames.add(new PlayerSettings(gs.players.get(playerNames.getComponentCount())).getPlayerCards());
+        } catch (Exception e) {
+            gs.addPlayer();
+            playerNames.add(new PlayerSettings(gs.players.get(playerNames.getComponentCount())).getPlayerCards());
+        }
         playerNames.updateUI();
     }
     private void removePlayer(GameState gs, JPanel playerNames){

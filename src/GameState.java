@@ -17,7 +17,9 @@ public class GameState{
 	//Variables for setting up online multiplayer
 	Online online = new OnlineImplementation();
 	WaitingRoom waitingRoom = null;
+	Thread waitingRoomThread = null;
 	OnlineMove onlineMove = null;
+	Thread moveThread = null;
 	Integer onlineId = 0;
 
 	//game grid
@@ -295,6 +297,7 @@ public class GameState{
 	public void returnToMenu(){
 		waitingRoom = null;
 		onlineMove = null;
+		host = true;
 		Menu menu  = new Menu(this);
 		cards.add(menu, "MENU2");
 		CardLayout cl = (CardLayout)cards.getLayout();
@@ -364,17 +367,24 @@ public class GameState{
 	}
 
 
-	public void startWaitingRoom() throws InterruptedException {
+	public void startWaitingRoom() {
 		waitingRoom = new WaitingRoom(this);
-		Thread playersThread = new Thread(waitingRoom);
-        playersThread.start();
+		waitingRoomThread = new Thread(waitingRoom);
+        waitingRoomThread.start();
 	}
-	public void startOnlineMove() throws InterruptedException {
+	public void startOnlineMove() {
 		onlineMove = new OnlineMove(this);
-		Thread moveThread = new Thread(onlineMove);
+		moveThread = new Thread(onlineMove);
 		moveThread.start();
 	}
-	public void startOnlineGame(int startPlayer) throws InterruptedException {
+	public void disconnectFromOnline() {
+		System.out.println(waitingRoomThread);
+		if(waitingRoomThread != null) waitingRoomThread.interrupt();
+		if(moveThread != null) moveThread.interrupt();
+		returnToMenu();
+		online.disconnect(onlineId);
+	}
+	public void startOnlineGame(int startPlayer) {
 		players = online.getPlayers();
 		CardLayout cl = (CardLayout)cards.getLayout();
 		paneTurnString = players.get(startPlayer).name;

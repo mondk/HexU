@@ -46,7 +46,7 @@ public class Yest {
 						System.out.println(IOe);
 					}
 				}
-				if (gs.waitingRoom != null)gs.waitingRoom.disconnect();
+				if (gs.waitingRoom != null)gs.disconnectFromOnline();
 				System.exit(0);
 			}
 		});

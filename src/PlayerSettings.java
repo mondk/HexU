@@ -6,25 +6,25 @@ import java.awt.event.ActionEvent;
 
 public class PlayerSettings extends JPanel {
     private JPanel playerCards;
-    private JTextField player;
+    private JTextField playerName;
     private JPanel colorMenu;
     private JButton confirmPColor;
     private ColorPicker colorPicker;
     private ColorButton playerColor;
     private DocumentListener documentListener;
-    public PlayerSettings(GameState gs, int id) {
+    public PlayerSettings(Player player) {
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         setPreferredSize(new Dimension(275, 30));
         playerCards = new JPanel(new CardLayout());
-        player = new JTextField("Player" + id);
+        playerName = new JTextField(player.name);
         colorMenu = new JPanel();
         confirmPColor = new JButton("Confirm");
         colorPicker = new ColorPicker(new Dimension(125, 20));
-        playerColor = new ColorButton(gs.players.get(id).color, playerCards);
+        playerColor = new ColorButton(player.color, playerCards);
         confirmPColor.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                gs.players.get(id).color = colorPicker.getColor();
+                player.color = colorPicker.getColor();
                 CardLayout cl = (CardLayout) playerCards.getLayout();
                 cl.next(playerCards);
                 playerColor.setColor(colorPicker.getColor());
@@ -44,15 +44,15 @@ public class PlayerSettings extends JPanel {
             @Override
             public void changedUpdate(DocumentEvent documentEvent) {
                 try {
-                    gs.players.get(id).name = player.getText();
+                    player.name = playerName.getText();
                 } catch (Exception ignored) {}
             }
         };
-        player.getDocument().addDocumentListener(documentListener);
+        playerName.getDocument().addDocumentListener(documentListener);
         confirmPColor.setText("Confirm");
         colorMenu.add(colorPicker);
         colorMenu.add(confirmPColor);
-        add(player);
+        add(playerName);
         add(playerColor);
         playerCards.add(this);
         playerCards.add(colorMenu);
@@ -60,7 +60,7 @@ public class PlayerSettings extends JPanel {
     }
 
     public String getName(){
-        return player.getText();
+        return playerName.getText();
     }
 
     public Color getColor(){
@@ -76,14 +76,14 @@ public class PlayerSettings extends JPanel {
     }
 
     public JTextField getPlayerTextField(){
-        return player;
+        return playerName;
     }
     public void changeConfirmAction(AbstractAction action){
         confirmPColor.setAction(action);
         confirmPColor.setText("Confirm");
     }
     public void changeDocumentListener(DocumentListener documentListener){
-        player.getDocument().removeDocumentListener(this.documentListener);
-        player.getDocument().addDocumentListener(documentListener);
+        playerName.getDocument().removeDocumentListener(this.documentListener);
+        playerName.getDocument().addDocumentListener(documentListener);
     }
 }

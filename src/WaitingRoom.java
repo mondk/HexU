@@ -5,9 +5,8 @@ public class WaitingRoom implements Runnable {
     int thisPlayer;
     ArrayList<WaitingRoomListener> waitingRoomListeners = new ArrayList<>();
 
-    public WaitingRoom(GameState gameState) throws InterruptedException {
+    public WaitingRoom(GameState gameState) {
         this.gameState = gameState;
-        //gameState.players = (HashMapIntegerString) gameState.online.get(new ActualField(PLAYERS_LIST_IDENTIFIER), new FormalField(HashMapIntegerString.class))[1];
         gameState.players = gameState.online.getPlayers();
         gameState.onlineId = gameState.players.size();
         gameState.updateNumberOfHexagons(gameState.online.getInitialNumberOfHexagons(gameState.numberOfHexagons));
@@ -37,52 +36,48 @@ public class WaitingRoom implements Runnable {
         gameState.online.changePlayer(id, player);
     }
 
-    public void disconnect() {
-        gameState.returnToMenu();
-        gameState.online.disconnect(gameState.onlineId);
-    }
-
     @Override
     public void run() {
-        while(true){
+        while(!Thread.interrupted()){
             try {
-                Integer numberOfHexagonsChanged = gameState.online.numberOfHexagonsChanged(gameState.onlineId);
-                if(numberOfHexagonsChanged != null && !(0 == thisPlayer)){
-                    gameState.updateNumberOfHexagons(numberOfHexagonsChanged);
-                    for(WaitingRoomListener waitingRoomListener : waitingRoomListeners) {
-                        waitingRoomListener.numberOfHexagonsChanged(numberOfHexagonsChanged);
-                    }
-                }
-                Map.Entry<Integer,Player> newPlayer = gameState.online.getNewPlayer(gameState.onlineId);
-                if(newPlayer != null) {
-                    gameState.players.put(newPlayer.getKey(), newPlayer.getValue());
-                    for(WaitingRoomListener waitingRoomListener : waitingRoomListeners) {
-                        waitingRoomListener.playerChanged(newPlayer.getKey(), newPlayer.getValue());
-                    }
-                }
-
-                Integer playerLeft = gameState.online.getPlayerLeft(gameState.onlineId);
-                if(playerLeft != null) {
-                    System.out.println("The player who left was " + playerLeft);
-                    if (playerLeft == 0){
-                        disconnect();
-                        return;
-                    }
-                    else if(playerLeft < thisPlayer){
-                        gameState.onlineId--;
-                    }
-                    for(WaitingRoomListener waitingRoomListener : waitingRoomListeners) {
-                        waitingRoomListener.playerLeft(playerLeft);
-                    }
-                }
-
-                Integer startGame = gameState.online.getStartGame(gameState.onlineId);
-                if(startGame != null){
-                    gameState.startOnlineGame(startGame);
-                    break;
-                }
+                Thread.sleep(10);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                // For some reason, interrupt doesn't always interrupt. However, if this is here, it works
+                return;
+            }
+            Integer numberOfHexagonsChanged = gameState.online.numberOfHexagonsChanged(gameState.onlineId);
+            if(numberOfHexagonsChanged != null && !(0 == thisPlayer)){
+                gameState.updateNumberOfHexagons(numberOfHexagonsChanged);
+                for(WaitingRoomListener waitingRoomListener : waitingRoomListeners) {
+                    waitingRoomListener.numberOfHexagonsChanged(numberOfHexagonsChanged);
+                }
+            }
+            Map.Entry<Integer,Player> newPlayer = gameState.online.getNewPlayer(gameState.onlineId);
+            if(newPlayer != null) {
+                gameState.players.put(newPlayer.getKey(), newPlayer.getValue());
+                for(WaitingRoomListener waitingRoomListener : waitingRoomListeners) {
+                    waitingRoomListener.playerChanged(newPlayer.getKey(), newPlayer.getValue());
+                }
+            }
+
+            Integer playerLeft = gameState.online.getPlayerLeft(gameState.onlineId);
+            if(playerLeft != null) {
+                if (playerLeft == 0){
+                    gameState.disconnectFromOnline();
+                    return;
+                }
+                else if(playerLeft < thisPlayer){
+                    gameState.onlineId--;
+                }
+                for(WaitingRoomListener waitingRoomListener : waitingRoomListeners) {
+                    waitingRoomListener.playerLeft(playerLeft);
+                }
+            }
+
+            Integer startGame = gameState.online.getStartGame(gameState.onlineId);
+            if(startGame != null){
+                gameState.startOnlineGame(startGame);
+                break;
             }
         }
     }

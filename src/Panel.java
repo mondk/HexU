@@ -83,7 +83,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				gs.grid.get(hex).clicked = true;
 				gs.grid.get(hex).color = gs.paneTColor;
 				gs.q.add(hex);
-				gs.online.makeMove(hex,gs.onlineId);
+				if(gs.onlineMove != null)gs.onlineMove.makeMove(hex);
 				ArrayList<ArrayList<Integer>> won = new ArrayList<>();
 				switch(gs.whosTurn){
 					case Player1:
@@ -95,7 +95,8 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 								reset(1);
 							}else if (dialogbutton == JOptionPane.NO_OPTION){
 								reset(0);
-								gs.returnToMenu();;
+								if(gs.onlineMove != null)gs.online.disconnect(gs.onlineId);
+								gs.returnToMenu();
 							}
 						}
 					case Player2:
@@ -108,6 +109,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 								break;
 							}else if (dialogbutton == JOptionPane.NO_OPTION){
 								reset(0);
+								if(gs.onlineMove != null)gs.online.disconnect(gs.onlineId);
 								gs.returnToMenu();
 								break;
 							}
@@ -180,8 +182,8 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 							case Player1:
 								gs.grid.get(h.id).clicked=true;
 								h.color=gs.players.get(0).color;
+								if (gs.onlineMove != null) gs.onlineMove.makeMove(h.id);
 								gs.nextTurn();
-								gs.online.makeMove(h.id,gs.onlineId);
 								System.out.println(gs.players.get(0).name + " clicked on hexagon: "+h.id+" score: "+h.score);
 								won = gs.winingState(gs.startP1, gs.players.get(0).color, gs.winP1);
 
@@ -204,6 +206,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 										break;
 									}else if (dialogbutton == JOptionPane.NO_OPTION) {
 										reset(0);
+										if(gs.onlineMove != null)gs.online.disconnect(gs.onlineId);
 										gs.returnToMenu();
 										break;
 									}
@@ -214,8 +217,8 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 							case Player2:
 								gs.grid.get(h.id).clicked=true;
 								h.color=gs.players.get(1).color;
+								if (gs.onlineMove != null) gs.onlineMove.makeMove(h.id);
 								gs.nextTurn();
-								gs.online.makeMove(h.id,gs.onlineId);
 								System.out.println(gs.players.get(1).name + " clicked on hexagon: "+h.id+" score: "+h.score);
 								won = gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2);
 								//System.out.println(won);
@@ -238,6 +241,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 										break;
 									}else if (dialogbutton == JOptionPane.NO_OPTION) {
 										reset(0);
+										if(gs.onlineMove != null)gs.online.disconnect(gs.onlineId);
 										gs.returnToMenu();
 										break;
 									}
@@ -389,7 +393,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 
 
 	@Override
-	public void performedMove(int moveId, int playerId) throws InterruptedException {
+	public void performedMove(int moveId, int playerId) {
 		gs.grid.get(moveId).clicked=true;
 		gs.q.add(moveId);
 		System.out.println(playerId);
@@ -405,8 +409,9 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 			JOptionPane.showConfirmDialog(null, "HURRAY! " + gs.players.get(1).name + " was victorius!\nUp for a rematch?","", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 			if (dialogbutton == JOptionPane.YES_OPTION) {
 				reset(1);
-			}else {
-				remove(dialogbutton);
+			}else if (dialogbutton == JOptionPane.NO_OPTION){
+				reset(0);
+				gs.disconnectFromOnline();
 			}
 		}
 		repaint();

@@ -13,7 +13,7 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
 
             gameState.startWaitingRoom();
 
-            PlayerSettings ownName = new PlayerSettings(gs, gameState.onlineId);
+            PlayerSettings ownName = new PlayerSettings(gameState.players.get(gs.onlineId));
             JPanel names = new JPanel();
             names.setLayout(new GridLayout(0,1));
             for(Map.Entry<Integer,Player> player : gameState.players.entrySet()){
@@ -71,7 +71,7 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
             leaveButton.setAction(new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
-                    gameState.waitingRoom.disconnect();
+                    gameState.disconnectFromOnline();
                 }
             });
             leaveButton.setText("Leave Room");

@@ -252,8 +252,11 @@ public class GameState{
 
 	public void updateNumberOfHexagons(int numberOfHexagons){
 		this.numberOfHexagons = numberOfHexagons;
-		//double nhDouble = numberOfHexagons;
-		this.radius=((0.03906+(-0.01679/9)*(numberOfHexagons-3))*screenWidth);
+		if (numberOfHexagons < 13){
+			this.radius=((0.03906+(-0.01679/9)*(numberOfHexagons-3))*screenWidth);
+		}else{
+			this.radius = (0.5773502717*(screenWidth-(screenWidth*0.5)))/(numberOfHexagons+1);
+		}
 		this.shift = 2*radius*0.8660254;
 	}
 

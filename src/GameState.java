@@ -96,6 +96,7 @@ public class GameState{
 	List<Integer> winP1 = new ArrayList<>();
 	List<Integer> winP2 = new ArrayList<>();
 
+	ArrayList<Integer> finalPath = new ArrayList<>();
 
 	// Linked list containing moves made
 	LinkedList<Integer> q = new LinkedList<>();
@@ -229,7 +230,7 @@ public class GameState{
 								path.add(pred[crawl]);
 								crawl = pred[crawl];
 							}
-							result.add(path);
+							this.finalPath = path;
 							return result;
 						}
 					}

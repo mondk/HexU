@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 
 public class Menu extends JPanel {
     ImageIcon img = new ImageIcon("res/background/space.jpg");
+    int dialogbutton;
     Menu(GameState gs) {
         
         // Field where you set amount of hexagons
@@ -80,17 +81,32 @@ public class Menu extends JPanel {
         startComputerGameButton.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), true);
-                gs.changeState("single");
+                if (Integer.parseInt(numberOfHexagonsTextField.getText())< 13){
+                    gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), true);
+                    gs.changeState("single");
+                }else {
+                    dialogbutton = JOptionPane.showConfirmDialog(null, "uhh to many hexes, this number of hexes will slow down the game experience.\nContinue anyway?","", JOptionPane.YES_NO_OPTION, dialogbutton);
+                    if (dialogbutton == JOptionPane.YES_OPTION) {
+                        gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), true);
+                        gs.changeState("single");
+                    }
+                }
             }
         });
         startMultiplayerButton.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                if(gs.players.size() != 2){
-                    System.out.println("You can only play with 2 players");
+                if (Integer.parseInt(numberOfHexagonsTextField.getText())< 13){
+                    gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), false);
+                }else {
+                    dialogbutton = JOptionPane.showConfirmDialog(null, "Wow! thats a lot of hexes! \nThis number of hexes will slow down the game experience.\nContinue anyway","", JOptionPane.YES_NO_OPTION, dialogbutton);
+                    if (dialogbutton == JOptionPane.YES_OPTION) {
+                        if(gs.players.size() != 2){
+                            System.out.println("You can only play with 2 players");
+                            }
+                        gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), false);
+                    }
                 }
-                gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), false);
             }
         });
         startOnlineButton.setAction(new AbstractAction() {

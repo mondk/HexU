@@ -48,7 +48,8 @@ public class GameState{
 	HashMap<Integer,Player> players = new HashMap<>();
 
 	//Start point for grid
-	Point startPoint = new Point((int) radius+100,(int) radius+50);
+	//Point startPoint = new Point((int) ((SCREEN_SIZE.getWidth()/2)-(radius*(numberOfHexagons))),(int) (SCREEN_SIZE.getHeight()/2-(radius*Math.floor(numberOfHexagons/2))));
+	Point startPoint = new Point((int) radius+100, (int) radius +50);
 
 	// JPanel, which includes the different screens
 	JPanel cards = new JPanel(new CardLayout());
@@ -94,6 +95,7 @@ public class GameState{
 	List<Integer> startP2 = new ArrayList<>();
 	List<Integer> winP1 = new ArrayList<>();
 	List<Integer> winP2 = new ArrayList<>();
+
 
 	// Linked list containing moves made
 	LinkedList<Integer> q = new LinkedList<>();
@@ -176,16 +178,14 @@ public class GameState{
 		// and the input "p" is the color that needs comparison
 		ArrayList<ArrayList<Integer>> result = new ArrayList<>(2);
 		result.add(new ArrayList<>());
-		ArrayList<ArrayList<Integer>> pCluster = new ArrayList<>();
-
 
 		// Array der holder alle hexagon der er en del af en cluster
 		ArrayList<Integer> seen = new ArrayList<>();
 		//Loop over hele griddet, for at finde alle clusters
-		for(Hexagon v : this.grid) {
+		for(Integer v : s) {
 			// Tjekker om den givne hexagon er den givne spillers farve
 			// eller om den allerede er en del af en cluster, i så fald skip!
-			if (v.color != p || seen.contains(v.id)) {
+			if (this.grid.get(v).color != p || seen.contains(v)) {
 				continue;
 			}
 
@@ -194,10 +194,10 @@ public class GameState{
 			// Standard BFS ting...
 			boolean visited[] = new boolean[numberOfHexagons*numberOfHexagons];
 			LinkedList<Integer> queue = new LinkedList<Integer>();
-			visited[v.id] = true;
-			queue.add(v.id);
+			visited[v] = true;
+			queue.add(v);
 			// Tilføjer hexagon til cluster
-			cluster.add(v.id);
+			cluster.add(v);
 
 			while (queue.size()!=0) {
 				int inter = queue.poll();
@@ -211,17 +211,15 @@ public class GameState{
 						cluster.add(n);
 						// Ser om den funde cluster ud fra v, indeholde en hexagon fra start og slut enden
 						// af den givne spillers plade
-						if (!Collections.disjoint(cluster, s) && !Collections.disjoint(cluster,win)){
+						if (!Collections.disjoint(cluster,win)){ //!Collections.disjoint(cluster, s) && 
 							result.get(0).add(1);
 							return result;
 						}
 					}
 				}
 			}
-			pCluster.add(cluster);
 		}	
 		result.get(0).add(0);
-		result.addAll(pCluster);
 		return result;
 	}
 
@@ -301,6 +299,7 @@ public class GameState{
 	}
 
 	public void fillLoadMoves(String[] moves){
+		// the input "moves" are the list loaded from the saved file, when continuing previuos game
 		try{
 			switch(playerState){
 				case SINGLEPLAYER:
@@ -457,6 +456,7 @@ public class GameState{
 			return;
 		int id=0;
 		int scoreI =0;
+		startPoint = calcStartPoint();
 
 		for(int i =0;i<numberOfHexagons;i++) {
 			int scoreJ =0;
@@ -495,12 +495,12 @@ public class GameState{
 				id++;
 				int hex = i*numberOfHexagons+j;
 
-				if (i==0 && j==0) {														//First hexagon
+				if (i==0 && j==0) {													//First hexagon
 					grid.get(hex).adj.add(1);
 					grid.get(hex).adj.add(numberOfHexagons);
 					hexCenter1 = grid.get(hex).getCenter();
 				}
-				else if (i==numberOfHexagons-1 && j ==numberOfHexagons-1) {		//Last Hexagon
+				else if (i==numberOfHexagons-1 && j ==numberOfHexagons-1) {			//Last Hexagon
 					grid.get(hex).adj.add(hex-1);
 					grid.get(hex).adj.add(hex-numberOfHexagons);
 					hexCenter3 = grid.get(hex).getCenter();
@@ -511,13 +511,13 @@ public class GameState{
 					grid.get(hex).adj.add(hex+numberOfHexagons-1);
 					hexCenter2 = grid.get(hex).getCenter();
 				}
-				else if (i == numberOfHexagons-1 && j ==0) {							//First hexagon last row
+				else if (i == numberOfHexagons-1 && j ==0) {						//First hexagon last row
 					grid.get(hex).adj.add(hex-numberOfHexagons);
 					grid.get(hex).adj.add(hex-numberOfHexagons+1);
 					grid.get(hex).adj.add(hex+1);
 					hexCenter4 = grid.get(hex).getCenter();
 				}
-				else if (i==0) {														//Rest of first row
+				else if (i==0) {													//Rest of first row
 					grid.get(hex).adj.add(hex+numberOfHexagons);;
 					grid.get(hex).adj.add(hex+numberOfHexagons-1);
 					grid.get(hex).adj.add(hex+1);
@@ -529,19 +529,19 @@ public class GameState{
 					grid.get(hex).adj.add(hex-numberOfHexagons+1);
 					grid.get(hex).adj.add(hex+1);
 				}
-				else if (j==0) {														//Rest of first column
+				else if (j==0) {													//Rest of first column
 					grid.get(hex).adj.add(hex-numberOfHexagons);
 					grid.get(hex).adj.add(hex-numberOfHexagons+1);
 					grid.get(hex).adj.add(hex+1);
 					grid.get(hex).adj.add(hex+numberOfHexagons);
 				}
-				else if(j==numberOfHexagons-1) {										//Rest of last column
+				else if(j==numberOfHexagons-1) {									//Rest of last column
 					grid.get(hex).adj.add(hex-numberOfHexagons);
 					grid.get(hex).adj.add(hex-1);
 					grid.get(hex).adj.add(hex+numberOfHexagons-1);
 					grid.get(hex).adj.add(hex+numberOfHexagons);
 				}
-				else {																	//Everything in between
+				else {																//Everything in between
 					grid.get(hex).adj.add(hex-1);
 					grid.get(hex).adj.add(hex+1);
 					grid.get(hex).adj.add(hex-numberOfHexagons);
@@ -586,5 +586,13 @@ public class GameState{
 		int green = c.getGreen();
 		double coef = 0.45;
 		return new Color((int)(red+(255-red)*coef), (int)(green+(255-green)*coef), (int)(blue+(255-blue)*coef));
+	}
+
+	private Point calcStartPoint(){
+		double height2 = (numberOfHexagons*0.5)*(radius*2)+((numberOfHexagons-(numberOfHexagons*0.5))*radius);
+		double width = (radius*2)*(numberOfHexagons+Math.floor(numberOfHexagons/2));
+		int y = (int) ((SCREEN_SIZE.getHeight()-height2)*0.5);
+		int x = (int) ((SCREEN_SIZE.getWidth()-width)*0.7);
+		return new Point(x,y);
 	}
 }

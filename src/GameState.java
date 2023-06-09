@@ -181,38 +181,55 @@ public class GameState{
 
 		// Array der holder alle hexagon der er en del af en cluster
 		ArrayList<Integer> seen = new ArrayList<>();
-		//Loop over hele griddet, for at finde alle clusters
+		//Loop over s, for at finde path
 		for(Integer v : s) {
 			// Tjekker om den givne hexagon er den givne spillers farve
 			// eller om den allerede er en del af en cluster, i så fald skip!
 			if (this.grid.get(v).color != p || seen.contains(v)) {
 				continue;
 			}
-
+			int pred[] = new int[numberOfHexagons*numberOfHexagons];
+			int dist[] = new int[numberOfHexagons*numberOfHexagons];
 			ArrayList<Integer> cluster = new ArrayList<>();
 
 			// Standard BFS ting...
 			boolean visited[] = new boolean[numberOfHexagons*numberOfHexagons];
 			LinkedList<Integer> queue = new LinkedList<Integer>();
+			for (int i = 0; i < numberOfHexagons*numberOfHexagons; i++) {
+				visited[i] = false;
+				dist[i] = Integer.MAX_VALUE;
+				pred[i] = -1;
+			}
+			
 			visited[v] = true;
 			queue.add(v);
+			dist[v] = -1;
+
 			// Tilføjer hexagon til cluster
 			cluster.add(v);
 
-			while (queue.size()!=0) {
-				int inter = queue.poll();
-				Iterator<Integer> i = this.grid.get(inter).adj.listIterator();
-				while(i.hasNext()) {
-					int n = i.next();
-					if(visited[n] == false && this.grid.get(n).color == p) {
-						visited[n] = true;
-						queue.add(n);
-						seen.add(n);
-						cluster.add(n);
+			while (!queue.isEmpty()) {
+				int u = queue.poll();
+				for(int i = 0; i<grid.get(u).adj.size(); i++) {
+					if(visited[grid.get(u).adj.get(i)] == false && this.grid.get(grid.get(u).adj.get(i)).color == p) {
+						visited[grid.get(u).adj.get(i)] = true;
+						dist[grid.get(u).adj.get(i)] = dist[u]+1;
+						pred[grid.get(u).adj.get(i)] = u;
+						queue.add(grid.get(u).adj.get(i));
+						seen.add(grid.get(u).adj.get(i));
+						cluster.add(grid.get(u).adj.get(i));
 						// Ser om den funde cluster ud fra v, indeholde en hexagon fra start og slut enden
 						// af den givne spillers plade
 						if (!Collections.disjoint(cluster,win)){ //!Collections.disjoint(cluster, s) && 
 							result.get(0).add(1);
+							ArrayList<Integer> path = new ArrayList<Integer>();
+							int crawl = grid.get(u).adj.get(i);
+							path.add(crawl);
+							while (pred[crawl] != -1) {
+								path.add(pred[crawl]);
+								crawl = pred[crawl];
+							}
+							result.add(path);
 							return result;
 						}
 					}

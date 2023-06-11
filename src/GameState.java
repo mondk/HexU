@@ -26,6 +26,7 @@ public class GameState{
 	//game grid
 	ArrayList<Hexagon> grid = new ArrayList<>();
 	ArrayList<BorderR> border = new ArrayList<>();
+	ArrayList<Integer> exsplosion = new ArrayList<>();
 	Point hexCenter1;
 	Point hexCenter2;
 	Point hexCenter3;
@@ -246,6 +247,7 @@ public class GameState{
 			winP2.clear();
 		}
 		finalPath.clear();
+		exsplosion.clear();
 		q.clear();
 		for (Hexagon h : grid) {
 			h.color = Color.gray;

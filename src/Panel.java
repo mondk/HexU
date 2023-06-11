@@ -43,6 +43,8 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	int dialogbutton;
 	ImageIcon reMatchIcon = new ImageIcon("res/rematch.png");  //  <a target="_blank" href="https://icons8.com/icon/PT3001yzoXgN/match">Match</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 	boolean singlePlayer;
+	int once = 0;
+	private Graphics graphic;
 
 
 	public Panel(GameState gs) {
@@ -53,7 +55,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		this.setPreferredSize(gs.SCREEN_SIZE);
 		gs.createGrid();
 		this.ai = new AI(gs);
-
+		
 
 		//System.out.println(gs.grid.toString());
 		paneT.setText(gs.paneTurnString);
@@ -90,13 +92,15 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				switch(gs.whosTurn){
 					case Player1:
 						if (gs.winingState(gs.startP1, gs.players.get(0).color, gs.winP1)) {
+							
+							start=false;
 							repaint();
-							showDiaButton(gs.players.get(0).name);
 						}
 					case Player2:
 						if (gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2) && gs.host) {
+							
+							start=false;
 							repaint();
-							showDiaButton(gs.players.get(1).name);
 						}
 
 				}
@@ -177,8 +181,10 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 										// TODO Auto-generated catch block
 										e1.printStackTrace();
 									}
-									repaint();
-									showDiaButton(gs.players.get(0).name);
+									
+								start=false;
+								drawExsplosion(graphic);
+								repaint();
 								}
 								gs.nextTurn();
 								paneT.setBackground(gs.paneTColor);
@@ -202,8 +208,9 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 										e1.printStackTrace();
 									}
 
+									
+									start=false;
 									repaint();
-									showDiaButton(gs.players.get(1).name);
 								}
 								
 								break;
@@ -244,10 +251,13 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 			long now = System.nanoTime();
 			delta += (now -lastTime)/ns;
 			lastTime = now;
-			if(delta >=1&&start) {
+			if(delta >=1&&start||start) {
 				checkMouseHover(MouseInfo.getPointerInfo().getLocation());
-				repaint();
-				delta--;
+				if(start) {
+					repaint();
+					delta--;
+					this.graphic=this.getGraphics();
+				}
 				switch(gs.whosTurn) {
 
 					case AI:
@@ -279,7 +289,9 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 								e.printStackTrace();
 							}
 							repaint();
-							showDiaButton(gs.players.get(1).name);
+							start=false;
+							
+							
 						}
 						break;
 
@@ -297,7 +309,9 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 			msg = "Sorry " + gs.players.get(0).name + "... \nUp for a rematch?";
 		dialogbutton = JOptionPane.showConfirmDialog(null, msg ,"", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 		if (dialogbutton == JOptionPane.YES_OPTION) {
+			
 			reset(1);
+			
 		}else if (dialogbutton == JOptionPane.NO_OPTION) {
 			reset(0);
 			if(gs.onlineMove != null)gs.online.disconnect(gs.onlineId);
@@ -326,12 +340,16 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 
 	@Override
 	public void paintComponent(Graphics g) {
+		
 		super.paintComponent(g);
 		g.drawImage(this.img.getImage(),0,0, this.getWidth(), this.getHeight(), this);
 		draw(g);	
+		
 	}
 
 	public void draw(Graphics g) {
+		
+		
 		for (BorderR t : gs.border){
 			g.setColor(t.color);
 			g.fillPolygon(t.getPolygon());
@@ -339,19 +357,43 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		for(Hexagon h:gs.grid) {
 			g.setColor(h.color);
 			g.fillPolygon(h.getPolygon());
-			if (gs.finalPath.contains(h.id))
-				g.setColor(Color.WHITE);
-			else
-				g.setColor(Color.BLUE);
+			g.setColor(Color.black);
 			g.drawPolygon(h.getPolygon());
 			if (h.clicked){
 				g.setColor(gs.calcTint(h.color));
 				g.fillPolygon(h.getPolygonInner());
 			}
 		}
+		if(!gs.exsplosion.isEmpty()) {
+			for(int i: gs.exsplosion) {
+				Hexagon h = gs.grid.get(i);
+				g.setColor(Color.black);
+				g.fillOval((int)((h.center.x-(h.radius*1.2)/2)),(int) ((h.center.y-(h.radius*1.2)/2)),(int) (h.radius*1.2), (int)(h.radius*1.2));
+			}
+		}
+		
 	}
 
 
+
+	private void drawExsplosion(Graphics g) {
+		// TODO Auto-generated method stub
+		for(Hexagon h: gs.grid) {
+			if(gs.finalPath.contains(h.id)) {
+				g.setColor(Color.black);
+				g.fillOval((int)((h.center.x-(h.radius*1.2)/2)),(int) ((h.center.y-(h.radius*1.2)/2)),(int) (h.radius*1.2), (int)(h.radius*1.2));
+				gs.exsplosion.add(h.id);
+				try {
+					Thread.sleep(300);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		showDiaButton("test");
+		
+	}
 
 	@Override
 	public void performedMove(int moveId, int playerId) {
@@ -372,6 +414,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	}
 	@Override
 	public void reset(int id) {
+		start=true;
 		gs.resetGame(id);
 		paneT.setText(gs.players.get(0).name);
 		paneT.setBackground(gs.players.get(0).color);

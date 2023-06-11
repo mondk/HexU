@@ -172,13 +172,9 @@ public class GameState{
 		}
 	}
 
-	public ArrayList<ArrayList<Integer>> winingState(List<Integer> s, Color p, List<Integer> win) {
+	public Boolean winingState(List<Integer> s, Color p, List<Integer> win) {
 		// input "s" and "win" are the arrays that hold the borders of a given player, 
 		// and the input "p" is the color that needs comparison
-
-		// Output array
-		ArrayList<ArrayList<Integer>> result = new ArrayList<>(2);
-		result.add(new ArrayList<>());
 
 		// Array der holder alle hexagon der er en del af en cluster
 		ArrayList<Integer> seen = new ArrayList<>();
@@ -224,21 +220,19 @@ public class GameState{
 						// Ser om den funde cluster ud fra v, indeholde en hexagon fra start og slut enden
 						// af den givne spillers plade
 						if (!Collections.disjoint(cluster,win)){ //!Collections.disjoint(cluster, s) && 
-							result.get(0).add(1);
 							int crawl = grid.get(u).adj.get(i);
 							this.finalPath.add(crawl);
 							while (pred[crawl] != -1) {
 								this.finalPath.add(pred[crawl]);
 								crawl = pred[crawl];
 							}
-							return result;
+							return true;
 						}
 					}
 				}
 			}
-		}	
-		result.get(0).add(0);
-		return result;
+		}
+		return false;
 	}
 
 	public void resetGame(int id) {
@@ -296,7 +290,7 @@ public class GameState{
 		updateNumberOfHexagons(numberOfHexagons);
 		this.whosTurn=Turn.Player1;
 		this.playerState = singlePlayer ? State.SINGLEPLAYER : State.MULTIPLAYER;
-		if(singlePlayer) this.players.put(1, new Player("Player 2", Color.GREEN));
+		if(singlePlayer) this.players.put(1, new Player("AI", Color.GREEN));
 		border = new ArrayList<>();
 		grid = new ArrayList<>();
 		Panel panel = new Panel(this);
@@ -609,9 +603,9 @@ public class GameState{
 	}
 
 	private Point calcStartPoint(){
-		double height2 = (numberOfHexagons*0.5)*(radius*2)+((numberOfHexagons-(numberOfHexagons*0.5))*radius);
+		double height = (numberOfHexagons*0.5)*(radius*2)+((numberOfHexagons-(numberOfHexagons*0.5))*radius);
 		double width = (radius*2)*(numberOfHexagons+Math.floor(numberOfHexagons/2));
-		int y = (int) ((SCREEN_SIZE.getHeight()-height2)*0.5);
+		int y = (int) ((SCREEN_SIZE.getHeight()-height)*0.5);
 		int x = (int) ((SCREEN_SIZE.getWidth()-width)*0.7);
 		return new Point(x,y);
 	}

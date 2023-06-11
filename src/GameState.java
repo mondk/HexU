@@ -281,7 +281,7 @@ public class GameState{
 
 	public void addPlayer(){
 		int id = players.size();
-		players.put(id, new Player("Player " + id, Color.orange));
+		players.put(id, new Player("Player " + id, new Color(ThreadLocalRandom.current().nextInt(-8388608,  8388607 + 1))));
 	}
 
 	public void removePlayer(){

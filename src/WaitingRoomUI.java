@@ -15,7 +15,6 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
 
             PlayerSettings ownName = new PlayerSettings(gameState.players.get(gs.onlineId));
             JPanel names = new JPanel();
-            JTextArea ipLabel = new JTextArea(ip);
             names.setLayout(new GridLayout(0,1));
             for(Map.Entry<Integer,Player> player : gameState.players.entrySet()){
                 if(Objects.equals(player.getKey(), gameState.waitingRoom.getThisPlayer())) continue;
@@ -111,7 +110,13 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
                 });
                 startButton.setText("Start Game");
             }
-            add(ipLabel);
+            JTextArea ipTextArea = new JTextArea(ip);
+            JLabel ipLabel = new JLabel("The IP address is:");
+            JPanel ipInfo = new JPanel();
+            ipInfo.setLayout(new GridLayout(0,1));
+            ipInfo.add(ipLabel);
+            ipInfo.add(ipTextArea);
+            add(ipInfo);
             gs.cards.add(this);
             CardLayout cl = (CardLayout)gs.cards.getLayout();
             cl.next(gs.cards);

@@ -2,10 +2,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 public class OnlinePanel extends JPanel {
     OnlinePanel(GameState gs){
-        TextField ip = new TextField("127.0.0.1");
+        TextField ip = new TextField(getIp());
         JButton join = new JButton();
         JButton host = new JButton();
         join.setAction(new AbstractAction() {
@@ -21,7 +25,7 @@ public class OnlinePanel extends JPanel {
         host.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                gs.hostGame(ip.getText());
+                gs.hostGame(getIp());
             }
         });
         join.setText("Join game");
@@ -30,5 +34,17 @@ public class OnlinePanel extends JPanel {
         add(ip);
         add(join);
         add(host);
+    }
+
+    private String getIp() {
+        String ip;
+
+        try (final DatagramSocket socket = new DatagramSocket()) {
+            socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+            ip = socket.getLocalAddress().getHostAddress();
+        } catch (SocketException | UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
+        return ip;
     }
 }

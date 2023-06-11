@@ -359,7 +359,7 @@ public class GameState{
 		online.start(true, ip);
 		playerState = GameState.State.ONLINE;
 		host = true;
-		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this);
+		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this, ip);
 	}
 
 	public void setOnline(Online online) {
@@ -371,7 +371,7 @@ public class GameState{
 		//gameSpace = new RemoteSpace("tcp://" + ip + ":9001/game?keep");
 		this.host = false;
 		this.playerState = GameState.State.ONLINE;
-		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this);
+		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this, ip);
 	}
 
 

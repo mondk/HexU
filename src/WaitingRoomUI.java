@@ -7,7 +7,7 @@ import java.util.*;
 
 public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
     GameState gs;
-    public WaitingRoomUI(GameState gameState) {
+    public WaitingRoomUI(GameState gameState, String ip) {
         try {
             this.gs = gameState;
 
@@ -15,6 +15,7 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
 
             PlayerSettings ownName = new PlayerSettings(gameState.players.get(gs.onlineId));
             JPanel names = new JPanel();
+            JTextArea ipLabel = new JTextArea(ip);
             names.setLayout(new GridLayout(0,1));
             for(Map.Entry<Integer,Player> player : gameState.players.entrySet()){
                 if(Objects.equals(player.getKey(), gameState.waitingRoom.getThisPlayer())) continue;
@@ -110,6 +111,7 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
                 });
                 startButton.setText("Start Game");
             }
+            add(ipLabel);
             gs.cards.add(this);
             CardLayout cl = (CardLayout)gs.cards.getLayout();
             cl.next(gs.cards);

@@ -37,6 +37,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	private AI ai;
 	JButton undo = new JButton("Undo");
 	JButton generate = new JButton("Generate move");
+	JButton backtoMenu = new JButton("Back to Menu");
 	boolean start =true;
 	int dialogbutton;
 	ImageIcon reMatchIcon = new ImageIcon("res/rematch.png");  //  <a target="_blank" href="https://icons8.com/icon/PT3001yzoXgN/match">Match</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
@@ -151,9 +152,16 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				}
 			}
 		});
+		backtoMenu.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				gs.returnToMenu();
+			}
+		});
 		this.add(paneT);
 		this.add(undo);
 		this.add(generate);
+		this.add(backtoMenu);
 
 		//actions when hex is clicked
 		this.addMouseListener(new MouseAdapter(){

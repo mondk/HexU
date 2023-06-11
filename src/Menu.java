@@ -17,20 +17,17 @@ public class Menu extends JPanel {
         numberOfHexagons.add(numberOfHexagonsTextField);
         numberOfHexagons.setOpaque(true);
         numberOfHexagons.setBackground(new Color(0,0,0,80));
-        //setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         setPreferredSize(gs.SCREEN_SIZE);
 
         //Start Game Buttons
-        JButton startComputerGameButton = new JButton("Start Game against computer");
-        JButton startMultiplayerButton = new JButton("Start Multiplayer Game");
+        JButton startGameButton = new JButton("Start Multiplayer Game");
         JButton startOnlineButton = new JButton("Start Online Game");
         JButton continueLastGame = new JButton("Continue where you left off");
         JPanel buttons = new JPanel();
         buttons.setLayout(new BoxLayout(buttons,BoxLayout.PAGE_AXIS));
         buttons.setOpaque(true);
         buttons.setBackground(new Color(0,0,0,0));
-        buttons.add(startComputerGameButton);
-        buttons.add(startMultiplayerButton);
+        buttons.add(startGameButton);
         buttons.add(startOnlineButton);
         buttons.add(continueLastGame);
 
@@ -46,25 +43,30 @@ public class Menu extends JPanel {
         changePlayersButtons.setOpaque(true);
         changePlayersButtons.setBackground(new Color(0,0,0,0));;
         JButton removePlayer = new JButton();
+        JButton addPlayer = new JButton();
         removePlayer.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                changePlayersButtons.add(addPlayer);
+                changePlayersButtons.remove(removePlayer);
+                startGameButton.setText("Start Game against Computer");
                 gs.removePlayer();
                 removePlayer(gs, playerNames);
             }
         });
         removePlayer.setText("Remove Player");
-        JButton addPlayer = new JButton();
         addPlayer.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                changePlayersButtons.remove(addPlayer);
+                changePlayersButtons.add(removePlayer);
+                startGameButton.setText("Start Multiplayer Game");
                 gs.addPlayer();
                 addPlayer(gs, playerNames);
             }
         });
         addPlayer.setText("Add Player");
         changePlayersButtons.add(removePlayer);
-        changePlayersButtons.add(addPlayer);
 
         JPanel namesAndButtons = new JPanel();
         namesAndButtons.setLayout(new GridLayout(0,1));
@@ -77,34 +79,16 @@ public class Menu extends JPanel {
         addPlayer(gs, playerNames);
         addPlayer(gs, playerNames);
 
-        // Set the actions for the startgame buttons
-        startComputerGameButton.setAction(new AbstractAction() {
+        startGameButton.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+               // gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), gs.players.size() == 1);
                 if (Integer.parseInt(numberOfHexagonsTextField.getText())< 13){
-                    gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), true);
-                    gs.changeState("single");
+                    gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), gs.players.size() == 1);
                 }else {
                     dialogbutton = JOptionPane.showConfirmDialog(null, "uhh to many hexes, this number of hexes will slow down the game experience.\nContinue anyway?","", JOptionPane.YES_NO_OPTION, dialogbutton);
                     if (dialogbutton == JOptionPane.YES_OPTION) {
-                        gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), true);
-                        gs.changeState("single");
-                    }
-                }
-            }
-        });
-        startMultiplayerButton.setAction(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (Integer.parseInt(numberOfHexagonsTextField.getText())< 13){
-                    gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), false);
-                }else {
-                    dialogbutton = JOptionPane.showConfirmDialog(null, "Wow! thats a lot of hexes! \nThis number of hexes will slow down the game experience.\nContinue anyway","", JOptionPane.YES_NO_OPTION, dialogbutton);
-                    if (dialogbutton == JOptionPane.YES_OPTION) {
-                        if(gs.players.size() != 2){
-                            System.out.println("You can only play with 2 players");
-                            }
-                        gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), false);
+                        gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), gs.players.size() == 1);
                     }
                 }
             }
@@ -127,8 +111,7 @@ public class Menu extends JPanel {
                 gs.startGame(gs.numberOfHexagons, gs.singlePlayer);
             }
         });
-        startComputerGameButton.setText("Start Game against Computer");
-        startMultiplayerButton.setText("Start Multiplayer Game");
+        startGameButton.setText("Start Multiplayer Game");
         startOnlineButton.setText("Start Online Game");
         continueLastGame.setText("Continue last game");
         add(numberOfHexagons);

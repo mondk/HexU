@@ -318,10 +318,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 						if (won.get(0).get(0)==1) {
 							try {
 								playSound("src/mixkit-funny-fail-low-tone-2876.wav");
-							} catch (LineUnavailableException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} catch (IOException e) {
+							} catch (LineUnavailableException |IOException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
@@ -368,7 +365,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.drawImage(this.img.getImage(),0,0, this.getWidth(), this.getHeight(), this);
-		draw(g);
+		draw(g);	
 	}
 
 	public void draw(Graphics g) {
@@ -426,6 +423,4 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		if(gs.host) gs.onlineMove.resetGame(0);
 		else gs.whosTurn = GameState.Turn.ONLINE_PLAYER;
 	}
-
-
 }

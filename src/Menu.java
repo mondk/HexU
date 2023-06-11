@@ -82,8 +82,10 @@ public class Menu extends JPanel {
         startGameButton.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-               // gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), gs.players.size() == 1);
-                if (Integer.parseInt(numberOfHexagonsTextField.getText())< 13){
+                if (Integer.parseInt(numberOfHexagonsTextField.getText())< 2){
+                    JOptionPane.showMessageDialog(null, "Thats to few hexes, enter a number higher than 1","", JOptionPane.ERROR_MESSAGE);
+                }
+                else if (Integer.parseInt(numberOfHexagonsTextField.getText())< 13){
                     gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), gs.players.size() == 1);
                 }else {
                     dialogbutton = JOptionPane.showConfirmDialog(null, "uhh to many hexes, this number of hexes will slow down the game experience.\nContinue anyway?","", JOptionPane.YES_NO_OPTION, dialogbutton);

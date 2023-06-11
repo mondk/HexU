@@ -44,14 +44,11 @@ public class GameState{
 	double shift = 2*radius*0.8660254;
 	int xOffSet= 100- (int) (radius*2);
 	
-	
-
 	HashMap<Integer,Player> players = new HashMap<>();
 
 	//Start point for grid
-	//Point startPoint = new Point((int) ((SCREEN_SIZE.getWidth()/2)-(radius*(numberOfHexagons))),(int) (SCREEN_SIZE.getHeight()/2-(radius*Math.floor(numberOfHexagons/2))));
-	Point startPoint = new Point((int) radius+100, (int) radius +50);
-
+	Point startPoint = calcStartPoint();
+	
 	// JPanel, which includes the different screens
 	JPanel cards = new JPanel(new CardLayout());
 
@@ -178,6 +175,8 @@ public class GameState{
 	public ArrayList<ArrayList<Integer>> winingState(List<Integer> s, Color p, List<Integer> win) {
 		// input "s" and "win" are the arrays that hold the borders of a given player, 
 		// and the input "p" is the color that needs comparison
+
+		// Output array
 		ArrayList<ArrayList<Integer>> result = new ArrayList<>(2);
 		result.add(new ArrayList<>());
 
@@ -190,6 +189,8 @@ public class GameState{
 			if (this.grid.get(v).color != p || seen.contains(v)) {
 				continue;
 			}
+
+			// Arrays for finding shortes path
 			int pred[] = new int[numberOfHexagons*numberOfHexagons];
 			int dist[] = new int[numberOfHexagons*numberOfHexagons];
 			ArrayList<Integer> cluster = new ArrayList<>();
@@ -224,14 +225,12 @@ public class GameState{
 						// af den givne spillers plade
 						if (!Collections.disjoint(cluster,win)){ //!Collections.disjoint(cluster, s) && 
 							result.get(0).add(1);
-							ArrayList<Integer> path = new ArrayList<Integer>();
 							int crawl = grid.get(u).adj.get(i);
-							path.add(crawl);
+							this.finalPath.add(crawl);
 							while (pred[crawl] != -1) {
-								path.add(pred[crawl]);
+								this.finalPath.add(pred[crawl]);
 								crawl = pred[crawl];
 							}
-							this.finalPath = path;
 							return result;
 						}
 					}
@@ -252,6 +251,7 @@ public class GameState{
 			startP2.clear();
 			winP2.clear();
 		}
+		finalPath.clear();
 		q.clear();
 		for (Hexagon h : grid) {
 			h.color = Color.gray;

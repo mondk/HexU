@@ -1,7 +1,0 @@
-mode: true: single
-hexes: 3
-P0: Player 1
-P0C: -20561
-P1: AI
-P1C: -16711936
-moves: []

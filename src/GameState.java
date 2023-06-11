@@ -43,12 +43,12 @@ public class GameState{
 	// Variables for hexagon placement
 	double radius=(0.5773502717*(screenWidth-(screenWidth*0.5)))/(numberOfHexagons+1);
 	double shift = 2*radius*0.8660254;
-	int xOffSet= 100- (int) (radius*2);
+	//int xOffSet= 100- (int) (radius*2);
 	
 	HashMap<Integer,Player> players = new HashMap<>();
 
 	//Start point for grid
-	Point startPoint = calcStartPoint();
+	Point startPoint;
 	
 	// JPanel, which includes the different screens
 	JPanel cards = new JPanel(new CardLayout());

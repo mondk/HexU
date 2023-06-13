@@ -1,7 +1,6 @@
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.ActionListener;
@@ -14,11 +13,7 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Arrays;
 
-import javax.lang.model.util.ElementScanner6;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -295,18 +290,17 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 							try {
 								playSound("src/mixkit-funny-fail-low-tone-2876.wav");
 							} catch (LineUnavailableException |IOException e) {
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
+							
+							start=false;
 							drawExsplosion(graphic);
 							repaint();
-							start=false;
-							
-							
 						}
 						gs.nextTurn();
 						paneT.setBackground(gs.paneTColor);
 						paneT.setText(gs.paneTurnString);
+						repaint();
 						break;
 
 				}
@@ -317,7 +311,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 
 	public void showDiaButton(String name){
 		String msg;
-		if (!name.equals("AI")){
+		if (!name.equals("AI    ")){
 			msg = "HURRAY! " + name + " was victorius!\nUp for a rematch?";
 		}else 
 			msg = "Sorry " + gs.players.get(0).name + "... \nUp for a rematch?";
@@ -339,8 +333,6 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	}
 
 	private void checkMouseHover(Point mouse) {
-
-		//mouse.setLocation(mouse.x-5, mouse.y-20);
 		mouse.setLocation(componentToScreen(this,mouse));
 		for(Hexagon h: gs.grid) {
 			if(h.getPolygon().contains(mouse)&&!h.clicked) {
@@ -354,16 +346,12 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 
 	@Override
 	public void paintComponent(Graphics g) {
-		
 		super.paintComponent(g);
 		g.drawImage(this.img.getImage(),0,0, this.getWidth(), this.getHeight(), this);
 		draw(g);	
-		
 	}
 
 	public void draw(Graphics g) {
-		
-		
 		for (BorderR t : gs.border){
 			g.setColor(t.color);
 			g.fillPolygon(t.getPolygon());
@@ -415,15 +403,13 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		gs.q.add(moveId);
 		System.out.println(playerId);
 		gs.grid.get(moveId).color= gs.players.get(playerId).color;
-		gs.nextTurn();
-		paneT.setBackground(gs.paneTColor);
-		paneT.setText(gs.paneTurnString);
-
-		//System.out.println(won);
 		if (gs.winingState(gs.startP2, gs.players.get(playerId).color, gs.winP2) && gs.host) {
 			repaint();
 			showDiaButton(gs.players.get(playerId).name);
 		}
+		gs.nextTurn();
+		paneT.setBackground(gs.paneTColor);
+		paneT.setText(gs.paneTurnString);
 		repaint();
 	}
 	@Override

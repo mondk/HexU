@@ -8,6 +8,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 public class OnlinePanel extends JPanel {
+    ImageIcon img = new ImageIcon("res/background/space.jpg");
     OnlinePanel(GameState gs){
         TextField ip = new TextField(getIp());
         JButton join = new JButton();
@@ -47,4 +48,10 @@ public class OnlinePanel extends JPanel {
         }
         return ip;
     }
+
+    @Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+        g.drawImage(this.img.getImage(),0,0, this.getWidth(), this.getHeight(), this);
+	}
 }

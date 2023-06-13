@@ -7,6 +7,8 @@ import java.util.*;
 
 public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
     GameState gs;
+
+    ImageIcon img = new ImageIcon("res/background/space.jpg");
     public WaitingRoomUI(GameState gameState, String ip) {
         try {
             this.gs = gameState;
@@ -159,5 +161,11 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
         names.add(newPlayer, (int)id);
         names.updateUI();
     }
+
+    @Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+        g.drawImage(this.img.getImage(),0,0, this.getWidth(), this.getHeight(), this);
+	}
 
 }

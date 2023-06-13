@@ -26,6 +26,7 @@ public class GameState{
 	//game grid
 	ArrayList<Hexagon> grid = new ArrayList<>();
 	ArrayList<BorderR> border = new ArrayList<>();
+	ArrayList<Integer> exsplosion = new ArrayList<>();
 	Point hexCenter1;
 	Point hexCenter2;
 	Point hexCenter3;
@@ -42,12 +43,12 @@ public class GameState{
 	// Variables for hexagon placement
 	double radius=(0.5773502717*(screenWidth-(screenWidth*0.5)))/(numberOfHexagons+1);
 	double shift = 2*radius*0.8660254;
-	int xOffSet= 100- (int) (radius*2);
+	//int xOffSet= 100- (int) (radius*2);
 	
 	HashMap<Integer,Player> players = new HashMap<>();
 
 	//Start point for grid
-	Point startPoint = calcStartPoint();
+	Point startPoint;
 	
 	// JPanel, which includes the different screens
 	JPanel cards = new JPanel(new CardLayout());
@@ -246,6 +247,7 @@ public class GameState{
 			winP2.clear();
 		}
 		finalPath.clear();
+		exsplosion.clear();
 		q.clear();
 		for (Hexagon h : grid) {
 			h.color = Color.gray;
@@ -290,7 +292,7 @@ public class GameState{
 		updateNumberOfHexagons(numberOfHexagons);
 		this.whosTurn=Turn.Player1;
 		this.playerState = singlePlayer ? State.SINGLEPLAYER : State.MULTIPLAYER;
-		if(singlePlayer) this.players.put(1, new Player("AI", Color.GREEN));
+		if(singlePlayer) this.players.put(1, new Player("AI     ", Color.GREEN));
 		border = new ArrayList<>();
 		grid = new ArrayList<>();
 		Panel panel = new Panel(this);
@@ -359,7 +361,7 @@ public class GameState{
 		online.start(true, ip);
 		playerState = GameState.State.ONLINE;
 		host = true;
-		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this);
+		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this, ip);
 	}
 
 	public void setOnline(Online online) {
@@ -371,7 +373,7 @@ public class GameState{
 		//gameSpace = new RemoteSpace("tcp://" + ip + ":9001/game?keep");
 		this.host = false;
 		this.playerState = GameState.State.ONLINE;
-		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this);
+		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this, ip);
 	}
 
 
@@ -386,11 +388,10 @@ public class GameState{
 		moveThread.start();
 	}
 	public void disconnectFromOnline() {
-		System.out.println(waitingRoomThread);
+		online.disconnect(onlineId);
 		if(waitingRoomThread != null) waitingRoomThread.interrupt();
 		if(moveThread != null) moveThread.interrupt();
 		returnToMenu();
-		online.disconnect(onlineId);
 	}
 	public void startOnlineGame(int startPlayer) {
 		players = online.getPlayers();
@@ -592,6 +593,7 @@ public class GameState{
 
 		fillLoadMoves(load);
 		fillWinStateArrays();
+		System.out.println(winP2.toString());
 	}
 
 	public Color calcTint(Color c){

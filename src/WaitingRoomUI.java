@@ -7,7 +7,9 @@ import java.util.*;
 
 public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
     GameState gs;
-    public WaitingRoomUI(GameState gameState) {
+
+    ImageIcon img = new ImageIcon("res/background/space.jpg");
+    public WaitingRoomUI(GameState gameState, String ip) {
         try {
             this.gs = gameState;
 
@@ -110,6 +112,13 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
                 });
                 startButton.setText("Start Game");
             }
+            JTextArea ipTextArea = new JTextArea(ip);
+            JLabel ipLabel = new JLabel("The IP address is:");
+            JPanel ipInfo = new JPanel();
+            ipInfo.setLayout(new GridLayout(0,1));
+            ipInfo.add(ipLabel);
+            ipInfo.add(ipTextArea);
+            add(ipInfo);
             gs.cards.add(this);
             CardLayout cl = (CardLayout)gs.cards.getLayout();
             cl.next(gs.cards);
@@ -152,5 +161,11 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
         names.add(newPlayer, (int)id);
         names.updateUI();
     }
+
+    @Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+        g.drawImage(this.img.getImage(),0,0, this.getWidth(), this.getHeight(), this);
+	}
 
 }

@@ -423,6 +423,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
         
         // Draw the hexagon
         g2d.drawPolygon(xPoints, yPoints, 6);
+		g2d.setStroke(new BasicStroke(1));
     }
 
 	@Override

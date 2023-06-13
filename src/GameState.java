@@ -606,6 +606,10 @@ public class GameState{
 		return new Color((int)(red+(255-red)*coef), (int)(green+(255-green)*coef), (int)(blue+(255-blue)*coef));
 	}
 
+	public Color calcComplementColor(Color c){
+		return new Color (255- c.getRed(), 255-c.getGreen(), 255- c.getBlue());
+	}
+
 	private Point calcStartPoint(){
 		double height = (numberOfHexagons*0.5)*(radius*2)+((numberOfHexagons-(numberOfHexagons*0.5))*radius);
 		double width = (radius*2)*(numberOfHexagons+Math.floor(numberOfHexagons/2));

@@ -85,7 +85,6 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				try {
 					playSound("src/converted_mixkit-water-sci-fi-bleep-902.wav");
 				} catch (LineUnavailableException | IOException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} 
 
@@ -97,19 +96,19 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				switch(gs.whosTurn){
 					case Player1:
 						if (gs.winingState(gs.startP1, gs.players.get(0).color, gs.winP1)) {
-							
+							repaint();
 							start=false;
 							drawExsplosion(graphic);
-							repaint();
+							
 							break;
 							
 						}
 					case Player2:
 						if (gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2) && gs.host) {
-							
+							repaint();
 							start=false;
 							drawExsplosion(graphic);
-							repaint();
+							
 							break;
 						}
 
@@ -194,9 +193,10 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 										// TODO Auto-generated catch block
 										e1.printStackTrace();
 									}
-									//start=false;
-									drawExsplosion(graphic);
 									repaint();
+									start=false;
+									drawExsplosion(graphic);
+									
 								}
 								gs.nextTurn();
 								paneT.setBackground(gs.paneTColor);
@@ -217,9 +217,10 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 									} catch (LineUnavailableException | IOException e1) {
 										e1.printStackTrace();
 									}
-									//start=false;
-									drawExsplosion(graphic);
 									repaint();
+									start=false;
+									drawExsplosion(graphic);
+									
 								}
 								gs.nextTurn();
 								paneT.setBackground(gs.paneTColor);
@@ -371,6 +372,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		if(!gs.exsplosion.isEmpty()) {
 			for(int i: gs.exsplosion) {
 				Hexagon h = gs.grid.get(i);
+				g.setColor(gs.calcComplementColor(h.color));
 				drawThickHexagon((Graphics2D) g,h.center.x,h.center.y,(int) h.radius);
 			}
 		}

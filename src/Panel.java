@@ -151,7 +151,9 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 			@Override
 			public void actionPerformed(ActionEvent e){
 				if (gs.waitingRoom != null)gs.disconnectFromOnline();
+				gs.resetGame(0);
 				gs.returnToMenu();
+				
 			}
 		});
 		this.add(paneT);

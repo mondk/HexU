@@ -388,11 +388,10 @@ public class GameState{
 		moveThread.start();
 	}
 	public void disconnectFromOnline() {
-		System.out.println(waitingRoomThread);
+		online.disconnect(onlineId);
 		if(waitingRoomThread != null) waitingRoomThread.interrupt();
 		if(moveThread != null) moveThread.interrupt();
 		returnToMenu();
-		online.disconnect(onlineId);
 	}
 	public void startOnlineGame(int startPlayer) {
 		players = online.getPlayers();

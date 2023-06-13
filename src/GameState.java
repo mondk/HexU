@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -611,5 +612,24 @@ public class GameState{
 		int y = (int) ((SCREEN_SIZE.getHeight()-height)*0.5);
 		int x = (int) ((SCREEN_SIZE.getWidth()-width)*0.7);
 		return new Point(x,y);
+	}
+
+	public void saveGame(){
+		try{
+			FileWriter saveWriter = new FileWriter("res/saves.txt");
+			if (singlePlayer)
+				saveWriter.write("mode: " + "true: " + returnPS());
+			else 
+				saveWriter.write("mode: " + "false: " + returnPS());
+			saveWriter.write("\nhexes: " + numberOfHexagons);
+			for (Map.Entry<Integer,Player> player : players.entrySet()){
+				saveWriter.write("\nP"+player.getKey()+": " + player.getValue().name);
+				saveWriter.write("\nP"+player.getKey()+"C: " + String.valueOf(player.getValue().color.getRGB()));
+			}
+			saveWriter.write("\nmoves: " + q.toString());
+			saveWriter.close();
+		} catch(IOException IOe) {
+			System.out.println(IOe);
+		}
 	}
 }

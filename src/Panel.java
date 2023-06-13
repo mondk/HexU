@@ -295,10 +295,10 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 							} catch (LineUnavailableException |IOException e) {
 								e.printStackTrace();
 							}
-							
+							repaint();
 							start=false;
 							drawExsplosion(graphic);
-							repaint();
+							
 						}
 						gs.nextTurn();
 						paneT.setBackground(gs.paneTColor);
@@ -373,6 +373,8 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				Hexagon h = gs.grid.get(i);
 				g.setColor(h.color);
 				g.fillPolygon(h.getPolygon());
+				g.setColor(gs.calcTint(h.color));
+				g.fillPolygon(h.getPolygonInner());
 				g.setColor(gs.calcComplementColor(h.color));
 				drawThickHexagon((Graphics2D) g,h.center.x,h.center.y,(int) h.radius);
 			}
@@ -381,10 +383,19 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	}
 
 	private void drawExsplosion(Graphics g) {
+		for(Integer h: gs.finalPath) {
+			Hexagon q = gs.grid.get(h);
+			g.setColor(q.color);
+			g.fillPolygon(q.getPolygon());
+			g.setColor(Color.black);
+			g.drawPolygon(q.getPolygon());
+			g.setColor(gs.calcTint(q.color));
+			g.fillPolygon(q.getPolygonInner());
+		}
 
 		for(Integer h: gs.finalPath) {
-			g.setColor(gs.calcComplementColor(gs.grid.get(h).color));
 			Hexagon q = gs.grid.get(h);
+			g.setColor(gs.calcComplementColor(q.color));
 			gs.exsplosion.add(h);
 			drawThickHexagon((Graphics2D) g,q.center.x,q.center.y,(int) q.radius);
 			try {

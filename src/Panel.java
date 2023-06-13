@@ -186,9 +186,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 								if (gs.onlineMove != null) gs.onlineMove.makeMove(h.id);
 								System.out.println(gs.players.get(0).name + " clicked on hexagon: "+h.id+" score: "+h.score);
 								repaint();
-								gs.nextTurn();
-								paneT.setBackground(gs.paneTColor);
-								paneT.setText(gs.paneTurnString);
+								
 								if (gs.winingState(gs.startP1, gs.players.get(0).color, gs.winP1)) {
 									try {
 										playSound("src/mixkit-ethereal-fairy-win-sound-2019.wav");
@@ -196,20 +194,20 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 										// TODO Auto-generated catch block
 										e1.printStackTrace();
 									}
-									start=false;
+									//start=false;
 									drawExsplosion(graphic);
 									repaint();
 								}
-								
+								gs.nextTurn();
+								paneT.setBackground(gs.paneTColor);
+								paneT.setText(gs.paneTurnString);
 								break;
 
 							case Player2:
 								gs.grid.get(h.id).clicked=true;
 								h.color=gs.players.get(1).color;
 								if (gs.onlineMove != null) gs.onlineMove.makeMove(h.id);
-								gs.nextTurn();
-								paneT.setBackground(gs.paneTColor);
-								paneT.setText(gs.paneTurnString);
+								
 								System.out.println(gs.players.get(1).name + " clicked on hexagon: "+h.id+" score: "+h.score);
 								repaint();
 								if (gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2) && gs.host) {
@@ -219,11 +217,13 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 									} catch (LineUnavailableException | IOException e1) {
 										e1.printStackTrace();
 									}
-									start=false;
+									//start=false;
 									drawExsplosion(graphic);
 									repaint();
 								}
-								
+								gs.nextTurn();
+								paneT.setBackground(gs.paneTColor);
+								paneT.setText(gs.paneTurnString);
 								break;
 						}
 						repaint();						
@@ -319,14 +319,14 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		}else 
 			msg = "Sorry " + gs.players.get(0).name + "... \nUp for a rematch?";
 		dialogbutton = JOptionPane.showConfirmDialog(null, msg ,"", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
-		if (dialogbutton == JOptionPane.YES_OPTION) {
+		if (!(dialogbutton == JOptionPane.NO_OPTION)) {
 			reset(1);
 			
-		}else if (dialogbutton == JOptionPane.NO_OPTION) {
+		}else{
 			reset(0);
 			if(gs.onlineMove != null)gs.online.disconnect(gs.onlineId);
 			gs.returnToMenu();
-		}
+		} 
 	}
 
 	public static Point componentToScreen(Component component, Point point) {

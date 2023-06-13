@@ -1,6 +1,8 @@
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.ActionListener;
@@ -369,8 +371,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		if(!gs.exsplosion.isEmpty()) {
 			for(int i: gs.exsplosion) {
 				Hexagon h = gs.grid.get(i);
-				g.setColor(Color.black);
-				g.fillOval((int)((h.center.x-(h.radius*1.2)/2)),(int) ((h.center.y-(h.radius*1.2)/2)),(int) (h.radius*1.2), (int)(h.radius*1.2));
+				drawThickHexagon((Graphics2D) g,h.center.x,h.center.y,(int) h.radius);
 			}
 		}
 		
@@ -380,8 +381,9 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		repaint();
 		for(Integer h: gs.finalPath) {
 			g.setColor(Color.black);
-			g.fillOval((int)((gs.grid.get(h).center.x-(gs.radius*1.2)/2)),(int) ((gs.grid.get(h).center.y-(gs.radius*1.2)/2)),(int) (gs.radius*1.2), (int)(gs.radius*1.2));
+			Hexagon q = gs.grid.get(h);
 			gs.exsplosion.add(h);
+			drawThickHexagon((Graphics2D) g,q.center.x,q.center.y,(int) q.radius);
 			try {
 				Thread.sleep(300);
 			} catch (InterruptedException e) {
@@ -392,6 +394,22 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		showDiaButton(gs.paneTurnString);
 		
 	}
+	public static void drawThickHexagon(Graphics2D g2d, int centerX, int centerY, int radius) {
+        int[] xPoints = new int[6];
+        int[] yPoints = new int[6];
+        for (int i = 0; i < 6; i++) {
+            double angle = 2 * Math.PI * i / 6;
+            xPoints[i] = (int) (centerX + radius * Math.sin(angle));
+            yPoints[i] = (int) (centerY + radius * Math.cos(angle));
+        }
+        
+        // Set a thicker stroke
+        int thickness = 5; // Adjust the thickness value as desired
+        g2d.setStroke(new BasicStroke(thickness));
+        
+        // Draw the hexagon
+        g2d.drawPolygon(xPoints, yPoints, 6);
+    }
 
 	@Override
 	public void performedMove(int moveId, int playerId) {

@@ -75,6 +75,15 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 						move = ai.nextMove(ai.gridToMatrix(gs.grid,gs.numberOfHexagons), gs.players.get(1).color.toString());
 						break;
 				}
+				int hex = move[0]*gs.numberOfHexagons+move[1];
+				gs.grid.get(hex).clicked = true;
+				gs.grid.get(hex).color = gs.paneTColor;
+				gs.q.add(hex);
+				repaint();
+				
+				if(gs.onlineMove != null)
+					gs.onlineMove.makeMove(hex);
+				repaint();
 				//this bit handles sound effects
 				try {
 					playSound("src/converted_mixkit-water-sci-fi-bleep-902.wav");
@@ -83,24 +92,28 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 					e1.printStackTrace();
 				} 
 
-				int hex = move[0]*gs.numberOfHexagons+move[1];
-				gs.grid.get(hex).clicked = true;
-				gs.grid.get(hex).color = gs.paneTColor;
-				gs.q.add(hex);
-				if(gs.onlineMove != null)gs.onlineMove.makeMove(hex);
-				
+				try {
+					Thread.sleep(hex);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				switch(gs.whosTurn){
 					case Player1:
 						if (gs.winingState(gs.startP1, gs.players.get(0).color, gs.winP1)) {
 							
 							start=false;
+							drawExsplosion(graphic);
 							repaint();
+							
 						}
 					case Player2:
 						if (gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2) && gs.host) {
 							
 							start=false;
+							drawExsplosion(graphic);
 							repaint();
+							
 						}
 
 				}
@@ -142,7 +155,6 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		backtoMenu.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
-				if(gs.waitingRoom != null) gs.disconnectFromOnline();
 				gs.returnToMenu();
 			}
 		});
@@ -207,9 +219,8 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 										// TODO Auto-generated catch block
 										e1.printStackTrace();
 									}
-
-									
 									start=false;
+									drawExsplosion(graphic);
 									repaint();
 								}
 								
@@ -277,10 +288,8 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 						gs.grid.get(hex).clicked = true;
 						gs.grid.get(hex).color = gs.paneTColor;
 						gs.q.add(hex);
-						gs.nextTurn();
-						paneT.setBackground(gs.paneTColor);
-						paneT.setText(gs.paneTurnString);
-
+						
+						repaint();
 						if (gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2)) {
 							try {
 								playSound("src/mixkit-funny-fail-low-tone-2876.wav");
@@ -288,11 +297,15 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
+							drawExsplosion(graphic);
 							repaint();
 							start=false;
 							
 							
 						}
+						gs.nextTurn();
+						paneT.setBackground(gs.paneTColor);
+						paneT.setText(gs.paneTurnString);
 						break;
 
 				}
@@ -391,7 +404,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				}
 			}
 		}
-		showDiaButton("test");
+		showDiaButton(gs.paneTurnString);
 		
 	}
 

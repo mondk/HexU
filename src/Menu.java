@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class Menu extends JPanel {
-    ImageIcon img = new ImageIcon("res/background/space.jpg");
+    ImageIcon img = new ImageIcon(this.getClass().getResource("res/background/space.jpg"));
     int dialogbutton;
     Menu(GameState gs) {
         

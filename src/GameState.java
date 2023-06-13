@@ -3,16 +3,16 @@ import java.awt.Dimension;
 import java.awt.Point;
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
-import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.ArrayList;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.jar.JarInputStream;
+import java.util.zip.ZipInputStream;
 
 public class GameState{
 	
@@ -355,7 +355,13 @@ public class GameState{
 	}
 
 	public String randomBackground(){
-		String[] files = new File("res/background").list();
+		String[] files;
+		try {
+			files = new File(this.getClass().getResource("res/background").toURI()).list();
+		} catch (Exception ignored){
+			// When compiling to a jar file, it is only one file, and it doesn't load the directory correctly
+			files = new String[]{"beach.jpg", "odesert.jpg", "space.jpg", "woods.jpg"};
+		}
 		int x = 1+(int)(Math.random()*(files.length-1));
 		return "res/background/" + files[x];
 	}
@@ -430,9 +436,9 @@ public class GameState{
 	}
 
 	public void loadFile(){
-		try {
-			File Obj = new File("res/saves.txt");
-			Scanner Reader = new Scanner(Obj);
+		//try {
+			//File Obj = new File(this.getClass().getResource("res/saves.txt").getFile());
+			Scanner Reader = new Scanner(this.getClass().getResourceAsStream("res/saves.txt"));
 			while (Reader.hasNextLine()) {
 				String[] data = Reader.nextLine().split(": ");
 				//System.out.println(data[0].toString()+ " " + data[1].toString());
@@ -463,10 +469,10 @@ public class GameState{
 				}
 			}
 			Reader.close();	
-		}
-		catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		//}
+		//catch (FileNotFoundException e) {
+			//e.printStackTrace();
+		//}
 	}
 
 	public void createGrid() {
@@ -620,10 +626,10 @@ public class GameState{
 
 	public void saveGame(){
 		try{
-			FileWriter saveWriter = new FileWriter("res/saves.txt");
+			FileWriter saveWriter = new FileWriter(this.getClass().getResource("res/saves.txt").getFile());
 			if (singlePlayer)
 				saveWriter.write("mode: " + "true: " + returnPS());
-			else 
+			else
 				saveWriter.write("mode: " + "false: " + returnPS());
 			saveWriter.write("\nhexes: " + numberOfHexagons);
 			for (Map.Entry<Integer,Player> player : players.entrySet()){

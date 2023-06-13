@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 
 import javax.swing.JOptionPane;
@@ -38,7 +38,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	JButton backtoMenu = new JButton("Back to Menu");
 	boolean start =true;
 	int dialogbutton;
-	ImageIcon reMatchIcon = new ImageIcon("res/rematch.png");  //  <a target="_blank" href="https://icons8.com/icon/PT3001yzoXgN/match">Match</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+	ImageIcon reMatchIcon = new ImageIcon(this.getClass().getResource("res/rematch.png"));  //  <a target="_blank" href="https://icons8.com/icon/PT3001yzoXgN/match">Match</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 	boolean singlePlayer;
 	int once = 0;
 	private Graphics graphic;
@@ -46,7 +46,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 
 	public Panel(GameState gs) {
 		this.gs=gs;
-		this.img = new ImageIcon(gs.randomBackground());
+		this.img = new ImageIcon(this.getClass().getResource(gs.randomBackground()));
 		this.singlePlayer=gs.singlePlayer;
 		this.setFocusable(true);
 		this.setPreferredSize(gs.SCREEN_SIZE);
@@ -237,8 +237,9 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 
 	protected void playSound(String soundFile) throws LineUnavailableException, IOException {
 		try {
-			File file = new File(soundFile);
-			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
+			BufferedInputStream fileName = new BufferedInputStream(this.getClass().getResourceAsStream(soundFile));
+			//File file = new File(String.valueOf(fileName.read()));
+			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(fileName);
 			Clip clip = AudioSystem.getClip();
 			clip.open(audioInputStream);
 			clip.start();

@@ -90,7 +90,6 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				try {
 					Thread.sleep(hex);
 				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				switch(gs.whosTurn){
@@ -100,6 +99,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 							start=false;
 							drawExsplosion(graphic);
 							repaint();
+							break;
 							
 						}
 					case Player2:
@@ -108,7 +108,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 							start=false;
 							drawExsplosion(graphic);
 							repaint();
-							
+							break;
 						}
 
 				}
@@ -116,6 +116,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				paneT.setText(gs.paneTurnString);
 				paneT.setBackground(gs.paneTColor);
 				repaint();
+				
 			}
 
 		});
@@ -130,8 +131,6 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 						int inter2 = gs.q.pollLast();
 						gs.grid.get(inter2).color = Color.gray;
 						gs.grid.get(inter2).clicked = false;
-						paneT.setText(gs.paneTurnString);
-						paneT.setBackground(gs.paneTColor);
 						repaint();
 					} else{
 						int inter = gs.q.pollLast();
@@ -158,7 +157,8 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		});
 		this.add(paneT);
 		this.add(undo);
-		this.add(generate);
+		if (gs.numberOfHexagons<13)
+			this.add(generate);
 		this.add(backtoMenu);
 
 		//actions when hex is clicked
@@ -183,34 +183,11 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 								h.color=gs.players.get(0).color;
 								if (gs.onlineMove != null) gs.onlineMove.makeMove(h.id);
 								System.out.println(gs.players.get(0).name + " clicked on hexagon: "+h.id+" score: "+h.score);
-
-								if (gs.winingState(gs.startP1, gs.players.get(0).color, gs.winP1)) {
-									try {
-										playSound("src/mixkit-ethereal-fairy-win-sound-2019.wav");
-									} catch (LineUnavailableException | IOException e1) {
-										// TODO Auto-generated catch block
-										e1.printStackTrace();
-									}
-									
-								start=false;
-								drawExsplosion(graphic);
 								repaint();
-								}
 								gs.nextTurn();
 								paneT.setBackground(gs.paneTColor);
 								paneT.setText(gs.paneTurnString);
-								break;
-							case Player2:
-								gs.grid.get(h.id).clicked=true;
-								h.color=gs.players.get(1).color;
-								if (gs.onlineMove != null) gs.onlineMove.makeMove(h.id);
-								gs.nextTurn();
-								paneT.setBackground(gs.paneTColor);
-								paneT.setText(gs.paneTurnString);
-								System.out.println(gs.players.get(1).name + " clicked on hexagon: "+h.id+" score: "+h.score);
-								
-								if (gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2) && gs.host) {
-
+								if (gs.winingState(gs.startP1, gs.players.get(0).color, gs.winP1)) {
 									try {
 										playSound("src/mixkit-ethereal-fairy-win-sound-2019.wav");
 									} catch (LineUnavailableException | IOException e1) {
@@ -223,9 +200,31 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 								}
 								
 								break;
-						}
 
-						repaint();
+							case Player2:
+								gs.grid.get(h.id).clicked=true;
+								h.color=gs.players.get(1).color;
+								if (gs.onlineMove != null) gs.onlineMove.makeMove(h.id);
+								gs.nextTurn();
+								paneT.setBackground(gs.paneTColor);
+								paneT.setText(gs.paneTurnString);
+								System.out.println(gs.players.get(1).name + " clicked on hexagon: "+h.id+" score: "+h.score);
+								repaint();
+								if (gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2) && gs.host) {
+
+									try {
+										playSound("src/mixkit-ethereal-fairy-win-sound-2019.wav");
+									} catch (LineUnavailableException | IOException e1) {
+										e1.printStackTrace();
+									}
+									start=false;
+									drawExsplosion(graphic);
+									repaint();
+								}
+								
+								break;
+						}
+						repaint();						
 					}
 				}
 			}
@@ -313,13 +312,12 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 
 	public void showDiaButton(String name){
 		String msg;
-		if (!name.equals("AI    ")){
+		if (!(name==gs.AIname)){
 			msg = "HURRAY! " + name + " was victorius!\nUp for a rematch?";
 		}else 
 			msg = "Sorry " + gs.players.get(0).name + "... \nUp for a rematch?";
 		dialogbutton = JOptionPane.showConfirmDialog(null, msg ,"", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 		if (dialogbutton == JOptionPane.YES_OPTION) {
-			
 			reset(1);
 			
 		}else if (dialogbutton == JOptionPane.NO_OPTION) {
@@ -378,22 +376,18 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		
 	}
 
-
-
 	private void drawExsplosion(Graphics g) {
-		// TODO Auto-generated method stub
-		for(Hexagon h: gs.grid) {
-			if(gs.finalPath.contains(h.id)) {
-				g.setColor(Color.black);
-				g.fillOval((int)((h.center.x-(h.radius*1.2)/2)),(int) ((h.center.y-(h.radius*1.2)/2)),(int) (h.radius*1.2), (int)(h.radius*1.2));
-				gs.exsplosion.add(h.id);
-				try {
-					Thread.sleep(300);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		repaint();
+		for(Integer h: gs.finalPath) {
+			g.setColor(Color.black);
+			g.fillOval((int)((gs.grid.get(h).center.x-(gs.radius*1.2)/2)),(int) ((gs.grid.get(h).center.y-(gs.radius*1.2)/2)),(int) (gs.radius*1.2), (int)(gs.radius*1.2));
+			gs.exsplosion.add(h);
+			try {
+				Thread.sleep(300);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
+			
 		}
 		showDiaButton(gs.paneTurnString);
 		

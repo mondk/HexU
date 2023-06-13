@@ -22,6 +22,7 @@ public class GameState{
 	OnlineMove onlineMove = null;
 	Thread moveThread = null;
 	Integer onlineId = 0;
+	String AIname = "AI";
 
 	//game grid
 	ArrayList<Hexagon> grid = new ArrayList<>();
@@ -292,7 +293,7 @@ public class GameState{
 		updateNumberOfHexagons(numberOfHexagons);
 		this.whosTurn=Turn.Player1;
 		this.playerState = singlePlayer ? State.SINGLEPLAYER : State.MULTIPLAYER;
-		if(singlePlayer) this.players.put(1, new Player("AI     ", Color.GREEN));
+		if(singlePlayer) this.players.put(1, new Player(AIname, Color.GREEN));
 		border = new ArrayList<>();
 		grid = new ArrayList<>();
 		Panel panel = new Panel(this);
@@ -307,6 +308,7 @@ public class GameState{
 		waitingRoom = null;
 		onlineMove = null;
 		host = true;
+		resetGame(0);
 		Menu menu  = new Menu(this);
 		cards.add(menu, "MENU2");
 		CardLayout cl = (CardLayout)cards.getLayout();
@@ -593,7 +595,6 @@ public class GameState{
 
 		fillLoadMoves(load);
 		fillWinStateArrays();
-		System.out.println(winP2.toString());
 	}
 
 	public Color calcTint(Color c){

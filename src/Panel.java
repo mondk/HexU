@@ -190,7 +190,6 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 									try {
 										playSound("src/mixkit-ethereal-fairy-win-sound-2019.wav");
 									} catch (LineUnavailableException | IOException e1) {
-										// TODO Auto-generated catch block
 										e1.printStackTrace();
 									}
 									repaint();
@@ -372,6 +371,8 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		if(!gs.exsplosion.isEmpty()) {
 			for(int i: gs.exsplosion) {
 				Hexagon h = gs.grid.get(i);
+				g.setColor(h.color);
+				g.fillPolygon(h.getPolygon());
 				g.setColor(gs.calcComplementColor(h.color));
 				drawThickHexagon((Graphics2D) g,h.center.x,h.center.y,(int) h.radius);
 			}
@@ -380,9 +381,9 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	}
 
 	private void drawExsplosion(Graphics g) {
-		repaint();
+
 		for(Integer h: gs.finalPath) {
-			g.setColor(Color.black);
+			g.setColor(gs.calcComplementColor(gs.grid.get(h).color));
 			Hexagon q = gs.grid.get(h);
 			gs.exsplosion.add(h);
 			drawThickHexagon((Graphics2D) g,q.center.x,q.center.y,(int) q.radius);

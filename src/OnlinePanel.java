@@ -9,7 +9,6 @@ import java.net.UnknownHostException;
 
 public class OnlinePanel extends JPanel {
     ImageIcon img = new ImageIcon("res/background/space.jpg");
-    private Panel panel;
     OnlinePanel(GameState gs){
         TextField ip = new TextField(getIp());
         JButton join = new JButton();
@@ -30,12 +29,6 @@ public class OnlinePanel extends JPanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 gs.hostGame(getIp());
             }
-        });
-        backtoMenuOnline.setAction(new AbstractAction() {
-            @Override
-			public void actionPerformed(ActionEvent e){
-				gs.returnToMenu();
-			}
         });
         backtoMenuOnline.setAction(new AbstractAction() {
             @Override

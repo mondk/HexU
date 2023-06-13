@@ -1,6 +1,8 @@
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.ActionListener;
@@ -83,32 +85,31 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				try {
 					playSound("res/sfx/converted_mixkit-water-sci-fi-bleep-902.wav");
 				} catch (LineUnavailableException | IOException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} 
 
 				try {
 					Thread.sleep(hex);
 				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				switch(gs.whosTurn){
 					case Player1:
 						if (gs.winingState(gs.startP1, gs.players.get(0).color, gs.winP1)) {
-							
+							repaint();
 							start=false;
 							drawExsplosion(graphic);
-							repaint();
+							
+							break;
 							
 						}
 					case Player2:
 						if (gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2) && gs.host) {
-							
+							repaint();
 							start=false;
 							drawExsplosion(graphic);
-							repaint();
 							
+							break;
 						}
 
 				}
@@ -116,6 +117,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				paneT.setText(gs.paneTurnString);
 				paneT.setBackground(gs.paneTColor);
 				repaint();
+				
 			}
 
 		});
@@ -130,8 +132,6 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 						int inter2 = gs.q.pollLast();
 						gs.grid.get(inter2).color = Color.gray;
 						gs.grid.get(inter2).clicked = false;
-						paneT.setText(gs.paneTurnString);
-						paneT.setBackground(gs.paneTColor);
 						repaint();
 					} else{
 						int inter = gs.q.pollLast();
@@ -151,12 +151,15 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 			@Override
 			public void actionPerformed(ActionEvent e){
 				if (gs.waitingRoom != null)gs.disconnectFromOnline();
+				gs.resetGame(0);
 				gs.returnToMenu();
+				
 			}
 		});
 		this.add(paneT);
 		this.add(undo);
-		this.add(generate);
+		if (gs.numberOfHexagons<13)
+			this.add(generate);
 		this.add(backtoMenu);
 
 		//actions when hex is clicked
@@ -181,49 +184,49 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 								h.color=gs.players.get(0).color;
 								if (gs.onlineMove != null) gs.onlineMove.makeMove(h.id);
 								System.out.println(gs.players.get(0).name + " clicked on hexagon: "+h.id+" score: "+h.score);
-
+								repaint();
+								
 								if (gs.winingState(gs.startP1, gs.players.get(0).color, gs.winP1)) {
 									try {
 										playSound("res/sfx/mixkit-ethereal-fairy-win-sound-2019.wav");
 									} catch (LineUnavailableException | IOException e1) {
-										// TODO Auto-generated catch block
 										e1.printStackTrace();
 									}
+									repaint();
+									start=false;
+									drawExsplosion(graphic);
 									
-								start=false;
-								drawExsplosion(graphic);
-								repaint();
 								}
 								gs.nextTurn();
 								paneT.setBackground(gs.paneTColor);
 								paneT.setText(gs.paneTurnString);
 								break;
+
 							case Player2:
 								gs.grid.get(h.id).clicked=true;
 								h.color=gs.players.get(1).color;
 								if (gs.onlineMove != null) gs.onlineMove.makeMove(h.id);
-								gs.nextTurn();
-								paneT.setBackground(gs.paneTColor);
-								paneT.setText(gs.paneTurnString);
-								System.out.println(gs.players.get(1).name + " clicked on hexagon: "+h.id+" score: "+h.score);
 								
+								System.out.println(gs.players.get(1).name + " clicked on hexagon: "+h.id+" score: "+h.score);
+								repaint();
 								if (gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2) && gs.host) {
 
 									try {
 										playSound("res/sfx/mixkit-ethereal-fairy-win-sound-2019.wav");
 									} catch (LineUnavailableException | IOException e1) {
-										// TODO Auto-generated catch block
 										e1.printStackTrace();
 									}
+									repaint();
 									start=false;
 									drawExsplosion(graphic);
-									repaint();
+									
 								}
-								
+								gs.nextTurn();
+								paneT.setBackground(gs.paneTColor);
+								paneT.setText(gs.paneTurnString);
 								break;
 						}
-
-						repaint();
+						repaint();						
 					}
 				}
 			}
@@ -311,20 +314,19 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 
 	public void showDiaButton(String name){
 		String msg;
-		if (!name.equals("AI    ")){
+		if (!(name==gs.AIname)){
 			msg = "HURRAY! " + name + " was victorius!\nUp for a rematch?";
 		}else 
 			msg = "Sorry " + gs.players.get(0).name + "... \nUp for a rematch?";
 		dialogbutton = JOptionPane.showConfirmDialog(null, msg ,"", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
-		if (dialogbutton == JOptionPane.YES_OPTION) {
-			
+		if (!(dialogbutton == JOptionPane.NO_OPTION)) {
 			reset(1);
 			
-		}else if (dialogbutton == JOptionPane.NO_OPTION) {
+		}else{
 			reset(0);
 			if(gs.onlineMove != null)gs.online.disconnect(gs.onlineId);
 			gs.returnToMenu();
-		}
+		} 
 	}
 
 	public static Point componentToScreen(Component component, Point point) {
@@ -369,33 +371,48 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		if(!gs.exsplosion.isEmpty()) {
 			for(int i: gs.exsplosion) {
 				Hexagon h = gs.grid.get(i);
-				g.setColor(Color.black);
-				g.fillOval((int)((h.center.x-(h.radius*1.2)/2)),(int) ((h.center.y-(h.radius*1.2)/2)),(int) (h.radius*1.2), (int)(h.radius*1.2));
+				g.setColor(h.color);
+				g.fillPolygon(h.getPolygon());
+				g.setColor(gs.calcComplementColor(h.color));
+				drawThickHexagon((Graphics2D) g,h.center.x,h.center.y,(int) h.radius);
 			}
 		}
 		
 	}
 
-
-
 	private void drawExsplosion(Graphics g) {
-		// TODO Auto-generated method stub
-		for(Hexagon h: gs.grid) {
-			if(gs.finalPath.contains(h.id)) {
-				g.setColor(Color.black);
-				g.fillOval((int)((h.center.x-(h.radius*1.2)/2)),(int) ((h.center.y-(h.radius*1.2)/2)),(int) (h.radius*1.2), (int)(h.radius*1.2));
-				gs.exsplosion.add(h.id);
-				try {
-					Thread.sleep(300);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+
+		for(Integer h: gs.finalPath) {
+			g.setColor(gs.calcComplementColor(gs.grid.get(h).color));
+			Hexagon q = gs.grid.get(h);
+			gs.exsplosion.add(h);
+			drawThickHexagon((Graphics2D) g,q.center.x,q.center.y,(int) q.radius);
+			try {
+				Thread.sleep(300);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
+			
 		}
 		showDiaButton(gs.paneTurnString);
 		
 	}
+	public static void drawThickHexagon(Graphics2D g2d, int centerX, int centerY, int radius) {
+        int[] xPoints = new int[6];
+        int[] yPoints = new int[6];
+        for (int i = 0; i < 6; i++) {
+            double angle = 2 * Math.PI * i / 6;
+            xPoints[i] = (int) (centerX + radius * Math.sin(angle));
+            yPoints[i] = (int) (centerY + radius * Math.cos(angle));
+        }
+        
+        // Set a thicker stroke
+        int thickness = 5; // Adjust the thickness value as desired
+        g2d.setStroke(new BasicStroke(thickness));
+        
+        // Draw the hexagon
+        g2d.drawPolygon(xPoints, yPoints, 6);
+    }
 
 	@Override
 	public void performedMove(int moveId, int playerId) {

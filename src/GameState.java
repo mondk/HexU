@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -22,6 +23,7 @@ public class GameState{
 	OnlineMove onlineMove = null;
 	Thread moveThread = null;
 	Integer onlineId = 0;
+	String AIname = "AI";
 
 	//game grid
 	ArrayList<Hexagon> grid = new ArrayList<>();
@@ -292,7 +294,7 @@ public class GameState{
 		updateNumberOfHexagons(numberOfHexagons);
 		this.whosTurn=Turn.Player1;
 		this.playerState = singlePlayer ? State.SINGLEPLAYER : State.MULTIPLAYER;
-		if(singlePlayer) this.players.put(1, new Player("AI     ", Color.GREEN));
+		if(singlePlayer) this.players.put(1, new Player(AIname, Color.GREEN));
 		border = new ArrayList<>();
 		grid = new ArrayList<>();
 		Panel panel = new Panel(this);
@@ -307,6 +309,7 @@ public class GameState{
 		waitingRoom = null;
 		onlineMove = null;
 		host = true;
+		resetGame(0);
 		Menu menu  = new Menu(this);
 		cards.add(menu, "MENU2");
 		CardLayout cl = (CardLayout)cards.getLayout();
@@ -593,7 +596,6 @@ public class GameState{
 
 		fillLoadMoves(load);
 		fillWinStateArrays();
-		System.out.println(winP2.toString());
 	}
 
 	public Color calcTint(Color c){
@@ -604,11 +606,34 @@ public class GameState{
 		return new Color((int)(red+(255-red)*coef), (int)(green+(255-green)*coef), (int)(blue+(255-blue)*coef));
 	}
 
+	public Color calcComplementColor(Color c){
+		return new Color (255- c.getRed(), 255-c.getGreen(), 255- c.getBlue());
+	}
+
 	private Point calcStartPoint(){
 		double height = (numberOfHexagons*0.5)*(radius*2)+((numberOfHexagons-(numberOfHexagons*0.5))*radius);
 		double width = (radius*2)*(numberOfHexagons+Math.floor(numberOfHexagons/2));
 		int y = (int) ((SCREEN_SIZE.getHeight()-height)*0.5);
 		int x = (int) ((SCREEN_SIZE.getWidth()-width)*0.7);
 		return new Point(x,y);
+	}
+
+	public void saveGame(){
+		try{
+			FileWriter saveWriter = new FileWriter("res/saves.txt");
+			if (singlePlayer)
+				saveWriter.write("mode: " + "true: " + returnPS());
+			else 
+				saveWriter.write("mode: " + "false: " + returnPS());
+			saveWriter.write("\nhexes: " + numberOfHexagons);
+			for (Map.Entry<Integer,Player> player : players.entrySet()){
+				saveWriter.write("\nP"+player.getKey()+": " + player.getValue().name);
+				saveWriter.write("\nP"+player.getKey()+"C: " + String.valueOf(player.getValue().color.getRGB()));
+			}
+			saveWriter.write("\nmoves: " + q.toString());
+			saveWriter.close();
+		} catch(IOException IOe) {
+			System.out.println(IOe);
+		}
 	}
 }

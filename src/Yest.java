@@ -29,22 +29,7 @@ public class Yest {
 			@Override
 			public void windowClosing(WindowEvent windowEvent){
 				if (!gs.returnPS().equals("online")){
-					try{
-						FileWriter saveWriter = new FileWriter("res/saves.txt");
-						if (gs.singlePlayer)
-							saveWriter.write("mode: " + "true: " + gs.returnPS());
-						else 
-							saveWriter.write("mode: " + "false: " + gs.returnPS());
-						saveWriter.write("\nhexes: " + gs.numberOfHexagons);
-						for (Map.Entry<Integer,Player> player : gs.players.entrySet()){
-							saveWriter.write("\nP"+player.getKey()+": " + player.getValue().name);
-							saveWriter.write("\nP"+player.getKey()+"C: " + String.valueOf(player.getValue().color.getRGB()));
-						}
-						saveWriter.write("\nmoves: " + gs.q.toString());
-						saveWriter.close();
-					} catch(IOException IOe) {
-						System.out.println(IOe);
-					}
+					gs.saveGame();
 				}
 				if (gs.waitingRoom != null)gs.disconnectFromOnline();
 				System.exit(0);

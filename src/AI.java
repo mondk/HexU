@@ -222,16 +222,12 @@ public class AI {
 							axis_counter += 1;
 					}
 				}
-				//System.out.println("sum chehck");
-				//System.out.println(sum);
 				sum = sum*(1+((cluster.size()-1)*0.25))*(1+(axis_counter*0.65));
-				//System.out.println(sum);
 			}
 			finalScore += sum;
 			sum=0;
 		}
 	}
-	//System.out.println("final score : "+finalScore);
 	return finalScore;
 }
 }

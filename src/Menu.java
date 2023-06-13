@@ -88,9 +88,14 @@ public class Menu extends JPanel {
                 else if (Integer.parseInt(numberOfHexagonsTextField.getText())< 13){
                     gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), gs.players.size() == 1);
                 }else {
-                    dialogbutton = JOptionPane.showConfirmDialog(null, "uhh to many hexes, this number of hexes will slow down the game experience.\nContinue anyway?","", JOptionPane.YES_NO_OPTION, dialogbutton);
-                    if (dialogbutton == JOptionPane.YES_OPTION) {
-                        gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), gs.players.size() == 1);
+                    if (gs.players.size()==1){
+                        JOptionPane.showMessageDialog(null, "Thats to many hexes, enter a number between 3 and 12 \nto play against the AI","", JOptionPane.ERROR_MESSAGE);
+                    }
+                    else{
+                        dialogbutton = JOptionPane.showConfirmDialog(null, "uhh to many hexes, this number of hexes will disable the AI.\nContinue anyway?","", JOptionPane.YES_NO_OPTION, dialogbutton);
+                        if (dialogbutton == JOptionPane.YES_OPTION) {
+                            gs.startGame(Integer.parseInt(numberOfHexagonsTextField.getText()), gs.players.size() == 1);
+                        }
                     }
                 }
             }

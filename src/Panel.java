@@ -141,7 +141,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				}
 			}
 		});
-		if(gs.onlineMove != null) undo.setVisible(false);
+		undo.setVisible(gs.onlineMove == null);
 		backtoMenu.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){

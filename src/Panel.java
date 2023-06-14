@@ -1,10 +1,4 @@
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.MouseInfo;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -104,7 +98,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 							
 						}
 					case Player2:
-						if (gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2) && gs.host) {
+						if (gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2)) {
 							repaint();
 							start=false;
 							drawExsplosion(graphic);
@@ -195,7 +189,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 									repaint();
 									start=false;
 									drawExsplosion(graphic);
-									
+									break;
 								}
 								gs.nextTurn();
 								paneT.setBackground(gs.paneTColor);
@@ -209,7 +203,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 								
 								System.out.println(gs.players.get(1).name + " clicked on hexagon: "+h.id+" score: "+h.score);
 								repaint();
-								if (gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2) && gs.host) {
+								if (gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2)) {
 
 									try {
 										playSound("src/mixkit-ethereal-fairy-win-sound-2019.wav");
@@ -219,11 +213,14 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 									repaint();
 									start=false;
 									drawExsplosion(graphic);
-									
+									break;
 								}
 								gs.nextTurn();
 								paneT.setBackground(gs.paneTColor);
 								paneT.setText(gs.paneTurnString);
+								break;
+							case ONLINE_PLAYER:
+								System.out.println("It is not your turn");
 								break;
 						}
 						repaint();						
@@ -299,7 +296,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 							repaint();
 							start=false;
 							drawExsplosion(graphic);
-							
+							break;
 						}
 						gs.nextTurn();
 						paneT.setBackground(gs.paneTColor);
@@ -331,7 +328,10 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	}
 
 	public static Point componentToScreen(Component component, Point point) {
-		Point locationOnScreen = component.getLocationOnScreen();
+		Point locationOnScreen = new Point(0,0);
+		try {
+			locationOnScreen = component.getLocationOnScreen();
+		} catch (IllegalComponentStateException e){}
 		return new Point( point.x-locationOnScreen.x ,  point.y-locationOnScreen.y);
 	}
 
@@ -406,7 +406,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 			}
 			
 		}
-		showDiaButton(gs.paneTurnString);
+		if (gs.host)showDiaButton(gs.paneTurnString);
 		
 	}
 	public static void drawThickHexagon(Graphics2D g2d, int centerX, int centerY, int radius) {
@@ -433,9 +433,10 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		gs.q.add(moveId);
 		System.out.println(playerId);
 		gs.grid.get(moveId).color= gs.players.get(playerId).color;
-		if (gs.winingState(gs.startP2, gs.players.get(playerId).color, gs.winP2) && gs.host) {
+		if (gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2) || gs.winingState(gs.startP1, gs.players.get(0).color, gs.winP1)) {
 			repaint();
-			showDiaButton(gs.players.get(playerId).name);
+			drawExsplosion(graphic);
+			return;
 		}
 		gs.nextTurn();
 		paneT.setBackground(gs.paneTColor);
@@ -446,10 +447,5 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 	public void reset(int id) {
 		start=true;
 		gs.resetGame(id);
-		paneT.setText(gs.players.get(0).name);
-		paneT.setBackground(gs.players.get(0).color);
-		if(gs.onlineMove == null) return;
-		if(gs.host) gs.onlineMove.resetGame(0);
-		else gs.whosTurn = GameState.Turn.ONLINE_PLAYER;
 	}
 }

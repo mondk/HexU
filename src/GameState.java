@@ -254,6 +254,9 @@ public class GameState{
 			h.color = Color.gray;
 			h.clicked=false;
 		}
+		if(onlineMove == null) return;
+		if(host) onlineMove.resetGame(0);
+		else whosTurn = GameState.Turn.ONLINE_PLAYER;
 	}
 
 	public ArrayList<Integer> getValidMoves() {

@@ -39,7 +39,7 @@ public class OnlineMove implements Runnable{
                 Integer reset = gs.online.getReset(gs.onlineId);
                 if(reset != null){
                     for (MoveListener listener : moveListeners){
-                        listener.reset(0);
+                        listener.reset(1);
                     }
                 }
                 Integer playerLeft = gs.online.getPlayerLeft(gs.onlineId);

@@ -261,8 +261,9 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 			long now = System.nanoTime();
 			delta += (now -lastTime)/ns;
 			lastTime = now;
+			checkMouseHover(MouseInfo.getPointerInfo().getLocation());
 			if(delta >=1&&start||start) {
-				checkMouseHover(MouseInfo.getPointerInfo().getLocation());
+				
 				if(start) {
 					repaint();
 					delta--;

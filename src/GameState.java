@@ -45,7 +45,6 @@ public class GameState{
 	// Variables for hexagon placement
 	double radius=(0.5773502717*(screenWidth-(screenWidth*0.5)))/(numberOfHexagons+1);
 	double shift = 2*radius*0.8660254;
-	//int xOffSet= 100- (int) (radius*2);
 	
 	HashMap<Integer,Player> players = new HashMap<>();
 

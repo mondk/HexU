@@ -93,27 +93,21 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 							repaint();
 							start=false;
 							drawExsplosion(graphic);
-							
 							break;
-							
 						}
 					case Player2:
 						if (gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2)) {
 							repaint();
 							start=false;
 							drawExsplosion(graphic);
-							
 							break;
 						}
-
 				}
 				gs.nextTurn();
 				paneT.setText(gs.paneTurnString);
 				paneT.setBackground(gs.paneTColor);
 				repaint();
-				
 			}
-
 		});
 		undo.addActionListener(new ActionListener(){
 			@Override
@@ -175,7 +169,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 
 						switch(gs.whosTurn) {
 							case Player1:
-								gs.grid.get(h.id).clicked=true;
+								h.clicked=true;
 								h.color=gs.players.get(0).color;
 								if (gs.onlineMove != null) gs.onlineMove.makeMove(h.id);
 								System.out.println(gs.players.get(0).name + " clicked on hexagon: "+h.id+" score: "+h.score);
@@ -187,18 +181,22 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 									} catch (LineUnavailableException | IOException e1) {
 										e1.printStackTrace();
 									}
-									repaint();
+									
 									start=false;
 									drawExsplosion(graphic);
+									repaint();
+									break;
+								}else{
+									gs.nextTurn();
+									paneT.setBackground(gs.paneTColor);
+									paneT.setText(gs.paneTurnString);
+									repaint();
 									break;
 								}
-								gs.nextTurn();
-								paneT.setBackground(gs.paneTColor);
-								paneT.setText(gs.paneTurnString);
-								break;
+								
 
 							case Player2:
-								gs.grid.get(h.id).clicked=true;
+								h.clicked=true;
 								h.color=gs.players.get(1).color;
 								if (gs.onlineMove != null) gs.onlineMove.makeMove(h.id);
 								
@@ -211,15 +209,18 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 									} catch (LineUnavailableException | IOException e1) {
 										e1.printStackTrace();
 									}
-									repaint();
+									
 									start=false;
 									drawExsplosion(graphic);
+									repaint();
 									break;
 								}
-								gs.nextTurn();
-								paneT.setBackground(gs.paneTColor);
-								paneT.setText(gs.paneTurnString);
-								break;
+									gs.nextTurn();
+									paneT.setBackground(gs.paneTColor);
+									paneT.setText(gs.paneTurnString);
+									repaint();
+									break;
+								
 							case ONLINE_PLAYER:
 								System.out.println("It is not your turn");
 								break;
@@ -320,6 +321,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 		dialogbutton = JOptionPane.showConfirmDialog(null, msg ,"", JOptionPane.YES_NO_OPTION, dialogbutton,reMatchIcon);
 		if (!(dialogbutton == JOptionPane.NO_OPTION)) {
 			reset(1);
+			repaint();
 			
 		}else{
 			reset(0);

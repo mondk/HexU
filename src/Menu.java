@@ -1,9 +1,9 @@
 import javax.swing.*;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class Menu extends JPanel {
+
     ImageIcon img = new ImageIcon("res/background/space.jpg");
     int dialogbutton;
     Menu(GameState gs) {
@@ -79,6 +79,11 @@ public class Menu extends JPanel {
         addPlayer(gs, playerNames);
         addPlayer(gs, playerNames);
 
+        /**
+         * action for the startGameButton
+         * calls the function startGame from the gamestate, and parsed along information from the menu screen, 
+         * modfied by the user, and shows a dialog pane, if some of hte variables are either invalid, og at border cases
+         */
         startGameButton.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -100,6 +105,9 @@ public class Menu extends JPanel {
                 }
             }
         });
+        /**
+         * action defined for the start online game
+         */
         startOnlineButton.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {

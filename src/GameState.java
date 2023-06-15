@@ -1,19 +1,16 @@
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Point;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import java.io.IOException;
-import java.util.*;
 import java.util.List;
-import java.util.ArrayList;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 
+/*
+ * Class that holds informationa nd functions to manipulate data
+ */
 public class GameState{
 	
 	//Variables for setting up online multiplayer
@@ -37,15 +34,14 @@ public class GameState{
 	//Hexagon constants
 	int numberOfHexagons =3;
 
-
+	// Varialble for screen size
 	Dimension SCREEN_SIZE = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
-
-	double screenWidth = SCREEN_SIZE.getWidth();
 	
 	// Variables for hexagon placement
-	double radius=(0.5773502717*(screenWidth-(screenWidth*0.5)))/(numberOfHexagons+1);
+	double radius=(0.5773502717*(SCREEN_SIZE.getWidth()-(SCREEN_SIZE.getWidth()*0.5)))/(numberOfHexagons+1);
 	double shift = 2*radius*0.8660254;
 	
+	// Map of all plyers
 	HashMap<Integer,Player> players = new HashMap<>();
 
 	//Start point for grid
@@ -67,6 +63,9 @@ public class GameState{
 	String paneTurnString;
 	Color paneTColor;
 
+	/*
+	 * Creates a new GameState, with two players
+	 */
 	public GameState(){
 		players.put(0, new Player("Player 1", Color.pink));
 		players.put(1, new Player("Player 2", Color.green));
@@ -96,11 +95,16 @@ public class GameState{
 	List<Integer> winP1 = new ArrayList<>();
 	List<Integer> winP2 = new ArrayList<>();
 
+	// List for path through board, wen a winner is found
 	ArrayList<Integer> finalPath = new ArrayList<>();
 
 	// Linked list containing moves made
 	LinkedList<Integer> q = new LinkedList<>();
 
+	/**
+	 * Method for changing the state of the game on initation
+	 * @param state the string to which the state is changed
+	 **/
 	public void changeState(String state) {
 		// Input is a string to which game mode is changes to
 		if(state.equals("single"))
@@ -112,7 +116,9 @@ public class GameState{
 			playerState=State.ONLINE;
 		}
 	}
-	//change player turn
+	/**
+	 * Method for switching the turn, based on the current game mode and turn
+	 **/
 	public void nextTurn() {
 		switch(playerState) {
 			case SINGLEPLAYER:
@@ -157,9 +163,10 @@ public class GameState{
 				break;
 		}
 	}
-
+	/**
+	 * Method for saving the arrays that needs to be connected in order for a win state to be found
+	 **/
 	public void fillWinStateArrays() {
-		// Fiils out the arrays, that contain the borders, for fast acces when finding wnning state
 		for (Hexagon hexes: grid.subList(0, numberOfHexagons)){
 			startP1.add(hexes.id);
 		}
@@ -173,11 +180,16 @@ public class GameState{
 			winP2.add(grid.get(a).id);
 		}
 	}
-
+	/**
+	 * Function for determining if the move made caused a win state
+	 * @param s first win array of the player in question
+	 * @param p The players color
+	 * @param win second win array of the player in question
+	 * @return boolean value if path through board is found
+	 * runs a BFS algorithm on every hexagon in the s array, and for each hexagon 
+	 * visited, sees if that results in a path over the board
+	 **/
 	public Boolean winingState(List<Integer> s, Color p, List<Integer> win) {
-		// input "s" and "win" are the arrays that hold the borders of a given player, 
-		// and the input "p" is the color that needs comparison
-
 		// Array der holder alle hexagon der er en del af en cluster
 		ArrayList<Integer> seen = new ArrayList<>();
 		//Loop over s, for at finde path
@@ -192,8 +204,6 @@ public class GameState{
 			int pred[] = new int[numberOfHexagons*numberOfHexagons];
 			int dist[] = new int[numberOfHexagons*numberOfHexagons];
 			ArrayList<Integer> cluster = new ArrayList<>();
-
-			// Standard BFS ting...
 			boolean visited[] = new boolean[numberOfHexagons*numberOfHexagons];
 			LinkedList<Integer> queue = new LinkedList<Integer>();
 			for (int i = 0; i < numberOfHexagons*numberOfHexagons; i++) {
@@ -219,9 +229,7 @@ public class GameState{
 						queue.add(grid.get(u).adj.get(i));
 						seen.add(grid.get(u).adj.get(i));
 						cluster.add(grid.get(u).adj.get(i));
-						// Ser om den funde cluster ud fra v, indeholde en hexagon fra start og slut enden
-						// af den givne spillers plade
-						if (!Collections.disjoint(cluster,win)){ //!Collections.disjoint(cluster, s) && 
+						if (!Collections.disjoint(cluster,win)){ 
 							int crawl = grid.get(u).adj.get(i);
 							this.finalPath.add(crawl);
 							while (pred[crawl] != -1) {
@@ -236,7 +244,10 @@ public class GameState{
 		}
 		return false;
 	}
-
+	/**
+	 * Method for reseting the game state for either a new game, or complete reset
+	 * @param id int value that if zero clears arrays for the winnstate BFS
+	 **/
 	public void resetGame(int id) {
 		whosTurn = Turn.Player1;
 		paneTColor = players.get(0).color;
@@ -259,6 +270,10 @@ public class GameState{
 		else whosTurn = GameState.Turn.ONLINE_PLAYER;
 	}
 
+	/**
+	 * function used by the AI, that gives all valid moves on the curretn game state
+	 * @return and array list of integers representing the id of possible hexagons to click
+	 */
 	public ArrayList<Integer> getValidMoves() {
 		ArrayList<Integer> validmoves = new ArrayList<>();
 		
@@ -269,26 +284,40 @@ public class GameState{
 		return validmoves;
 	}
 
+	/**
+	 * method for chaning the size of hexagons and the baord, based on the input from the user
+	 * @param numberOfHexagons The nuber entered by the player from the Menu
+	 */
 	public void updateNumberOfHexagons(int numberOfHexagons){
 		this.numberOfHexagons = numberOfHexagons;
+		// If the number is to high the board size scales differently
 		if (numberOfHexagons < 13){
-			this.radius=((0.03906+(-0.01679/9)*(numberOfHexagons-3))*screenWidth);
+			this.radius=((0.03906+(-0.01679/9)*(numberOfHexagons-3))*SCREEN_SIZE.getWidth());
 		}else{
-			this.radius = (0.5773502717*(screenWidth-(screenWidth*0.5)))/(numberOfHexagons+1);
+			this.radius = (0.5773502717*(SCREEN_SIZE.getWidth()-(SCREEN_SIZE.getWidth()*0.5)))/(numberOfHexagons+1);
 		}
 		this.shift = 2*radius*0.8660254;
 	}
 
+	/**
+	 * functionf ro adding a player to the game, with a radnom color
+	 */
 	public void addPlayer(){
 		int id = players.size();
 		players.put(id, new Player("Player " + id, new Color(ThreadLocalRandom.current().nextInt(-8388608,  8388607 + 1))));
 	}
-
+	/**
+	 * function to remove the last added player from the haspmap
+	 */
 	public void removePlayer(){
 		players.remove(players.size()-1);
 	}
 
-
+	/**
+	 * Function called when the player starts the game
+	 * @param numberOfHexagons integer entered by the user in the gui
+	 * @param singlePlayer boolean based on wich gamemode the user choose
+	 */
 	public void startGame(int numberOfHexagons, boolean singlePlayer){
 		this.paneTColor = players.get(0).color;
 		this.paneTurnString = players.get(0).name;
@@ -306,7 +335,9 @@ public class GameState{
 		cl.next(cards);
 		cards.remove(0);
 	}
-
+	/**
+	 * method used to return back to the menu screen
+	 */
 	public void returnToMenu(){
 		waitingRoom = null;
 		onlineMove = null;
@@ -319,8 +350,12 @@ public class GameState{
 		cards.remove(0);
 	}
 
+	/**
+	 * Function to change the board to that of the loaded game
+	 * @param moves list of moves made int he saved game
+	 * uses a switch case, as the mechanics changes if the game mode is multiplayer or single player
+	 */
 	public void fillLoadMoves(String[] moves){
-		// the input "moves" are the list loaded from the saved file, when continuing previuos game
 		try{
 			switch(playerState){
 				case SINGLEPLAYER:
@@ -356,6 +391,10 @@ public class GameState{
 
 	}
 
+	/**
+	 * function to randomly choose an image as the background
+	 * @return a file name
+	 */
 	public String randomBackground(){
 		String[] files = new File("res/background").list();
 		int x = 1+(int)(Math.random()*(files.length-1));
@@ -398,6 +437,11 @@ public class GameState{
 		if(moveThread != null) moveThread.interrupt();
 		returnToMenu();
 	}
+
+	/**
+	 * function to initialize the online game
+	 * @param startPlayer
+	 */
 	public void startOnlineGame(int startPlayer) {
 		players = online.getPlayers();
 		CardLayout cl = (CardLayout)cards.getLayout();
@@ -415,6 +459,10 @@ public class GameState{
 		cards.remove(0);
 	}
 
+	/**
+	 * method to return a string of the current game mode
+	 * @return a string representing the game mode
+	 */
 	public String returnPS(){
 		String state = "";
 		switch(playerState){
@@ -431,6 +479,10 @@ public class GameState{
 		return state;
 	}
 
+	/**
+	 * method for seeting up the game based on the save file
+	 * Uses string matching for setting the corect changes
+	 */
 	public void loadFile(){
 		try {
 			File Obj = new File("res/saves.txt");
@@ -471,6 +523,12 @@ public class GameState{
 		}
 	}
 
+	/**
+	 * mehtod for creating the game board
+	 * nated for loop, that keep track of the rows and columns, assigns adjacancy list and 
+	 * score for the heuristic function along the way
+	 * and finaly creates the bordeers around the board
+	 */
 	public void createGrid() {
 		if (!grid.isEmpty())
 			return;
@@ -595,11 +653,16 @@ public class GameState{
 		border.add(new BorderR(players.get(0).color, x2 , y2)); //buttom
 		border.add(new BorderR(players.get(1).color, x3 , y3)); //left
 		border.add(new BorderR(players.get(1).color, x4 , y4)); //right
-
+		
 		fillLoadMoves(load);
 		fillWinStateArrays();
 	}
 
+	/**
+	 * method used to calculate the tint of a color
+	 * @param c a color
+	 * @return a tint of the color c
+	 */
 	public Color calcTint(Color c){
 		int red = c.getRed();
 		int blue = c.getBlue();
@@ -607,11 +670,19 @@ public class GameState{
 		double coef = 0.45;
 		return new Color((int)(red+(255-red)*coef), (int)(green+(255-green)*coef), (int)(blue+(255-blue)*coef));
 	}
-
+	/**
+	 * method for calculating the complementory color
+	 * @param c a color
+	 * @return the complementry color fo c
+	 */
 	public Color calcComplementColor(Color c){
 		return new Color (255- c.getRed(), 255-c.getGreen(), 255- c.getBlue());
 	}
 
+	/**
+	 * method for finding the start position for the upper left hexagon, that is the base point for the whole board
+	 * @return a new point 
+	 */
 	private Point calcStartPoint(){
 		double height = (numberOfHexagons*0.5)*(radius*2)+((numberOfHexagons-(numberOfHexagons*0.5))*radius);
 		double width = (radius*2)*(numberOfHexagons+Math.floor(numberOfHexagons/2));
@@ -620,6 +691,9 @@ public class GameState{
 		return new Point(x,y);
 	}
 
+	/**
+	 * function for writing variables needed to start up the same game
+	 */
 	public void saveGame(){
 		try{
 			FileWriter saveWriter = new FileWriter("res/saves.txt");

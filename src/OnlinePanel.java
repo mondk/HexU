@@ -8,7 +8,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 public class OnlinePanel extends JPanel {
-    ImageIcon img = new ImageIcon("res/background/space.jpg");
+    ImageIcon img = new ImageIcon(this.getClass().getResource("res/background/space.jpg"));
     OnlinePanel(GameState gs){
         TextField ip = new TextField(getIp());
         JButton join = new JButton();

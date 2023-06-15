@@ -37,7 +37,8 @@ public class Yest {
 		});
 		frame.setBackground(Color.decode("#244b73"));
 		//frame.add(panel);
-		frame.setIconImage(new ImageIcon("res/Yellow-Hexagon-Background-PNG-Image.png").getImage());
+		// getClass is not static, so using the GameState object to get the icon
+		frame.setIconImage(new ImageIcon(gs.getClass().getResource("res/Yellow-Hexagon-Background-PNG-Image.png")).getImage());
 
 		frame.add(gs.cards);
 		frame.setVisible(true);

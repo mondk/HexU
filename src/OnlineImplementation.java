@@ -5,10 +5,16 @@ import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
+/**
+ * An implementation of the Online interface, which utilizes the jSpace library
+ */
 public class OnlineImplementation implements Online{
 	private Space space;
 	SpaceRepository repository;
-	//private int id;
+
+	/**
+	 * Identifiers for knowing what the message received means.
+	 */
 	public final String PLAYERS_LIST_IDENTIFIER = "ALL_PLAYERS";
 	private final String PLAYER_CHANGED_IDENTIFIER = "PLAYER_CHANGED";
 	private final String START_GAME_IDENTIFIER = "START_GAME";
@@ -21,6 +27,12 @@ public class OnlineImplementation implements Online{
 	public OnlineImplementation(){
 	}
 
+	/**
+	 * Creates or joins the online tuple space.
+	 *
+	 * @param host	Indicates whether the user is the host or a client
+	 * @param ip	The ip that is connected to or hosted on
+	 */
 	@Override
 	public void start(boolean host, String ip) {
 		if(host){
@@ -42,6 +54,11 @@ public class OnlineImplementation implements Online{
 		}
 	}
 
+	/**
+	 * A method to get all the players that are connected to the tuple space
+	 * @return	The connected players
+	 */
+
 	@Override
 	public HashMap<Integer, Player> getPlayers() {
 		HashMap<Integer, Player> players = new HashMap<>();
@@ -56,6 +73,11 @@ public class OnlineImplementation implements Online{
 		return players;
 	}
 
+	/**
+	 * Updates the player with the ID of onlineId to the player
+	 * @param onlineId	The ID of the player to be updated
+	 * @param player	The updated player information.
+	 */
 	@Override
 	public void changePlayer(Integer onlineId, Player player) {
 		try {
@@ -70,6 +92,10 @@ public class OnlineImplementation implements Online{
 		}
 	}
 
+	/**
+	 * A method to signal the other players that the game is starting
+	 * @param startingPlayer	The id of the player who should start.
+	 */
 	@Override
 	public void startGame(int startingPlayer) {
 		HashMap<Integer, Player> players = getPlayers();
@@ -82,6 +108,10 @@ public class OnlineImplementation implements Online{
 		}
 	}
 
+	/**
+	 * A method to signal the other players the number of hexagons the game should have.
+	 * @param numberOfHexagons	The updated number of hexagons
+	 */
 	@Override
 	public void updateNumberOfHexagons(int numberOfHexagons) {
 		try {
@@ -96,6 +126,10 @@ public class OnlineImplementation implements Online{
 		}
 	}
 
+	/**
+	 * A method to signal the other players that a player has closed or left the game
+	 * @param onlineId	The id of the disconnecting player
+	 */
 	@Override
 	public void disconnect(Integer onlineId) {
 		try {
@@ -114,6 +148,11 @@ public class OnlineImplementation implements Online{
 		}
 	}
 
+	/**
+	 * A method to get the number of hexagons the game should have
+	 * @param standardValue	A value, in case the number of hexagons has never been set
+	 * @return				The number of hexagons the game should have
+	 */
 	@Override
 	public Integer getInitialNumberOfHexagons(int standardValue) {
 		try {
@@ -124,6 +163,11 @@ public class OnlineImplementation implements Online{
 		}
 	}
 
+	/**
+	 * A method to check if the number of hexagons has changed
+	 * @param onlineId	The ID of the local player
+	 * @return			The new number of hexagons
+	 */
 	@Override
 	public Integer numberOfHexagonsChanged(Integer onlineId) {
 		try {
@@ -134,6 +178,11 @@ public class OnlineImplementation implements Online{
 		}
 	}
 
+	/**
+	 * A method to check if a player has changed or if a new player has joined
+	 * @param onlineId	The ID of the local player
+	 * @return			The map entry with the ID as the key and the Player info as the value
+	 */
 	@Override
 	public Map.Entry<Integer,Player> getNewPlayer(Integer onlineId) {
 		try {
@@ -144,6 +193,11 @@ public class OnlineImplementation implements Online{
 		}
 	}
 
+	/**
+	 * A method to check if a player has left
+	 * @param onlineId	The ID of the local player
+	 * @return			The ID of the player who left
+	 */
 	@Override
 	public Integer getPlayerLeft(Integer onlineId) {
 		try {
@@ -154,6 +208,11 @@ public class OnlineImplementation implements Online{
 		}
 	}
 
+	/**
+	 * A method to check if a player has signalled to start the game
+	 * @param onlineId	The ID of the local player
+	 * @return			The ID of the player, who should start
+	 */
 	@Override
 	public Integer getStartGame(Integer onlineId) {
 		try {
@@ -164,6 +223,11 @@ public class OnlineImplementation implements Online{
 		}
 	}
 
+	/**
+	 * A method to signal the other players, that a move has been made
+	 * @param moveId	The ID of the hexagon the player has clicked on
+	 * @param onlineId	The ID of the player, who made the move
+	 */
 	@Override
 	public void makeMove(int moveId, Integer onlineId) {
 		try {
@@ -176,6 +240,11 @@ public class OnlineImplementation implements Online{
 		} catch (NullPointerException e) {}
 	}
 
+	/**
+	 *	A method to signal the other players, that the game should be reset
+	 * @param onlineId			The ID of the local player
+	 * @param startingPlayer	The ID of the new starting player
+	 */
 	@Override
 	public void resetGame(Integer onlineId, Integer startingPlayer) {
 		try {
@@ -188,6 +257,11 @@ public class OnlineImplementation implements Online{
 		} catch (NullPointerException e) {}
 	}
 
+	/**
+	 * A method to get a move another player has made. Returns a Map.Entry, as java does not have native support for pairs
+	 * @param onlineId	The id of the local player
+	 * @return			A pair of integers, the key being the ID of the player who made the move, and the value being the ID of the hexagon.
+	 */
 	@Override
 	public Map.Entry<Integer,Integer> getMove(Integer onlineId) {
 		try {
@@ -198,6 +272,11 @@ public class OnlineImplementation implements Online{
 		}
 	}
 
+	/**
+	 * A method to see if a player has signalled to reset the game
+	 * @param onlineId	The ID of the local player.
+	 * @return			The ID of the starting player.
+	 */
 	@Override
 	public Integer getReset(Integer onlineId) {
 		try {

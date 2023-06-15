@@ -14,6 +14,7 @@ public class OnlinePanel extends JPanel {
         JButton join = new JButton();
         JButton host = new JButton();
         JButton backtoMenuOnline = new JButton();
+        // When clicking the joinGame button, the player will join an existing waiting room
         join.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -24,12 +25,14 @@ public class OnlinePanel extends JPanel {
                 }
             }
         });
+        // When clicking the hostGame button, the player will create a room
         host.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 gs.hostGame(getIp());
             }
         });
+        // When clicking the backToMenuOnline button, the program returns to the main menu.
         backtoMenuOnline.setAction(new AbstractAction() {
             @Override
 			public void actionPerformed(ActionEvent e){
@@ -39,13 +42,16 @@ public class OnlinePanel extends JPanel {
         join.setText("Join game");
         host.setText("Host game");
         backtoMenuOnline.setText("Back to Menu");
-        //add(playerSettings.getPlayerCards());
         add(ip);
         add(join);
         add(host);
         add(backtoMenuOnline);
     }
 
+    /**
+     * Gets the local IP address of the machine
+     * @return  The IP address of the machine, formatted in a String
+     */
     private String getIp() {
         String ip;
 
@@ -58,6 +64,10 @@ public class OnlinePanel extends JPanel {
         return ip;
     }
 
+    /**
+     *
+     * @param g
+     */
     @Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);

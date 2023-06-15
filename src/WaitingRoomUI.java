@@ -5,10 +5,19 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.*;
 
+/**
+ * The UI for the WaitingRoom
+ */
 public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
     GameState gs;
 
     ImageIcon img = new ImageIcon("res/background/space.jpg");
+
+    /**
+     * The constructor for the WaitingRoomUI. The actions for the buttons and textfields are set here
+     * @param gameState The GameState object used in the rest of the program
+     * @param ip        The IP the WaitingRoom is hosted on.
+     */
     public WaitingRoomUI(GameState gameState, String ip) {
         try {
             this.gs = gameState;
@@ -18,6 +27,7 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
             PlayerSettings ownName = new PlayerSettings(gameState.players.get(gs.onlineId));
             JPanel names = new JPanel();
             names.setLayout(new GridLayout(0,1));
+            // Get and display the names from before the local player has joined.
             for(Map.Entry<Integer,Player> player : gameState.players.entrySet()){
                 if(Objects.equals(player.getKey(), gameState.waitingRoom.getThisPlayer())) continue;
                 JPanel newPlayer = new JPanel();
@@ -28,6 +38,7 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
                 newPlayer.add(colorButton);
                 names.add(newPlayer, (int)player.getKey());
             }
+            // Sets the action for when the text field of the players own name is changed.
             ownName.changeDocumentListener(new DocumentListener() {
                 @Override
                 public void insertUpdate(DocumentEvent documentEvent) {
@@ -45,6 +56,7 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
                     gameState.online.changePlayer(gameState.onlineId, gameState.players.get(gameState.onlineId));
                 }
             });
+            // The button for confirming the picked color in the color picker
             ownName.changeConfirmAction(new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
@@ -70,6 +82,7 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
             buttons.setLayout(new GridLayout(0,1));
             JButton startButton = new JButton("Start Game");
             JButton leaveButton = new JButton("Leave Room");
+            // The button for leaving a waiting room
             leaveButton.setAction(new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
@@ -80,6 +93,7 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
             buttons.add(startButton);
             buttons.add(leaveButton);
             add(buttons);
+            // Only the host should be able to start the game and set the number of hexagons
             if(!gs.host){
                 startButton.setEnabled(false);
                 numberOfHexagonsTextField.setEnabled(false);
@@ -131,6 +145,10 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
 
     }
 
+    /**
+     * The method that handles when the WaitingRoom gets the signal for when the number of hexagons has been updated.
+     * @param numberOfHexagons  The new number of hexagons
+     */
     @Override
     public void numberOfHexagonsChanged(Integer numberOfHexagons){
         JTextField hexagonField = (JTextField) ((JPanel)getComponent(0)).getComponent(1);
@@ -140,6 +158,10 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
         hexagonField.setEnabled(false);
     }
 
+    /**
+     * The method for handling when the WaitingRoom gets the signal that a player has left
+     * @param id The ID of the player who left
+     */
     @Override
     public void playerLeft(Integer id) {
         JPanel names = (JPanel)getComponent(1);
@@ -147,6 +169,12 @@ public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
         names.updateUI();
     }
 
+    /**
+     * The method for when the WaitingRoom gets the WaitingRoom gets the signal that a player has changed their
+     * information or joined the waiting room
+     * @param id        The ID of the new/changed player
+     * @param player    The new/changed player
+     */
     @Override
     public void playerChanged(Integer id, Player player){
         JPanel names = (JPanel)getComponent(1);

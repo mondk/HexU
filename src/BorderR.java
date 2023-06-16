@@ -3,17 +3,19 @@ import java.awt.Polygon;
 
 import javax.swing.JPanel;
 
+//Class to draw the rectangles that are used to make the colored borders on the board.
 public class BorderR extends JPanel {
     Color color;
     Polygon rectangle;
 
+    //Collect the current color and coordinates for the border
     public BorderR(Color color, int[] x, int[] y) {
         this.color = color;
         this.rectangle = createRectangle(x, y);
         this.setFocusable(true);
     }
 
-    // Returns a polygon which is a rectangle
+    // Returns a polygon which is a rectangle made with 4 point 
     private Polygon createRectangle(int[] x, int[] y) {
         Polygon polygon = new Polygon();
         polygon.addPoint(x[0], y[0]);

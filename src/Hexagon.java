@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
-public class Hexagon extends JPanel implements Cloneable{
+public class Hexagon extends JPanel{
 		
 		Color color = Color.gray;
 		Point center;
@@ -28,7 +28,7 @@ public class Hexagon extends JPanel implements Cloneable{
 		
 		}
 		
-		//returns a polygon which is a hexagon
+		//Creates a hexagon and stores it as a polygon within the object
 		private void createHexagon(double theta) {
             Polygon polygon = new Polygon();
 			Polygon polygon_inner =new Polygon();
@@ -49,6 +49,7 @@ public class Hexagon extends JPanel implements Cloneable{
 			this.hexagon_inner = polygon_inner;
         }
 		
+		
 		public Polygon getPolygon(){
 			return this.hexagon;
 		}
@@ -67,15 +68,6 @@ public class Hexagon extends JPanel implements Cloneable{
 			int centerY = (int) (center.getY());
 			return new Point(centerX, centerY);
 		}
-		@Override
-		public Hexagon clone() {
-			Hexagon hex = new Hexagon(this.center, this.radius, this.id);
-			hex.color=this.color;
-			hex.clicked=this.clicked;
-			hex.adj=this.adj;
-			hex.score=this.score;
-			
-		return hex;
-		}
+	
 		
 	}

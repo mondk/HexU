@@ -15,7 +15,8 @@ public class AI {
 		this.player2=gs.players.get(1).color.toString();
 	}
 
-
+	
+	//returns the ID of a hexagon which is evaluated to be the best move
 	public  int[] nextMove(String[][] matrix, String player) {
 		//System.out.println("\nSTART LOL"+player+"\n");
 		int[] move = minimax(matrix,player,4, true,Integer.MIN_VALUE,Integer.MAX_VALUE);
@@ -24,6 +25,8 @@ public class AI {
 		return new int[] {move[1],move[2]};
 	}
 
+	
+	//The minimax algorithm used to evaluate the best move
 	public int[] minimax(String[][] matrix, String player,int depth, boolean maximizing_player,int alpha, int beta) {
 	
 	    if (depth == 0) {
@@ -96,6 +99,8 @@ public class AI {
 	    }
 	}
 	
+	
+	//Given a board, a move and a player who made that move. Returns the a new board with that move
 	public static String[][] makeMove(int[] move,String player, String[][] matrix){
 		String[][] m2 = matrix.clone();
 		for (int i = 0; i < matrix.length; i++) {
@@ -106,6 +111,7 @@ public class AI {
 		
 	}
 
+	//Switches turn between players
 	public static String nextTurn(String player) {
 		
 		if(player.equals(player1)) {
@@ -118,6 +124,7 @@ public class AI {
 		
 	}
 
+	//Transforms the grid in gamestate into a matrix
 	public static String[][] gridToMatrix(ArrayList<Hexagon> grid, int numberofHex){
 		String[][] matrix = new String[numberofHex][numberofHex];
 		for (int i =0; i < numberofHex; i++){
@@ -136,6 +143,7 @@ public class AI {
 		return matrix;
 	}
 
+	//Returns the indices of spaces in a matrix with no moves made
 	public static ArrayList<int[]> getNullElements(String[][] matrix) {
 		//stringifyMatrix(matrix,4);
 		ArrayList<int[]> validMoves = new ArrayList<>();
@@ -159,6 +167,7 @@ public class AI {
 		}
 	}
 
+	//Retuns a double, evaluates how good the given board is for a player
 	public double evalMatrix(String[][] matrix, String Player){
 		ArrayList<Integer> seen = new ArrayList<>();
 

@@ -15,7 +15,6 @@ public class OnlineImplementation implements Online{
 	/**
 	 * Identifiers for knowing what the message received means.
 	 */
-	public final String PLAYERS_LIST_IDENTIFIER = "ALL_PLAYERS";
 	private final String PLAYER_CHANGED_IDENTIFIER = "PLAYER_CHANGED";
 	private final String START_GAME_IDENTIFIER = "START_GAME";
 	private final String NUMBER_OF_HEXAGONS_IDENTIFIER = "NUMBER_OF_HEXAGONS";
@@ -40,11 +39,6 @@ public class OnlineImplementation implements Online{
 			space = new SequentialSpace();
 			repository.add("game",space);
 			repository.addGate("tcp://" + ip + ":9001/?keep");
-			try {
-				space.put(PLAYERS_LIST_IDENTIFIER,new HashMapIntegerString());
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
-			}
 		} else {
 			try {
 				space = new RemoteSpace("tcp://" + ip + ":9001/game?keep");

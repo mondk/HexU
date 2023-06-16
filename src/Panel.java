@@ -77,7 +77,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				repaint();
 				//this bit handles sound effects
 				try {
-					playSound("src/converted_mixkit-water-sci-fi-bleep-902.wav");
+					playSound("res/converted_mixkit-water-sci-fi-bleep-902.wav");
 				} catch (LineUnavailableException | IOException e1) {
 					e1.printStackTrace();
 				} 
@@ -89,8 +89,14 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 				}
 				switch(gs.whosTurn){
 					case Player1:
+						repaint();
 						if (gs.winingState(gs.startP1, gs.players.get(0).color, gs.winP1)) {
-							repaint();
+							try {
+								playSound("res/mixkit-ethereal-fairy-win-sound-2019.wav");
+							} catch (LineUnavailableException | IOException e1) {
+								e1.printStackTrace();
+							}
+							
 							start=false;
 							drawExsplosion(graphic);
 							break;
@@ -98,6 +104,11 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 					case Player2:
 						if (gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2)) {
 							repaint();
+							try {
+								playSound("res/mixkit-ethereal-fairy-win-sound-2019.wav");
+							} catch (LineUnavailableException | IOException e1) {
+								e1.printStackTrace();
+							}
 							start=false;
 							drawExsplosion(graphic);
 							break;
@@ -159,7 +170,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 
 						//this bit handles sound effects
 						try {
-							playSound("src/mixkit-twig-breaking-2945.wav");
+							playSound("res/mixkit-twig-breaking-2945.wav");
 						} catch (LineUnavailableException | IOException e1) {
 							e1.printStackTrace();
 						}
@@ -177,7 +188,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 								
 								if (gs.winingState(gs.startP1, gs.players.get(0).color, gs.winP1)) {
 									try {
-										playSound("src/mixkit-ethereal-fairy-win-sound-2019.wav");
+										playSound("res/mixkit-ethereal-fairy-win-sound-2019.wav");
 									} catch (LineUnavailableException | IOException e1) {
 										e1.printStackTrace();
 									}
@@ -205,7 +216,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 								if (gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2)) {
 
 									try {
-										playSound("src/mixkit-ethereal-fairy-win-sound-2019.wav");
+										playSound("res/mixkit-ethereal-fairy-win-sound-2019.wav");
 									} catch (LineUnavailableException | IOException e1) {
 										e1.printStackTrace();
 									}
@@ -279,7 +290,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 						int[] move = ai.nextMove(ai.gridToMatrix(gs.grid,gs.numberOfHexagons), gs.players.get(1).color.toString());
 						//this bit handles sound effects
 						try {
-							playSound("src/converted_mixkit-water-sci-fi-bleep-902.wav");
+							playSound("res/converted_mixkit-water-sci-fi-bleep-902.wav");
 						} catch (LineUnavailableException | IOException e1) {
 							e1.printStackTrace();
 						}
@@ -291,7 +302,7 @@ public class Panel extends JPanel implements Runnable, MoveListener{
 						repaint();
 						if (gs.winingState(gs.startP2, gs.players.get(1).color, gs.winP2)) {
 							try {
-								playSound("src/mixkit-funny-fail-low-tone-2876.wav");
+								playSound("res/mixkit-funny-fail-low-tone-2876.wav");
 							} catch (LineUnavailableException |IOException e) {
 								e.printStackTrace();
 							}

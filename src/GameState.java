@@ -335,6 +335,7 @@ public class GameState{
 		cl.next(cards);
 		cards.remove(0);
 	}
+
 	/**
 	 * method used to return back to the menu screen
 	 */
@@ -489,7 +490,6 @@ public class GameState{
 			Scanner Reader = new Scanner(Obj);
 			while (Reader.hasNextLine()) {
 				String[] data = Reader.nextLine().split(": ");
-				//System.out.println(data[0].toString()+ " " + data[1].toString());
 				if (data[0].equals("mode")){
 					if (data[1].equals("false"))
 						singlePlayer = false;
@@ -503,13 +503,13 @@ public class GameState{
 				else if (data[0].equals("P0")){
 					players.get(0).name = data[1];
 				}
-				else if (data[0].equals("CP0")){
+				else if (data[0].equals("P0C")){
 					players.get(0).color = new Color(Integer.parseInt(data[1]));
 				}
 				else if (data[0].equals("P1")){
 					players.get(1).name = data[1];
 				}
-				else if (data[0].equals("CP1")){
+				else if (data[0].equals("P1C")){
 					players.get(1).color = new Color(Integer.parseInt(data[1]));
 				}
 				else if (data[0].equals("moves")){

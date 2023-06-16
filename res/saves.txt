@@ -1,7 +1,7 @@
 mode: false: multiplayer
 hexes: 3
-P0: tju haj
-P0C: -20561
-P1: hvor det går
-P1C: -16711936
-moves: []
+P0: Player 1
+P0C: -13631744
+P1: Player 2
+P1C: -16728065
+moves: [1, 5, 4, 6]

@@ -4,7 +4,7 @@ import javax.swing.JFrame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class Yest {
+public class Start {
 
 	public static void main(String[] args) throws InterruptedException {
 		GameState gs = new GameState();

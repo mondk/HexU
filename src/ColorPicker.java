@@ -1,13 +1,13 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
+//import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+//import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Rectangle2D;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+//import java.awt.geom.Ellipse2D;
+//import java.awt.geom.Rectangle2D;
+//import java.beans.PropertyChangeEvent;
+//import java.beans.PropertyChangeListener;
 //Bliver de gule-understregede brugt overfor?
 
 //Class to define ColorPicker that allows the user to select a color 

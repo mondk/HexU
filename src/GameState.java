@@ -9,7 +9,7 @@ import java.io.FileWriter;
 import java.util.concurrent.ThreadLocalRandom;
 
 /*
- * Class that holds informationa nd functions to manipulate data
+ * Class that holds informationa and functions to manipulate data
  */
 public class GameState{
 	

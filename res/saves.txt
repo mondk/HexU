@@ -1,7 +1,7 @@
 mode: false: multiplayer
 hexes: 3
-P0: Player 1
-P0C: -20561
-P1: Player 2
-P1C: -16711936
-moves: [2, 6, 3, 1]
+P0: hej
+P0C: -13631744
+P1: nej
+P1C: -65375
+moves: []

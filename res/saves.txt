@@ -1,7 +1,7 @@
-mode: true: single
+mode: false: multiplayer
 hexes: 3
 P0: Player 1
 P0C: -20561
-P1: AI
+P1: Player 2
 P1C: -16711936
 moves: []

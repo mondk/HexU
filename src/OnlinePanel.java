@@ -12,7 +12,7 @@ import java.net.UnknownHostException;
  * @author Jónas Holm Wentzlau s203827
  */
 public class OnlinePanel extends JPanel {
-    ImageIcon img = new ImageIcon("res/background/space.jpg");
+    ImageIcon img = new ImageIcon(this.getClass().getResource("res/background/space.jpg"));
     OnlinePanel(GameState gs){
         TextField ip = new TextField(getIp());
         JButton join = new JButton();

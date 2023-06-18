@@ -12,7 +12,7 @@ import java.util.*;
 public class WaitingRoomUI extends JPanel implements WaitingRoomListener {
     GameState gs;
 
-    ImageIcon img = new ImageIcon("res/background/space.jpg");
+    ImageIcon img = new ImageIcon(this.getClass().getResource("res/background/space.jpg"));
 
     /**
      * The constructor for the WaitingRoomUI. The actions for the buttons and textfields are set here

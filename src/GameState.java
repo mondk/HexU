@@ -389,7 +389,13 @@ public class GameState{
 	 * @return a file name
 	 */
 	public String randomBackground(){
-		String[] files = new File("res/background").list();
+		String[] files;
+		try {
+			files = new File(this.getClass().getResource("res/background").toURI()).list();
+		} catch (Exception ignored){
+			// When compiling to a jar file, it is only one file, and it doesn't load the directory correctly
+			files = new String[]{"beach.jpg", "odesert.jpg", "space.jpg", "woods.jpg"};
+		}
 		int x = 1+(int)(Math.random()*(files.length-1));
 		return "res/background/" + files[x];
 	}

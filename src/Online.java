@@ -3,6 +3,7 @@ import java.util.Map;
 
 /**
  * An interface to implement online functionality
+ * @author Jónas Holm Wentzlau s203827
  */
 public interface Online {
 	/**

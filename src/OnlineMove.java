@@ -1,6 +1,10 @@
 import java.util.ArrayList;
 import java.util.Map;
 
+/**
+ * The thread that handles the moves that are made by an online player
+ * @author Jónas Holm Wentzlau s203827
+ */
 public class OnlineMove implements Runnable{
     GameState gs;
     ArrayList<MoveListener> moveListeners = new ArrayList<>();

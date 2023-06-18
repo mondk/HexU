@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * An implementation of the Online interface, which utilizes the jSpace library
+ * @author Jónas Holm Wentzlau s203827
  */
 public class OnlineImplementation implements Online{
 	private Space space;

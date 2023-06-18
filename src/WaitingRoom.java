@@ -2,6 +2,7 @@ import java.util.*;
 
 /**
  * The WaitingRoom class is the logical part of the Waiting Room. It handles all the changes that can happen until the game starts
+ * @author Jónas Holm Wentzlau s203827
  */
 public class WaitingRoom implements Runnable {
     GameState gameState;

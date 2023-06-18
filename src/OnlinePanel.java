@@ -7,6 +7,10 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+/**
+ * The GUI panel for the initial online screen, where it is possible to host or join a game
+ * @author Jónas Holm Wentzlau s203827
+ */
 public class OnlinePanel extends JPanel {
     ImageIcon img = new ImageIcon("res/background/space.jpg");
     OnlinePanel(GameState gs){
@@ -65,8 +69,8 @@ public class OnlinePanel extends JPanel {
     }
 
     /**
-     *
-     * @param g
+     * Draws the background
+     * @param g the <code>Graphics</code> object to protect
      */
     @Override
 	public void paintComponent(Graphics g) {

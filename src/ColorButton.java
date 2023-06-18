@@ -52,11 +52,11 @@ public class ColorButton extends JPanel {
             }
         });
     }
-    //Setting the color of the button
+    // Setting the color of the button
     void setColor(Color color){
         this.color = color;
     }
-    //Setting the cards for JPanel
+    // Setting the cards for JPanel
     void setCards(JPanel cards){
         this.cards = cards;
     }

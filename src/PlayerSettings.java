@@ -4,8 +4,8 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
+// Made by Jónas
 // Class called PlayerSettings that represents a panel for configuring player settings in a game.
-
 public class PlayerSettings extends JPanel {
     private JPanel playerCards;
     private JTextField playerName;

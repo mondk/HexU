@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-
+// Made by Jónas
 // Class to define ColorButton that displays a colored rectangle (the color can be set and changed).
 public class ColorButton extends JPanel {
     Color color = Color.red;

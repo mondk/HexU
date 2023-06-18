@@ -10,6 +10,7 @@ import java.awt.event.MouseMotionListener;
 //import java.beans.PropertyChangeListener;
 //Bliver de gule-understregede brugt overfor?
 
+// Made by Jónas
 //Class to define ColorPicker that allows the user to select a color 
 public class ColorPicker extends JPanel {
 

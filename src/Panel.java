@@ -18,6 +18,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 
+// Initially made by Jasper 
+// Edited/expanded by the whole group
+
 // Class called Panel that represents the panel in the GUI application.
 // It handles the user interactions e.g. button clicks and mouse events.
 

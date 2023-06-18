@@ -44,7 +44,7 @@ public class Hexagon extends JPanel{
                 polygon.addPoint(xval ,yval);
 				
             }
-          //  rotate(polygon,60);
+      
 			this.hexagon = polygon;
 			this.hexagon_inner = polygon_inner;
         }

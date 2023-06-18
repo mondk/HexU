@@ -9,7 +9,7 @@ public class Start {
 	public static void main(String[] args) throws InterruptedException {
 		GameState gs = new GameState();
 	
-		//Panel panel = new Panel(gs);
+	
 		Menu menu = new Menu(gs);
 
 		gs.cards.add(menu, "MENU");
@@ -30,13 +30,12 @@ public class Start {
 			}
 		});
 		frame.setBackground(Color.decode("#244b73"));
-		//frame.add(panel);
 		frame.setIconImage(new ImageIcon("res/Yellow-Hexagon-Background-PNG-Image.png").getImage());
 
 		frame.add(gs.cards);
 		frame.setVisible(true);
 		frame.pack();
-		//panel.start=true;
+		
 		
 	}
 	

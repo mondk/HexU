@@ -8,9 +8,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.util.concurrent.ThreadLocalRandom;
+/*
+ * Made by Jasper originally, however during the project every one implemetned 
+ * functions in this file
+ */
 
 /*
- * Class that holds informationa and functions to manipulate data
+ * Class that holds informations and functions to manipulate data
  */
 public class GameState{
 	
@@ -21,7 +25,7 @@ public class GameState{
 	OnlineMove onlineMove = null;
 	Thread moveThread = null;
 	Integer onlineId = 0;
-	String AIname = "AI";
+
 
 	//game grid
 	ArrayList<Hexagon> grid = new ArrayList<>();
@@ -55,6 +59,7 @@ public class GameState{
 	boolean singlePlayer = false;
 	boolean host = true;
 	State playerState = State.MULTIPLAYER;
+	String AIname = "AI";
 
 	// list for moves when loading saved game
 	String[] load = {};
@@ -75,7 +80,7 @@ public class GameState{
 		
 	}
 
-	// States fro gamemode
+	// States for gamemode
 	public enum State{
 		SINGLEPLAYER,
 		MULTIPLAYER,
@@ -107,7 +112,6 @@ public class GameState{
 	 * @param state the string to which the state is changed
 	 **/
 	public void changeState(String state) {
-		// Input is a string to which game mode is changes to
 		if(state.equals("single"))
 			playerState=State.SINGLEPLAYER;
 		else if(state.equals("multiplayer")) {
@@ -182,55 +186,56 @@ public class GameState{
 		}
 	}
 	/**
-	 * Function for determining if the move made caused a win state
+	 * Function for determining if the move made caused a win state.
+	 * Runs a BFS algorithm on every hexagon in the s array, and for each hexagon 
+	 * visited, sees if that results in a path over the board
 	 * @param s first win array of the player in question
 	 * @param p The players color
 	 * @param win second win array of the player in question
 	 * @return boolean value if path through board is found
-	 * runs a BFS algorithm on every hexagon in the s array, and for each hexagon 
-	 * visited, sees if that results in a path over the board
 	 **/
 	public Boolean winingState(List<Integer> s, Color p, List<Integer> win) {
-		// Array der holder alle hexagon der er en del af en cluster
-		ArrayList<Integer> seen = new ArrayList<>();
-		//Loop over s, for at finde path
 		for(Integer v : s) {
-			// Tjekker om den givne hexagon er den givne spillers farve
-			// eller om den allerede er en del af en cluster, i så fald skip!
-			if (this.grid.get(v).color != p || seen.contains(v)) {
+			// If the hex is not colored the same color as the player, 
+			// or have been visited before, look at next hexagon
+			if (this.grid.get(v).color != p ) {
 				continue;
 			}
+			// Arrays for the BFS
+			ArrayList<Integer> cluster = new ArrayList<>();
+			boolean visited[] = new boolean[numberOfHexagons*numberOfHexagons];
+			LinkedList<Integer> queue = new LinkedList<Integer>();
 
 			// Arrays for finding shortes path
 			int pred[] = new int[numberOfHexagons*numberOfHexagons];
 			int dist[] = new int[numberOfHexagons*numberOfHexagons];
-			ArrayList<Integer> cluster = new ArrayList<>();
-			boolean visited[] = new boolean[numberOfHexagons*numberOfHexagons];
-			LinkedList<Integer> queue = new LinkedList<Integer>();
+
 			for (int i = 0; i < numberOfHexagons*numberOfHexagons; i++) {
 				visited[i] = false;
 				dist[i] = Integer.MAX_VALUE;
 				pred[i] = -1;
 			}
 			
+			// visit the first hex
 			visited[v] = true;
 			queue.add(v);
 			dist[v] = -1;
-
-			// Tilføjer hexagon til cluster
 			cluster.add(v);
-
+			
+			// The BFS
 			while (!queue.isEmpty()) {
 				int u = queue.poll();
 				for(int i = 0; i<grid.get(u).adj.size(); i++) {
 					if(visited[grid.get(u).adj.get(i)] == false && this.grid.get(grid.get(u).adj.get(i)).color == p) {
+						// Add data fromt he visted hex to the different arrays
 						visited[grid.get(u).adj.get(i)] = true;
 						dist[grid.get(u).adj.get(i)] = dist[u]+1;
 						pred[grid.get(u).adj.get(i)] = u;
 						queue.add(grid.get(u).adj.get(i));
-						seen.add(grid.get(u).adj.get(i));
 						cluster.add(grid.get(u).adj.get(i));
-						if (!Collections.disjoint(cluster,win)){ 
+						// if the hexagons vistied conects with the winning array, 
+						// a path is ofund and the bfs ends
+						if (!Collections.disjoint(cluster, win)){ 
 							int crawl = grid.get(u).adj.get(i);
 							this.finalPath.add(crawl);
 							while (pred[crawl] != -1) {
@@ -272,20 +277,6 @@ public class GameState{
 	}
 
 	/**
-	 * function used by the AI, that gives all valid moves on the curretn game state
-	 * @return and array list of integers representing the id of possible hexagons to click
-	 */
-	public ArrayList<Integer> getValidMoves() {
-		ArrayList<Integer> validmoves = new ArrayList<>();
-		
-		for(Hexagon h: grid) {
-			if(!h.clicked)
-				validmoves.add(h.id);
-		}
-		return validmoves;
-	}
-
-	/**
 	 * method for chaning the size of hexagons and the baord, based on the input from the user
 	 * @param numberOfHexagons The nuber entered by the player from the Menu
 	 */
@@ -301,7 +292,7 @@ public class GameState{
 	}
 
 	/**
-	 * functionf ro adding a player to the game, with a radnom color
+	 * function for adding a player to the game, with a random color
 	 */
 	public void addPlayer(){
 		int id = players.size();
@@ -409,25 +400,36 @@ public class GameState{
 		host = true;
 		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this, ip);
 	}
-
+	/**
+	 * method used to initialize online game
+	 * @param online 
+	 */
 	public void setOnline(Online online) {
 		this.online = online;
 	}
-
+	/**
+	 * method for joining online game
+	 * @param ip the ip adress of whivh the players has to join
+	 * @throws IOException
+	 */
 	public void joinGame(String ip) throws IOException {
 		online.start(false, ip);
-		//gameSpace = new RemoteSpace("tcp://" + ip + ":9001/game?keep");
 		this.host = false;
 		this.playerState = GameState.State.ONLINE;
 		WaitingRoomUI waitingRoomUI = new WaitingRoomUI(this, ip);
 	}
 
-
+	/**
+	 * method for setting up a waiting rooom
+	 */
 	public void startWaitingRoom() {
 		waitingRoom = new WaitingRoom(this);
 		waitingRoomThread = new Thread(waitingRoom);
         waitingRoomThread.start();
 	}
+	/**
+	 * method for 
+	 */
 	public void startOnlineMove() {
 		onlineMove = new OnlineMove(this);
 		moveThread = new Thread(onlineMove);
@@ -527,7 +529,7 @@ public class GameState{
 	/**
 	 * mehtod for creating the game board
 	 * nated for loop, that keep track of the rows and columns, assigns adjacancy list and 
-	 * score for the heuristic function along the way
+	 * score for the heuristic function along the way,
 	 * and finaly creates the bordeers around the board
 	 */
 	public void createGrid() {

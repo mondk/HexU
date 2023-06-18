@@ -43,11 +43,8 @@ public class AI {
 	        String nextPlayer = nextTurn(player);
 	        int alpha_ = alpha;
 	        int beta_=beta;
+
 	        for (int[] move : getNullElements(matrix)) {
-	        	
-	        	
-	        	//System.out.println("\ncurrent move :"+move[0]+" ; "+move[1]+"\n");
-	        
 	        	String[][] matrix_new=makeMove(move,currentPlayer,matrix);
 	        	
 	        	if(depth==4) {
@@ -56,20 +53,15 @@ public class AI {
 		        	}
 	        	}
 	            int[] eval = minimax(matrix_new,nextPlayer, depth - 1, false,alpha_ ,beta_);
-				//System.out.println("eval score : "+eval[0]);
+				
 	            if (eval[0] > max_eval) {
-
-	            	//System.out.println("inner score : "+eval[0]);
-
 	                max_eval = eval[0];
 	                best_move = move;
-
 	            }
 	            alpha_=Math.max(alpha_, max_eval);
 	            if(beta_<=alpha_&&gs.numberOfHexagons>5) {
 	            	return new int[] {max_eval, best_move[0],best_move[1]};
 	            }
-	            //System.out.println("best move inner :"+best_move[0]+" ; "+best_move[1]);
 	        }
 	        return new int[] {max_eval, best_move[0],best_move[1]};
 	        

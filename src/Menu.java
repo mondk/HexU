@@ -1,11 +1,16 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+/*
+ * Made by Jonas, and Laurits added few functionalites aterwards
+ */
 
 public class Menu extends JPanel {
 
-    ImageIcon img = new ImageIcon("res/background/space.jpg");
-    int dialogbutton;
+    // Background image
+    private ImageIcon img = new ImageIcon("res/background/space.jpg");
+    // dialog button 
+    private int dialogbutton;
     Menu(GameState gs) {
         
         // Field where you set amount of hexagons
@@ -118,7 +123,9 @@ public class Menu extends JPanel {
                 gs.cards.remove(0);
             }
         });
-
+        /**
+         * Action defiend for continuing a saved game
+         */
         continueLastGame.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent){
@@ -134,6 +141,11 @@ public class Menu extends JPanel {
         add(buttons);
     }
 
+    /**
+     * method for adding a player to the gamestate
+     * @param gs
+     * @param playerNames
+     */
     private void addPlayer(GameState gs, JPanel playerNames){
         try {
             playerNames.add(new PlayerSettings(gs.players.get(playerNames.getComponentCount())).getPlayerCards());
@@ -143,6 +155,9 @@ public class Menu extends JPanel {
         }
         playerNames.updateUI();
     }
+    /**
+     * method for removing player fromt he gamestate
+     */
     private void removePlayer(GameState gs, JPanel playerNames){
         playerNames.remove(playerNames.getComponentCount()-1);
         playerNames.updateUI();

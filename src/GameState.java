@@ -266,6 +266,7 @@ public class GameState{
 		}
 		finalPath.clear();
 		exsplosion.clear();
+		load = null;
 		q.clear();
 		for (Hexagon h : grid) {
 			h.color = Color.gray;
